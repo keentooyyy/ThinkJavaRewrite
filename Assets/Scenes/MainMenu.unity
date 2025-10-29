@@ -4905,7 +4905,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _serializedExposedParameters: []
-  _boundGraphSerialization: '{"type":"NodeCanvas.StateMachines.FSM","nodes":[{"_actionList":{"executionMode":1,"actions":[{"$type":"NodeCanvas.Tasks.Actions.SetScreenOrientationAction"}]},"_color":{"r":1.0,"g":0.42,"b":0.32,"a":1.0},"_position":{"x":541.0,"y":106.0},"$type":"NodeCanvas.StateMachines.ActionState"}],"connections":[],"canvasGroups":[],"localBlackboard":{"_variables":{}}}'
+  _boundGraphSerialization: '{"type":"NodeCanvas.StateMachines.FSM","nodes":[{"_actionList":{"executionMode":1,"actions":[]},"_color":{"r":1.0,"g":0.42,"b":0.32,"a":1.0},"_position":{"x":507.0},"$type":"NodeCanvas.StateMachines.ActionState","$id":"0"},{"_actionList":{"executionMode":1,"actions":[{"$type":"NodeCanvas.Tasks.Actions.SetScreenOrientationAction"}]},"_color":{"r":1.0,"g":0.42,"b":0.32,"a":1.0},"_position":{"x":235.0,"y":122.0},"$type":"NodeCanvas.StateMachines.ActionState","$id":"1"}],"connections":[{"_sourceNode":{"$ref":"0"},"_targetNode":{"$ref":"1"},"$type":"NodeCanvas.StateMachines.FSMConnection"}],"canvasGroups":[],"localBlackboard":{"_variables":{}}}'
   _boundGraphObjectReferences: []
   _boundGraphSource:
     _version: 3.3
