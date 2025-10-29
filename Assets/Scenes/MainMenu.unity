@@ -209,13 +209,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 154464633}
+  - component: {fileID: 154464634}
   m_Layer: 5
   m_Name: Settings UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &154464633
 RectTransform:
   m_ObjectHideFlags: 0
@@ -241,6 +242,25 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &154464634
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 154464632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 151fa99d0f0c9934c8fe994405cd0143, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  showOnEvents:
+  - SettingsButton
+  hideOnEvents:
+  - SettingBackButton
+  startHidden: 1
+  hideOthersOnShow: 1
+  canBeHiddenByOthers: 1
 --- !u!224 &180539150 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 100074644481476443, guid: 76ab589e17495b249bdcec7f7e5719c0, type: 3}
@@ -349,7 +369,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2817352914058051660, guid: 76ab589e17495b249bdcec7f7e5719c0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1854526709}
   m_SourcePrefab: {fileID: 100100000, guid: 76ab589e17495b249bdcec7f7e5719c0, type: 3}
 --- !u!224 &275887562 stripped
 RectTransform:
@@ -610,6 +633,7 @@ GameObject:
   - component: {fileID: 356846679}
   - component: {fileID: 356846678}
   - component: {fileID: 356846677}
+  - component: {fileID: 356846680}
   m_Layer: 5
   m_Name: Profile
   m_TagString: Untagged
@@ -718,6 +742,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 356846675}
   m_CullTransparentMesh: 1
+--- !u!114 &356846680
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 356846675}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 819662691b8979b4fa6bec48790f9fe6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eventName: ProfileButton
 --- !u!1 &412677411 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2817352914058051660, guid: 76ab589e17495b249bdcec7f7e5719c0, type: 3}
@@ -728,18 +765,7 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 100074644481476443, guid: 76ab589e17495b249bdcec7f7e5719c0, type: 3}
   m_PrefabInstance: {fileID: 967389294}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &412677413 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 9146156378403009857, guid: 76ab589e17495b249bdcec7f7e5719c0, type: 3}
-  m_PrefabInstance: {fileID: 967389294}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 412677411}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &412677416
+--- !u!114 &412677420
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -748,55 +774,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 412677411}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b98a6db0b653f764eac834f85857a9dd, type: 3}
+  m_Script: {fileID: 11500000, guid: 819662691b8979b4fa6bec48790f9fe6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _parentBlackboard: {fileID: 0}
-  _serializedBlackboard: '{"_variables":{}}'
-  _objectReferences: []
-  _serializedVariables: []
---- !u!114 &412677417
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 412677411}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a7dbb6bbdf4ffb46ab7dd87ba8191e7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _serializedExposedParameters: []
-  _boundGraphSerialization: '{"type":"NodeCanvas.StateMachines.FSM","nodes":[{"_actionList":{"executionMode":1,"actions":[{"button":{"_value":1},"$type":"NodeCanvas.Tasks.Actions.WaitButtonClick"}]},"_color":{"r":1.0,"g":0.42,"b":0.32,"a":1.0},"_position":{"x":440.0,"y":147.0},"$type":"NodeCanvas.StateMachines.ActionState","$id":"0"},{"_actionList":{"executionMode":1,"actions":[{"delay":{},"$type":"NodeCanvas.Tasks.Actions.QuitGameAction"}]},"_color":{"r":1.0,"g":0.42,"b":0.32,"a":1.0},"_position":{"x":789.0,"y":203.0},"$type":"NodeCanvas.StateMachines.ActionState","$id":"1"}],"connections":[{"_sourceNode":{"$ref":"0"},"_targetNode":{"$ref":"1"},"$type":"NodeCanvas.StateMachines.FSMConnection"}],"canvasGroups":[],"localBlackboard":{"_variables":{}}}'
-  _boundGraphObjectReferences:
-  - {fileID: 0}
-  - {fileID: 412677413}
-  _boundGraphSource:
-    _version: 3.3
-    _category: 
-    _comments: 
-    _translation: {x: 0, y: 0}
-    _zoomFactor: 1
-  _firstActivation: 0
-  _enableAction: 0
-  _disableAction: 0
-  _lockBoundGraphPrefabOverrides: 1
-  _preInitializeSubGraphs: 0
-  _updateMode: 0
-  _graph: {fileID: 0}
-  _blackboard: {fileID: 412677416}
---- !u!114 &445055990 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 9146156378403009857, guid: 76ab589e17495b249bdcec7f7e5719c0, type: 3}
-  m_PrefabInstance: {fileID: 275887561}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  eventName: QuitButton
 --- !u!1 &573089572
 GameObject:
   m_ObjectHideFlags: 0
@@ -966,6 +947,84 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &787556456
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 787556457}
+  - component: {fileID: 787556459}
+  - component: {fileID: 787556458}
+  m_Layer: 0
+  m_Name: UIEvents
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &787556457
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 787556456}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1017114792}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &787556458
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 787556456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b98a6db0b653f764eac834f85857a9dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _parentBlackboard: {fileID: 0}
+  _serializedBlackboard: '{"_variables":{}}'
+  _objectReferences: []
+  _serializedVariables: []
+--- !u!114 &787556459
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 787556456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a7dbb6bbdf4ffb46ab7dd87ba8191e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _serializedExposedParameters: []
+  _boundGraphSerialization: 
+  _boundGraphObjectReferences: []
+  _boundGraphSource:
+    _version: 0
+    _category: 
+    _comments: 
+    _translation: {x: 0, y: 0}
+    _zoomFactor: 1
+  _firstActivation: 0
+  _enableAction: 0
+  _disableAction: 0
+  _lockBoundGraphPrefabOverrides: 1
+  _preInitializeSubGraphs: 0
+  _updateMode: 0
+  _graph: {fileID: 11400000, guid: c235f4f0e293b11449f64f353289980f, type: 2}
+  _blackboard: {fileID: 787556458}
 --- !u!1 &792195879
 GameObject:
   m_ObjectHideFlags: 0
@@ -2997,8 +3056,6 @@ GameObject:
   - component: {fileID: 909334179}
   - component: {fileID: 909334178}
   - component: {fileID: 909334177}
-  - component: {fileID: 909334181}
-  - component: {fileID: 909334180}
   m_Layer: 5
   m_Name: On/Off
   m_TagString: Untagged
@@ -3107,55 +3164,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 909334175}
   m_CullTransparentMesh: 1
---- !u!114 &909334180
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 909334175}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b98a6db0b653f764eac834f85857a9dd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _parentBlackboard: {fileID: 0}
-  _serializedBlackboard: '{"_variables":{}}'
-  _objectReferences: []
-  _serializedVariables: []
---- !u!114 &909334181
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 909334175}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a7dbb6bbdf4ffb46ab7dd87ba8191e7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _serializedExposedParameters: []
-  _boundGraphSerialization: '{"type":"NodeCanvas.StateMachines.FSM","nodes":[{"_actionList":{"executionMode":1,"actions":[{"button":{"_value":1},"$type":"NodeCanvas.Tasks.Actions.WaitButtonClick"}]},"_color":{"r":1.0,"g":0.42,"b":0.32,"a":1.0},"_position":{"x":439.8333,"y":28.72407},"$type":"NodeCanvas.StateMachines.ActionState","$id":"0"},{"_actionList":{"executionMode":1,"actions":[{"method":{"_baseInfo":"UnityEngine.UI.Image|set_sprite|System.Void","_paramsInfo":"UnityEngine.Sprite"},"parameter":{"_type":"UnityEngine.Sprite","_value":{"$content":2,"$type":"UnityEngine.Sprite"}},"$type":"NodeCanvas.Tasks.Actions.SetProperty_Multiplatform"}]},"_color":{"r":1.0,"g":0.42,"b":0.32,"a":1.0},"_position":{"x":768.5455,"y":208.9403},"$type":"NodeCanvas.StateMachines.ActionState","$id":"1"},{"_actionList":{"executionMode":1,"actions":[{"button":{"_value":1},"$type":"NodeCanvas.Tasks.Actions.WaitButtonClick"}]},"_color":{"r":1.0,"g":0.42,"b":0.32,"a":1.0},"_position":{"x":531.1339,"y":381.8194},"$type":"NodeCanvas.StateMachines.ActionState","$id":"2"},{"_actionList":{"executionMode":1,"actions":[{"method":{"_baseInfo":"UnityEngine.UI.Image|set_sprite|System.Void","_paramsInfo":"UnityEngine.Sprite"},"parameter":{"_type":"UnityEngine.Sprite","_value":{"$content":3,"$type":"UnityEngine.Sprite"}},"$type":"NodeCanvas.Tasks.Actions.SetProperty_Multiplatform"}]},"_color":{"r":1.0,"g":0.42,"b":0.32,"a":1.0},"_position":{"x":65.78838,"y":239.5451},"$type":"NodeCanvas.StateMachines.ActionState","$id":"3"}],"connections":[{"_sourceNode":{"$ref":"0"},"_targetNode":{"$ref":"1"},"$type":"NodeCanvas.StateMachines.FSMConnection"},{"_sourceNode":{"$ref":"1"},"_targetNode":{"$ref":"2"},"$type":"NodeCanvas.StateMachines.FSMConnection"},{"_sourceNode":{"$ref":"2"},"_targetNode":{"$ref":"3"},"$type":"NodeCanvas.StateMachines.FSMConnection"},{"_sourceNode":{"$ref":"3"},"_targetNode":{"$ref":"0"},"$type":"NodeCanvas.StateMachines.FSMConnection"}],"canvasGroups":[],"localBlackboard":{"_variables":{}}}'
-  _boundGraphObjectReferences:
-  - {fileID: 0}
-  - {fileID: 909334177}
-  - {fileID: -228854726, guid: 533fa6fc00b3d0a4f8c058397ada92b5, type: 3}
-  - {fileID: 835718124, guid: 3908785e2d1c4724fb9813f7ac3324e0, type: 3}
-  _boundGraphSource:
-    _version: 3.3
-    _category: 
-    _comments: 
-    _translation: {x: -68.21652, y: 26.5824}
-    _zoomFactor: 0.9405389
-  _firstActivation: 0
-  _enableAction: 0
-  _disableAction: 0
-  _lockBoundGraphPrefabOverrides: 1
-  _preInitializeSubGraphs: 0
-  _updateMode: 0
-  _graph: {fileID: 0}
-  _blackboard: {fileID: 909334180}
 --- !u!1001 &943989180
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3383,10 +3391,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 2817352914058051660, guid: 76ab589e17495b249bdcec7f7e5719c0, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 412677417}
-    - targetCorrespondingSourceObject: {fileID: 2817352914058051660, guid: 76ab589e17495b249bdcec7f7e5719c0, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 412677416}
+      addedObject: {fileID: 412677420}
   m_SourcePrefab: {fileID: 100100000, guid: 76ab589e17495b249bdcec7f7e5719c0, type: 3}
 --- !u!1 &1005301478
 GameObject:
@@ -3519,6 +3524,39 @@ MonoBehaviour:
   _updateMode: 0
   _graph: {fileID: 11400000, guid: cbf5205aea4ed3f4292563e9aa6d1eff, type: 2}
   _blackboard: {fileID: 1005301482}
+--- !u!1 &1017114791
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1017114792}
+  m_Layer: 0
+  m_Name: FSM
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1017114792
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1017114791}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.3255357, y: 3.8134103, z: -0.1043079}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2078436990}
+  - {fileID: 787556457}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!224 &1049541984 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 100074644481476443, guid: 76ab589e17495b249bdcec7f7e5719c0, type: 3}
@@ -3712,8 +3750,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1682707501}
-  - {fileID: 1866288861}
   - {fileID: 356846676}
+  - {fileID: 1866288861}
   m_Father: {fileID: 1700472280}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
@@ -4054,9 +4092,7 @@ GameObject:
   - component: {fileID: 1682707504}
   - component: {fileID: 1682707503}
   - component: {fileID: 1682707502}
-  - component: {fileID: 1682707506}
   - component: {fileID: 1682707505}
-  - component: {fileID: 1682707507}
   m_Layer: 5
   m_Name: Settings
   m_TagString: Untagged
@@ -4174,80 +4210,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1682707500}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b98a6db0b653f764eac834f85857a9dd, type: 3}
+  m_Script: {fileID: 11500000, guid: 819662691b8979b4fa6bec48790f9fe6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _parentBlackboard: {fileID: 0}
-  _serializedBlackboard: '{"_variables":{"SettingsUI":{"_value":1,"_name":"SettingsUI","_id":"769eee61-8600-491d-a38d-3fff4d317a26","$type":"NodeCanvas.Framework.Variable`1[[UnityEngine.GameObject,
-    UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]"},"SettingsButton":{"_value":2,"_name":"SettingsButton","_id":"741c80b6-ff8d-4298-8e4f-99c83a581d3f","$type":"NodeCanvas.Framework.Variable`1[[UnityEngine.GameObject,
-    UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]"},"SettingsBack":{"_value":3,"_name":"SettingsBack","_id":"f5355978-9289-41bb-b594-22e871121115","$type":"NodeCanvas.Framework.Variable`1[[UnityEngine.UI.Button,
-    UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"}}}'
-  _objectReferences:
-  - {fileID: 0}
-  - {fileID: 154464632}
-  - {fileID: 1682707500}
-  - {fileID: 445055990}
-  _serializedVariables:
-  - _json: '{"_value":1,"_name":"SettingsUI","_id":"769eee61-8600-491d-a38d-3fff4d317a26","$type":"NodeCanvas.Framework.Variable`1[[UnityEngine.GameObject,
-      UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]"}'
-    _references:
-    - {fileID: 0}
-    - {fileID: 154464632}
-  - _json: '{"_value":1,"_name":"SettingsButton","_id":"741c80b6-ff8d-4298-8e4f-99c83a581d3f","$type":"NodeCanvas.Framework.Variable`1[[UnityEngine.GameObject,
-      UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]"}'
-    _references:
-    - {fileID: 0}
-    - {fileID: 1682707500}
-  - _json: '{"_value":1,"_name":"SettingsBack","_id":"f5355978-9289-41bb-b594-22e871121115","$type":"NodeCanvas.Framework.Variable`1[[UnityEngine.UI.Button,
-      UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"}'
-    _references:
-    - {fileID: 0}
-    - {fileID: 445055990}
---- !u!114 &1682707506
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1682707500}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a7dbb6bbdf4ffb46ab7dd87ba8191e7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _serializedExposedParameters: []
-  _boundGraphSerialization: 
-  _boundGraphObjectReferences: []
-  _boundGraphSource:
-    _version: 0
-    _category: 
-    _comments: 
-    _translation: {x: 0, y: 0}
-    _zoomFactor: 1
-  _firstActivation: 0
-  _enableAction: 0
-  _disableAction: 0
-  _lockBoundGraphPrefabOverrides: 1
-  _preInitializeSubGraphs: 0
-  _updateMode: 0
-  _graph: {fileID: 11400000, guid: 80a44ab341321044cab310ff2fe1163f, type: 2}
-  _blackboard: {fileID: 1682707505}
---- !u!114 &1682707507
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1682707500}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f813fd19d26c5864aa8762e90e779923, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  requiredVariables:
-  - variableName: SettingsUI
-  - variableName: SettingsButton
-  - variableName: SettingsBack
+  eventName: SettingsButton
 --- !u!1 &1700472279
 GameObject:
   m_ObjectHideFlags: 0
@@ -4533,6 +4499,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1854526706 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2817352914058051660, guid: 76ab589e17495b249bdcec7f7e5719c0, type: 3}
+  m_PrefabInstance: {fileID: 275887561}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1854526709
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1854526706}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 819662691b8979b4fa6bec48790f9fe6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eventName: SettingBackButton
 --- !u!1 &1866288860
 GameObject:
   m_ObjectHideFlags: 0
@@ -4885,12 +4869,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2078436989}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.1814486, y: 2.7064893, z: -0.0030556573}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -2.5069842, y: -1.106921, z: 0.10125224}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1017114792}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2078436991
 MonoBehaviour:
@@ -5520,4 +5504,4 @@ SceneRoots:
   - {fileID: 1765960661}
   - {fileID: 300119534}
   - {fileID: 1774273478}
-  - {fileID: 2078436990}
+  - {fileID: 1017114792}
