@@ -8,14 +8,14 @@ namespace NodeCanvas.Tasks.Actions
     /// Quits the application or stops play mode in editor.
     /// Works properly in both Unity Editor and builds.
     /// </summary>
-    [Category("Application")]
+    [Category("✫ Application")]
     [Description("Quit the game (stops play mode in editor, closes app in build)")]
     public class QuitGameAction : ActionTask
     {
         [Tooltip("Optional delay in seconds before quitting")]
         public BBParameter<float> delay = 0f;
 
-        private float elapsedTime = 0f;
+        private float delayTimer = 0f;
 
         protected override string info
         {
@@ -40,9 +40,9 @@ namespace NodeCanvas.Tasks.Actions
         {
             if (delay.value > 0)
             {
-                elapsedTime += Time.deltaTime;
+                delayTimer += UnityEngine.Time.deltaTime;
                 
-                if (elapsedTime >= delay.value)
+                if (delayTimer >= delay.value)
                 {
                     QuitGame();
                     EndAction(true);
@@ -55,7 +55,7 @@ namespace NodeCanvas.Tasks.Actions
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
 #else
-            Application.Quit();
+            UnityEngine.Application.Quit();
 #endif
         }
     }
