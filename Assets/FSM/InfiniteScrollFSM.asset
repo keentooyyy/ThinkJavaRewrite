@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f945e777233a59f4aba40aeca29093a6, type: 3}
+  m_Name: InfiniteScrollFSM
+  m_EditorClassIdentifier: 
+  _serializedGraph: '{"type":"NodeCanvas.StateMachines.FSM","nodes":[{"_actionList":{"executionMode":1,"actions":[{"scrollSpeed":{"_name":"scrollSpeed","_targetVariableID":"cd733368-2b88-4ba4-ba7f-a804558b0842"},"backgroundCount":{"_name":"backgroundCount","_targetVariableID":"46c5d272-3c15-4286-86a7-5225ce035208"},"overlapPixels":{"_name":"overlapPixels","_targetVariableID":"5b208496-029c-4fae-a97e-45b9fa79657d"},"$type":"NodeCanvas.Tasks.Actions.ScrollBackgroundAction"}]},"_name":"Scroll","_position":{"x":5600.0,"y":5399.0},"$type":"NodeCanvas.StateMachines.ActionState"}],"connections":[],"canvasGroups":[],"localBlackboard":{"_variables":{"scrollSpeed":{"_value":-0.8,"_name":"scrollSpeed","_id":"cd733368-2b88-4ba4-ba7f-a804558b0842","$type":"NodeCanvas.Framework.Variable`1[[System.Single,
+    mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"},"backgroundCount":{"_value":5,"_name":"backgroundCount","_id":"46c5d272-3c15-4286-86a7-5225ce035208","$type":"NodeCanvas.Framework.Variable`1[[System.Int32,
+    mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"},"overlapPixels":{"_value":2.0,"_name":"overlapPixels","_id":"5b208496-029c-4fae-a97e-45b9fa79657d","$type":"NodeCanvas.Framework.Variable`1[[System.Single,
+    mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"}}}}'
+  _objectReferences: []
+  _graphSource:
+    _version: 3.3
+    _category: 
+    _comments: 
+    _translation: {x: -5077.9395, y: -5264.8022}
+    _zoomFactor: 1
+  _haltSerialization: 0
+  _externalSerializationFile: {fileID: 0}
