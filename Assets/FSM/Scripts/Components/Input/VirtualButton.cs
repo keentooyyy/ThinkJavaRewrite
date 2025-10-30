@@ -7,12 +7,17 @@ namespace GameInput
 {
     /// <summary>
     /// Generic virtual button - supports ANY button name
-    /// Just type the button name in the inspector!
+    /// Choose button from InputConfig dropdown!
     /// </summary>
     public class VirtualButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerEnterHandler, IPointerExitHandler
     {
+        [Header("Input Config Reference")]
+        [Tooltip("Reference to your InputConfig asset (e.g., MainInputConfig)")]
+        public InputConfig inputConfig;
+        
         [Header("Button Settings")]
-        [Tooltip("Button identifier (e.g., 'Jump', 'ActionA', 'ActionB', 'Dash', 'Attack', etc.)")]
+        [ButtonName("inputConfig")]
+        [Tooltip("Button identifier (choose from InputConfig dropdown)")]
         public string buttonName = "Jump";
         
         [Header("Directional Button (Optional)")]
@@ -27,6 +32,12 @@ namespace GameInput
         private void Awake()
         {
             unityButton = GetComponent<Button>();
+            
+            // Validate button exists in config
+            if (inputConfig != null && !string.IsNullOrEmpty(buttonName) && !IsValidButton())
+            {
+                Debug.LogWarning($"VirtualButton on {gameObject.name}: Button '{buttonName}' not found in InputConfig!");
+            }
         }
         
         private void Update()
@@ -129,6 +140,19 @@ namespace GameInput
         {
             if (isPressed)
                 Release();
+        }
+        
+        private bool IsValidButton()
+        {
+            if (inputConfig == null || inputConfig.keyboardBindings == null)
+                return false;
+            
+            foreach (var binding in inputConfig.keyboardBindings)
+            {
+                if (binding.buttonName == buttonName)
+                    return true;
+            }
+            return false;
         }
     }
 }

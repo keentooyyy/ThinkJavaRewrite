@@ -4,8 +4,9 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Ground
   - Hazard
+  - Ground
+  - Pickup
   layers:
   - Default
   - TransparentFX
@@ -15,8 +16,8 @@ TagManager:
   - UI
   - Ground
   - Hazard
-  - 
-  - 
+  - Pickup
+  - Player
   - 
   - 
   - 
