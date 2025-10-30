@@ -216,7 +216,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &154464633
 RectTransform:
   m_ObjectHideFlags: 0
@@ -251,13 +251,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 154464632}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 151fa99d0f0c9934c8fe994405cd0143, type: 3}
+  m_Script: {fileID: 11500000, guid: f3ce30f583d8b4648b05f7232c921dd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   showOnEvents:
   - SettingsButton
   hideOnEvents:
-  - SettingBackButton
+  - SettingsBackButton
   startHidden: 1
   hideOthersOnShow: 1
   canBeHiddenByOthers: 1
@@ -751,7 +751,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 356846675}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 819662691b8979b4fa6bec48790f9fe6, type: 3}
+  m_Script: {fileID: 11500000, guid: 751bdc703eef65b4593e293288c00a24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   eventName: ProfileButton
@@ -774,7 +774,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 412677411}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 819662691b8979b4fa6bec48790f9fe6, type: 3}
+  m_Script: {fileID: 11500000, guid: 751bdc703eef65b4593e293288c00a24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   eventName: QuitButton
@@ -3803,7 +3803,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1170644226}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 819662691b8979b4fa6bec48790f9fe6, type: 3}
+  m_Script: {fileID: 11500000, guid: 751bdc703eef65b4593e293288c00a24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   eventName: ProfileBackButton
@@ -4668,7 +4668,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1682707500}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 819662691b8979b4fa6bec48790f9fe6, type: 3}
+  m_Script: {fileID: 11500000, guid: 751bdc703eef65b4593e293288c00a24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   eventName: SettingsButton
@@ -4971,10 +4971,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1854526706}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 819662691b8979b4fa6bec48790f9fe6, type: 3}
+  m_Script: {fileID: 11500000, guid: 751bdc703eef65b4593e293288c00a24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  eventName: SettingBackButton
+  eventName: SettingsBackButton
 --- !u!1 &1866288860
 GameObject:
   m_ObjectHideFlags: 0
@@ -5111,7 +5111,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1966606342
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5145,7 +5145,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1966606341}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 151fa99d0f0c9934c8fe994405cd0143, type: 3}
+  m_Script: {fileID: 11500000, guid: f3ce30f583d8b4648b05f7232c921dd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   showOnEvents:
