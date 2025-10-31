@@ -86,7 +86,6 @@ namespace NodeCanvas.Tasks.Actions
             // Store reference for later
             carriedObject.value = objectToPickUp.value;
             
-            Debug.Log($"Picked up {objectToPickUp.value.name}");
             EndAction(true);
         }
     }

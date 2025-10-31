@@ -88,8 +88,6 @@ namespace NodeCanvas.Tasks.Actions
                 col.enabled = true;
             }
             
-            Debug.Log($"Dropped {carriedObject.value.name}");
-            
             // Clear reference
             carriedObject.value = null;
             

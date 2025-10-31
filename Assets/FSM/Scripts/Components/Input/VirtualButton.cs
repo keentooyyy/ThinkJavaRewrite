@@ -105,7 +105,7 @@ namespace GameInput
             // Send to InputManager
             if (!string.IsNullOrEmpty(buttonName))
             {
-                InputManager.PressButton(buttonName);
+                InputManager.PressButton(buttonName, isVirtual: true);
             }
             
             // Handle directional input

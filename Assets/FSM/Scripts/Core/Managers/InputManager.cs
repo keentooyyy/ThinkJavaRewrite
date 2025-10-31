@@ -20,6 +20,7 @@ namespace GameInput
         {
             public bool isPressed = false;
             public bool pressedThisFrame = false;
+            public bool isVirtualButton = false; // Track if this is from virtual button
         }
         
         /// <summary>
@@ -29,10 +30,13 @@ namespace GameInput
         {
             if (config == null) return;
             
-            // Clear frame-based flags
-            foreach (var state in buttons.Values)
+            // Clear frame-based flags ONLY for keyboard buttons (not virtual buttons)
+            foreach (var kvp in buttons)
             {
-                state.pressedThisFrame = false;
+                if (!kvp.Value.isVirtualButton)
+                {
+                    kvp.Value.pressedThisFrame = false;
+                }
             }
             
             // Get keyboard input
@@ -77,7 +81,7 @@ namespace GameInput
         /// <summary>
         /// Press a button (called by VirtualButton or keyboard)
         /// </summary>
-        public static void PressButton(string buttonName)
+        public static void PressButton(string buttonName, bool isVirtual = false)
         {
             if (string.IsNullOrEmpty(buttonName)) return;
             
@@ -90,6 +94,7 @@ namespace GameInput
             {
                 buttons[buttonName].isPressed = true;
                 buttons[buttonName].pressedThisFrame = true;
+                buttons[buttonName].isVirtualButton = isVirtual;
                 OnButtonPressed?.Invoke(buttonName);
             }
         }
@@ -124,6 +129,7 @@ namespace GameInput
             if (buttons.ContainsKey(buttonName) && buttons[buttonName].pressedThisFrame)
             {
                 buttons[buttonName].pressedThisFrame = false;
+                buttons[buttonName].isVirtualButton = false; // Reset virtual flag after consuming
                 return true;
             }
             return false;
