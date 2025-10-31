@@ -1,3 +1,4 @@
+using System.Linq;
 using NodeCanvas.Framework;
 using ParadoxNotion.Design;
 using UnityEngine;
@@ -13,8 +14,8 @@ namespace NodeCanvas.Tasks.Actions
         [Tooltip("The object to pick up")]
         public BBParameter<GameObject> objectToPickUp;
         
-        [Tooltip("Local position offset when carrying (relative to player)")]
-        public BBParameter<Vector3> holdOffset = new Vector3(0.5f, 0.5f, 0);
+        [Tooltip("Name of the carry point under the player")]
+        public BBParameter<string> carryPointName = "CarryPoint";
         
         [Tooltip("Disable object's physics when picked up?")]
         public BBParameter<bool> disablePhysics = true;
@@ -41,6 +42,18 @@ namespace NodeCanvas.Tasks.Actions
             
             Transform objectTransform = objectToPickUp.value.transform;
             
+            // Find the carry point (search recursively in children)
+            Transform carryPoint = null;
+            if (agent != null && !string.IsNullOrEmpty(carryPointName.value))
+            {
+                carryPoint = agent.GetComponentsInChildren<Transform>()
+                    .FirstOrDefault(t => t.name == carryPointName.value);
+                if (carryPoint == null)
+                {
+                    Debug.LogWarning($"PickUpObject: Carry point '{carryPointName.value}' not found on agent '{agent.name}'. Parenting to agent root instead.");
+                }
+            }
+            
             // Disable physics
             if (disablePhysics.value)
             {
@@ -64,9 +77,10 @@ namespace NodeCanvas.Tasks.Actions
                 }
             }
             
-            // Parent to player
-            objectTransform.SetParent(agent);
-            objectTransform.localPosition = holdOffset.value;
+            // Parent to carry point or player
+            Transform parentTarget = carryPoint != null ? carryPoint : agent;
+            objectTransform.SetParent(parentTarget);
+            objectTransform.localPosition = Vector3.zero;
             objectTransform.localRotation = Quaternion.identity;
             
             // Store reference for later
