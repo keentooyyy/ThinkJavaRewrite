@@ -19,6 +19,10 @@ namespace NodeCanvas.Tasks.Actions
 
         [BlackboardOnly]
         public BBParameter<bool> isGrounded;
+        
+        [BlackboardOnly]
+        [Tooltip("Is the player dead? (optional - if set, movement will be disabled when dead)")]
+        public BBParameter<bool> isDead;
 
         protected override string info
         {
@@ -27,6 +31,10 @@ namespace NodeCanvas.Tasks.Actions
 
         protected override void OnUpdate()
         {
+            // Don't move if dead
+            if (isDead != null && isDead.value)
+                return;
+            
             float speedMultiplier = isGrounded.value ? 1f : airControlMultiplier.value;
             float moveX = horizontalInput.value * moveSpeed.value * speedMultiplier;
             

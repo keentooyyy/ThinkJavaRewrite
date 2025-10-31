@@ -37,6 +37,7 @@ namespace NodeCanvas.Tasks.Actions
                     if (interactable != currentInteractable)
                     {
                         currentInteractable = interactable;
+                        Debug.Log($"[SHOW PROMPT] New interactable detected: {obj.name}, button: {interactable.requiredButton}");
                         
                         // Show appropriate prompt based on required button
                         ShowPromptForButton(interactable.requiredButton);
@@ -48,6 +49,7 @@ namespace NodeCanvas.Tasks.Actions
                 // No interactable nearby - hide prompt
                 if (currentInteractable != null)
                 {
+                    Debug.Log("[SHOW PROMPT] No interactable nearby, hiding prompt");
                     HidePrompt();
                     currentInteractable = null;
                 }
@@ -74,15 +76,20 @@ namespace NodeCanvas.Tasks.Actions
                     eventToTrigger = "ShowPromptActionB";
                     break;
                 default:
-                    Debug.LogWarning($"ShowInteractionPrompt: Unknown button '{buttonName}'");
+                    Debug.LogWarning($"[SHOW PROMPT] Unknown button '{buttonName}'");
                     return;
             }
             
             // Only trigger if different from last shown
             if (eventToTrigger != lastShownPrompt)
             {
+                Debug.Log($"[SHOW PROMPT] Triggering UI event: {eventToTrigger}");
                 UIEventManager.Trigger(eventToTrigger);
                 lastShownPrompt = eventToTrigger;
+            }
+            else
+            {
+                Debug.Log($"[SHOW PROMPT] Event '{eventToTrigger}' already showing, skipping");
             }
         }
         
@@ -90,6 +97,7 @@ namespace NodeCanvas.Tasks.Actions
         {
             if (!string.IsNullOrEmpty(lastShownPrompt))
             {
+                Debug.Log("[SHOW PROMPT] Triggering HidePrompt event");
                 UIEventManager.Trigger("HidePrompt");
                 lastShownPrompt = "";
             }
