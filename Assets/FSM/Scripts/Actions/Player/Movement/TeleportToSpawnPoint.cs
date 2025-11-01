@@ -46,7 +46,6 @@ namespace NodeCanvas.Tasks.Actions
 
             if (target == null)
             {
-                Debug.LogWarning($"{nameof(TeleportToSpawnPoint)} could not locate a spawn point named '{spawnPointName.value}'.");
                 EndAction(false);
                 return;
             }

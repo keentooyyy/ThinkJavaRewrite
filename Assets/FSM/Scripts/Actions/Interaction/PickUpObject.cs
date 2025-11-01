@@ -94,47 +94,21 @@ namespace NodeCanvas.Tasks.Actions
             
             // Parent to carry point or player
             Transform parentTarget = carryPoint != null ? carryPoint : agent;
-            Vector3 worldScale = NormalizeWorldScale(objectTransform.lossyScale);
+            Vector3 worldScale = TransformUtilities.NormalizeWorldScale(objectTransform.lossyScale);
             Quaternion worldRotation = objectTransform.rotation;
 
-            objectTransform.SetParent(parentTarget, false);
+            objectTransform.SetParent(parentTarget, true);
+            TransformUtilities.SetWorldScale(objectTransform, worldScale);
             objectTransform.localPosition = Vector3.zero;
             objectTransform.localRotation = Quaternion.identity;
-            objectTransform.localScale = ComputeLocalScaleForParent(parentTarget, worldScale);
             objectTransform.rotation = worldRotation;
+
+            MaintainWorldScale.Attach(pickupTarget, worldScale);
             
             // Store reference for later
             carriedObject.value = pickupTarget;
             
             EndAction(true);
-        }
-        private static Vector3 ComputeLocalScaleForParent(Transform parent, Vector3 desiredWorldScale)
-        {
-            if (parent == null)
-            {
-                return desiredWorldScale;
-            }
-
-            Vector3 parentScale = parent.lossyScale;
-            return new Vector3(
-                SafeDivide(desiredWorldScale.x, parentScale.x),
-                SafeDivide(desiredWorldScale.y, parentScale.y),
-                SafeDivide(desiredWorldScale.z, parentScale.z)
-            );
-        }
-
-        private static float SafeDivide(float numerator, float denominator)
-        {
-            return Mathf.Approximately(denominator, 0f) ? 0f : numerator / denominator;
-        }
-
-        private static Vector3 NormalizeWorldScale(Vector3 scale)
-        {
-            return new Vector3(
-                Mathf.Abs(scale.x),
-                Mathf.Abs(scale.y),
-                Mathf.Abs(scale.z)
-            );
         }
     }
 }

@@ -35,10 +35,13 @@ namespace UI
             rectTransform = GetComponent<RectTransform>();
             canvas = GetComponentInParent<Canvas>();
             mainCamera = Camera.main;
-            
             if (mainCamera == null)
             {
-                Debug.LogWarning("FollowWorldPosition: No main camera found!");
+                var allCameras = FindObjectsOfType<Camera>();
+                if (allCameras.Length > 0)
+                {
+                    mainCamera = allCameras[0];
+                }
             }
             
             // Find target at runtime
@@ -51,7 +54,6 @@ namespace UI
             if (manualTarget != null)
             {
                 worldTarget = manualTarget;
-                Debug.Log($"FollowWorldPosition: Using manual target {worldTarget.name}");
                 return;
             }
             
@@ -59,7 +61,6 @@ namespace UI
             GameObject player = GameObject.FindGameObjectWithTag(playerTag);
             if (player == null)
             {
-                Debug.LogWarning($"FollowWorldPosition: No GameObject with tag '{playerTag}' found!");
                 return;
             }
             
@@ -68,13 +69,11 @@ namespace UI
             if (anchor != null)
             {
                 worldTarget = anchor;
-                Debug.Log($"FollowWorldPosition: Following {player.name} → {anchorChildName}");
             }
             else
             {
                 // Fallback to player root if child not found
                 worldTarget = player.transform;
-                Debug.LogWarning($"FollowWorldPosition: Child '{anchorChildName}' not found on {player.name}, using root transform");
             }
         }
         

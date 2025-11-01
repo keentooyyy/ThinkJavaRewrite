@@ -113,10 +113,11 @@ namespace GameInteraction
                 ResetState(false);
                 EnablePhysics(existing);
                 existing.transform.SetParent(null, true);
+                TransformUtilities.SetWorldScale(existing.transform, TransformUtilities.NormalizeWorldScale(existing.transform.lossyScale));
+                MaintainWorldScale.Detach(existing);
             }
 
             Accept(interactable, metadata);
-            Debug.Log($"PickupSlot '{name}' accepted {DescribePickup(metadata)}");
             puzzleController?.NotifySlotChanged(this);
             return true;
         }
@@ -129,7 +130,6 @@ namespace GameInteraction
             }
 
             var go = currentInteractable.gameObject;
-            Debug.LogWarning($"PickupSlot '{name}' rejected {DescribePickup(currentMetadata)}");
             currentInteractable = null;
             DropToGround(go, playAudio);
             currentMetadata = null;
@@ -148,11 +148,11 @@ namespace GameInteraction
             }
 
             var go = currentInteractable.gameObject;
-            Debug.Log($"PickupSlot '{name}' released {DescribePickup(currentMetadata)}");
             ResetState(playAudio);
             EnablePhysics(go);
             go.transform.SetParent(null, true);
-            SetWorldScale(go.transform, NormalizeWorldScale(go.transform.lossyScale));
+            TransformUtilities.SetWorldScale(go.transform, TransformUtilities.NormalizeWorldScale(go.transform.lossyScale));
+            MaintainWorldScale.Detach(go);
             puzzleController?.NotifySlotChanged(this);
             return go;
         }
@@ -165,14 +165,16 @@ namespace GameInteraction
 
             ResetShake();
 
-            Vector3 worldScale = NormalizeWorldScale(go.transform.lossyScale);
+            Vector3 worldScale = TransformUtilities.NormalizeWorldScale(go.transform.lossyScale);
             Quaternion worldRotation = go.transform.rotation;
 
-            go.transform.SetParent(snapPoint, false);
+            go.transform.SetParent(snapPoint, true);
+            TransformUtilities.SetWorldScale(go.transform, worldScale);
             go.transform.localPosition = Vector3.zero;
             go.transform.localRotation = Quaternion.identity;
-            go.transform.localScale = ComputeLocalScaleForParent(snapPoint, worldScale);
             go.transform.rotation = worldRotation;
+
+            MaintainWorldScale.Attach(go, worldScale);
 
             DisablePhysics(go);
         }
@@ -186,14 +188,14 @@ namespace GameInteraction
 
         private void RejectObject(GameObject go, PickupPuzzleMetadata metadata, bool playAudio)
         {
-            Debug.LogWarning($"PickupSlot '{name}' rejected {DescribeObject(go, metadata)}");
             DropToGround(go, playAudio, startFromSnapPoint: true);
         }
 
         private void DropToGround(GameObject go, bool playAudio, bool startFromSnapPoint = false)
         {
             go.transform.SetParent(null, true);
-            SetWorldScale(go.transform, NormalizeWorldScale(go.transform.lossyScale));
+            TransformUtilities.SetWorldScale(go.transform, TransformUtilities.NormalizeWorldScale(go.transform.lossyScale));
+            MaintainWorldScale.Detach(go);
 
             if (startFromSnapPoint && snapPoint != null)
             {
@@ -350,45 +352,6 @@ namespace GameInteraction
 
             currentInteractable = null;
             currentMetadata = null;
-        }
-
-        private static Vector3 ComputeLocalScaleForParent(Transform parent, Vector3 desiredWorldScale)
-        {
-            if (parent == null)
-            {
-                return desiredWorldScale;
-            }
-
-            Vector3 parentScale = parent.lossyScale;
-            return new Vector3(
-                SafeDivide(desiredWorldScale.x, parentScale.x),
-                SafeDivide(desiredWorldScale.y, parentScale.y),
-                SafeDivide(desiredWorldScale.z, parentScale.z)
-            );
-        }
-
-        private static float SafeDivide(float numerator, float denominator)
-        {
-            return Mathf.Approximately(denominator, 0f) ? 0f : numerator / denominator;
-        }
-
-        private static Vector3 NormalizeWorldScale(Vector3 scale)
-        {
-            return new Vector3(
-                Mathf.Abs(scale.x),
-                Mathf.Abs(scale.y),
-                Mathf.Abs(scale.z)
-            );
-        }
-
-        private static void SetWorldScale(Transform target, Vector3 worldScale)
-        {
-            if (target == null)
-            {
-                return;
-            }
-
-            target.localScale = ComputeLocalScaleForParent(target.parent, worldScale);
         }
 
         private void AutoAssignSnapPoint()

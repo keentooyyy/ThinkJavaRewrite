@@ -46,28 +46,24 @@ namespace UI
         
         private void ShowActionA()
         {
-            if (iconActionA != null)
+            if (iconActionA == null)
             {
-                image.sprite = iconActionA;
-                gameObject.SetActive(true);
+                return;
             }
-            else
-            {
-                Debug.LogWarning("DynamicPromptIcon: iconActionA sprite not assigned!");
-            }
+
+            image.sprite = iconActionA;
+            gameObject.SetActive(true);
         }
         
         private void ShowActionB()
         {
-            if (iconActionB != null)
+            if (iconActionB == null)
             {
-                image.sprite = iconActionB;
-                gameObject.SetActive(true);
+                return;
             }
-            else
-            {
-                Debug.LogWarning("DynamicPromptIcon: iconActionB sprite not assigned!");
-            }
+
+            image.sprite = iconActionB;
+            gameObject.SetActive(true);
         }
         
         private void Hide()

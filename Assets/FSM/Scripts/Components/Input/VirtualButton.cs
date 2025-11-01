@@ -33,10 +33,14 @@ namespace GameInput
         {
             unityButton = GetComponent<Button>();
             
-            // Validate button exists in config
+            // Validate button exists in config; disable interaction if invalid
             if (inputConfig != null && !string.IsNullOrEmpty(buttonName) && !IsValidButton())
             {
-                Debug.LogWarning($"VirtualButton on {gameObject.name}: Button '{buttonName}' not found in InputConfig!");
+                buttonName = string.Empty;
+                if (unityButton != null)
+                {
+                    unityButton.interactable = false;
+                }
             }
         }
         

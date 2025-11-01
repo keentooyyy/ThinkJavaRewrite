@@ -36,13 +36,11 @@ namespace GameInteraction
         {
             if (puzzleConfig == null)
             {
-                Debug.LogWarning("PickupPuzzleController: Missing puzzle config.");
                 return;
             }
 
             if (!puzzleConfig.TryGetPair(dataTypeSlot.SlotDefinition, variableSlot.SlotDefinition, out var pair))
             {
-                Debug.LogWarning($"PickupPuzzleController: No required pair found for data slot '{dataTypeSlot.SlotId}' and variable slot '{variableSlot.SlotId}'.");
                 return;
             }
 
@@ -53,13 +51,8 @@ namespace GameInteraction
             bool typeMatches = actualType == pair.requiredType;
             bool variableMatches = actualVariable == expectedVariable;
 
-            if (typeMatches && variableMatches)
+            if (!typeMatches || !variableMatches)
             {
-                Debug.Log($"Puzzle solved: {FormatCombo(actualType, variableSlot.CurrentVariableRaw)}");
-            }
-            else
-            {
-                Debug.LogWarning($"Puzzle failed: expected {FormatCombo(pair.requiredType, pair.requiredVariableName)}, got {FormatCombo(actualType, variableSlot.CurrentVariableRaw)}");
                 dataTypeSlot.RejectCurrent();
                 variableSlot.RejectCurrent();
             }

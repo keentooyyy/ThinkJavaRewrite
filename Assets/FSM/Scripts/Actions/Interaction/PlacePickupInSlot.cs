@@ -26,7 +26,6 @@ namespace NodeCanvas.Tasks.Actions
 
             if (carried == null || slot == null)
             {
-                Debug.LogWarning("[PlacePickupInSlot] Missing carried object or slot.");
                 EndAction(false);
                 return;
             }
@@ -34,20 +33,17 @@ namespace NodeCanvas.Tasks.Actions
             var interactable = carried.GetComponent<Interactable>();
             if (interactable == null)
             {
-                Debug.LogWarning("[PlacePickupInSlot] Carried object has no Interactable component.");
                 EndAction(false);
                 return;
             }
 
             if (slot.TryPlace(interactable))
             {
-                Debug.Log("[PlacePickupInSlot] Placement succeeded.");
                 carriedObject.value = null;
                 EndAction(true);
             }
             else
             {
-                Debug.LogWarning("[PlacePickupInSlot] Slot rejected the carried object.");
                 carriedObject.value = null;
                 EndAction(false);
             }
