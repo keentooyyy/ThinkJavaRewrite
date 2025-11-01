@@ -1205,7 +1205,7 @@ MonoBehaviour:
   slotDefinition: {fileID: 11400000, guid: 7f6a3906f08ba2d419123bc9ae098a9f, type: 2}
   slotId: a_001
   requiredButton: ActionA
-  shakeDuration: 0.25
+  shakeDuration: 0.5
   shakeMagnitude: 0.15
   dropImpulse: 2
   errorAudio: {fileID: 0}
@@ -4470,7 +4470,7 @@ MonoBehaviour:
   slotDefinition: {fileID: 11400000, guid: ae0cad6c82c64814c8fdf16cdaf36d27, type: 2}
   slotId: a_002
   requiredButton: ActionA
-  shakeDuration: 0.25
+  shakeDuration: 0.5
   shakeMagnitude: 0.15
   dropImpulse: 2
   errorAudio: {fileID: 0}

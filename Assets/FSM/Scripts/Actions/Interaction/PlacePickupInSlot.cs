@@ -48,6 +48,7 @@ namespace NodeCanvas.Tasks.Actions
             else
             {
                 Debug.LogWarning("[PlacePickupInSlot] Slot rejected the carried object.");
+                carriedObject.value = null;
                 EndAction(false);
             }
         }
