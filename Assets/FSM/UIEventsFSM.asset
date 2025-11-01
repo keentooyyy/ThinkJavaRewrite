@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f945e777233a59f4aba40aeca29093a6, type: 3}
+  m_Name: UIEventsFSM
+  m_EditorClassIdentifier: 
+  _serializedGraph: '{"type":"NodeCanvas.StateMachines.FSM","nodes":[{"_actionList":{"executionMode":1,"actions":[]},"_color":{"r":1.0,"g":0.42,"b":0.32,"a":1.0},"_position":{"x":714.3881,"y":-319.1089},"$type":"NodeCanvas.StateMachines.ActionState","$id":"0"},{"_actionList":{"executionMode":1,"actions":[{"eventName":{"_name":"SettingsClicked","_targetVariableID":"a5d53577-e04c-4b9b-8a2b-6f0030ef6a10"},"$type":"NodeCanvas.Tasks.Actions.TriggerUIEvent"}]},"_color":{"r":1.0,"g":0.42,"b":0.32,"a":1.0},"_name":"SettingsUI","_position":{"x":221.6357,"y":-25.06036},"$type":"NodeCanvas.StateMachines.ActionState","$id":"1"},{"_actionList":{"executionMode":1,"actions":[{"delay":{},"$type":"NodeCanvas.Tasks.Actions.QuitGameAction"}]},"_color":{"r":1.0,"g":0.42,"b":0.32,"a":1.0},"_name":"Quit","_position":{"x":1045.734,"y":-19.03943},"$type":"NodeCanvas.StateMachines.ActionState","$id":"2"},{"_actionList":{"executionMode":1,"actions":[{"eventName":{"_name":"ProfileClicked","_targetVariableID":"e4c4d68d-ed89-4898-a9be-6e186a2368c8"},"$type":"NodeCanvas.Tasks.Actions.TriggerUIEvent"}]},"_color":{"r":1.0,"g":0.42,"b":0.32,"a":1.0},"_name":"ProfileUI","_position":{"x":497.4821,"y":-15.8479},"$type":"NodeCanvas.StateMachines.ActionState","$id":"3"},{"_actionList":{"executionMode":1,"actions":[{"sceneName":{"_name":"RetryScene","_targetVariableID":"9fd87dd4-f37d-4349-a25f-467b4b777c8c"},"mode":{},"$type":"NodeCanvas.Tasks.Actions.LoadScene"}]},"_color":{"r":1.0,"g":0.42,"b":0.32,"a":1.0},"_name":"Reload
+    Scene","_position":{"x":791.0,"y":-15.0},"$type":"NodeCanvas.StateMachines.ActionState","$id":"4"}],"connections":[{"_condition":{"eventName":{"_name":"SettingsClicked","_targetVariableID":"a5d53577-e04c-4b9b-8a2b-6f0030ef6a10"},"$type":"NodeCanvas.Tasks.Conditions.CheckUIEvent"},"_sourceNode":{"$ref":"0"},"_targetNode":{"$ref":"1"},"$type":"NodeCanvas.StateMachines.FSMConnection"},{"_condition":{"eventName":{"_name":"QuitClicked","_targetVariableID":"45225f43-e5f7-4fcf-905f-0b61af2b6475"},"$type":"NodeCanvas.Tasks.Conditions.CheckUIEvent"},"_sourceNode":{"$ref":"0"},"_targetNode":{"$ref":"2"},"$type":"NodeCanvas.StateMachines.FSMConnection"},{"_condition":{"eventName":{"_name":"ProfileClicked","_targetVariableID":"e4c4d68d-ed89-4898-a9be-6e186a2368c8"},"$type":"NodeCanvas.Tasks.Conditions.CheckUIEvent"},"_sourceNode":{"$ref":"0"},"_targetNode":{"$ref":"3"},"$type":"NodeCanvas.StateMachines.FSMConnection"},{"_condition":{"eventName":{"_name":"RetryClicked","_targetVariableID":"e473d04e-2493-4efc-a901-1bc2c67f54c2"},"$type":"NodeCanvas.Tasks.Conditions.CheckUIEvent"},"_sourceNode":{"$ref":"0"},"_targetNode":{"$ref":"4"},"$type":"NodeCanvas.StateMachines.FSMConnection"}],"canvasGroups":[],"localBlackboard":{"_variables":{"SettingsClicked":{"_value":"SettingsButton","_name":"SettingsClicked","_id":"a5d53577-e04c-4b9b-8a2b-6f0030ef6a10","$type":"NodeCanvas.Framework.Variable`1[[System.String,
+    mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"},"ProfileClicked":{"_value":"ProfileButton","_name":"ProfileClicked","_id":"e4c4d68d-ed89-4898-a9be-6e186a2368c8","$type":"NodeCanvas.Framework.Variable`1[[System.String,
+    mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"},"QuitClicked":{"_value":"QuitButton","_name":"QuitClicked","_id":"45225f43-e5f7-4fcf-905f-0b61af2b6475","$type":"NodeCanvas.Framework.Variable`1[[System.String,
+    mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"},"RetryClicked":{"_value":"RetryButton","_name":"RetryClicked","_id":"e473d04e-2493-4efc-a901-1bc2c67f54c2","$type":"NodeCanvas.Framework.Variable`1[[System.String,
+    mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"}}}}'
+  _objectReferences: []
+  _graphSource:
+    _version: 3.3
+    _category: 
+    _comments: 
+    _translation: {x: -133, y: 426}
+    _zoomFactor: 1
+  _haltSerialization: 0
+  _externalSerializationFile: {fileID: 0}

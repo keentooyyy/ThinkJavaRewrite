@@ -48,10 +48,7 @@ namespace NodeCanvas.Tasks.Actions
             {
                 carryPoint = agent.GetComponentsInChildren<Transform>()
                     .FirstOrDefault(t => t.name == carryPointName.value);
-                if (carryPoint == null)
-                {
-                    Debug.LogWarning($"PickUpObject: Carry point '{carryPointName.value}' not found on agent '{agent.name}'. Parenting to agent root instead.");
-                }
+                // If we can't find the carry point, fall back to the agent root.
             }
             
             // Disable physics

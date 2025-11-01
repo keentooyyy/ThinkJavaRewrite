@@ -3,9 +3,15 @@ using GameInput;
 
 namespace GameInteraction
 {
+    public enum InteractableKind
+    {
+        Generic,
+        PickupSlot
+    }
+
     /// <summary>
     /// Defines what button is needed to interact with this object
-    /// Attach to pickups, chests, doors, etc.
+    /// Attach to pickups, chests, doors, puzzle slots, etc.
     /// Uses trigger collider for detection
     /// </summary>
     [RequireComponent(typeof(Collider2D))]
@@ -14,45 +20,36 @@ namespace GameInteraction
         [Header("Input Config Reference")]
         [Tooltip("Reference to your InputConfig asset (e.g., MainInputConfig)")]
         public InputConfig inputConfig;
-        
+
         [Header("Interaction Settings")]
         [ButtonName("inputConfig")]
         [Tooltip("Which button activates this? (Choose from InputConfig dropdown)")]
         public string requiredButton = "ActionA";
-        
+
+        [Header("Interactable Kind")]
+        [Tooltip("Determines how this interactable behaves in gameplay.")]
+        public InteractableKind kind = InteractableKind.Generic;
+
+        [Tooltip("Reference to the pickup slot component when Kind = PickupSlot.")]
+        public PickupSlot slotReference;
+
         private void Awake()
         {
-            // Validate collider exists
-            Collider2D interactCollider = GetComponent<Collider2D>();
-            
-            if (interactCollider == null)
+            if (kind == InteractableKind.PickupSlot && slotReference == null)
             {
-                Debug.LogWarning($"Interactable on {gameObject.name} needs a Collider2D component!");
-            }
-            else if (!interactCollider.isTrigger)
-            {
-                Debug.LogWarning($"Interactable on {gameObject.name} should have its collider set to 'Is Trigger'!");
-            }
-            
-            // Validate button exists in config
-            if (inputConfig != null && !IsValidButton())
-            {
-                Debug.LogWarning($"Interactable on {gameObject.name}: Button '{requiredButton}' not found in InputConfig!");
+                slotReference = GetComponent<PickupSlot>();
             }
         }
-        
-        private bool IsValidButton()
+
+#if UNITY_EDITOR
+        private void OnValidate()
         {
-            if (inputConfig == null || inputConfig.keyboardBindings == null)
-                return false;
-            
-            foreach (var binding in inputConfig.keyboardBindings)
+            if (kind == InteractableKind.PickupSlot && slotReference == null)
             {
-                if (binding.buttonName == requiredButton)
-                    return true;
+                slotReference = GetComponent<PickupSlot>();
             }
-            return false;
         }
+#endif
     }
 }
 
