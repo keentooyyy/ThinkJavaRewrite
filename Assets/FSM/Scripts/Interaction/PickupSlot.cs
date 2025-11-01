@@ -163,10 +163,9 @@ namespace GameInteraction
 
             ResetShake();
 
-            go.transform.SetParent(snapPoint, false);
+            go.transform.SetParent(snapPoint, true);
             go.transform.localPosition = Vector3.zero;
             go.transform.localRotation = Quaternion.identity;
-            go.transform.localScale = Vector3.one;
 
             DisablePhysics(go);
         }
