@@ -38,6 +38,7 @@ namespace NodeCanvas.Tasks.Actions
             }
             
             Transform objectTransform = carriedObject.value.transform;
+            Vector3 desiredWorldScale = NormalizeWorldScale(objectTransform.lossyScale);
             
             // Store world position before deparenting
             Vector3 worldPos = objectTransform.position;
@@ -65,6 +66,7 @@ namespace NodeCanvas.Tasks.Actions
             }
             
             objectTransform.position = worldPos + dropOffset.value;
+            SetWorldScale(objectTransform, desiredWorldScale);
             
             // Re-enable physics
             Rigidbody2D rb = carriedObject.value.GetComponent<Rigidbody2D>();
@@ -92,6 +94,41 @@ namespace NodeCanvas.Tasks.Actions
             carriedObject.value = null;
             
             EndAction(true);
+        }
+
+        private static Vector3 NormalizeWorldScale(Vector3 scale)
+        {
+            return new Vector3(Mathf.Abs(scale.x), Mathf.Abs(scale.y), Mathf.Abs(scale.z));
+        }
+
+        private static void SetWorldScale(Transform target, Vector3 worldScale)
+        {
+            if (target == null)
+            {
+                return;
+            }
+
+            target.localScale = ComputeLocalScaleForParent(target.parent, worldScale);
+        }
+
+        private static Vector3 ComputeLocalScaleForParent(Transform parent, Vector3 desiredWorldScale)
+        {
+            if (parent == null)
+            {
+                return desiredWorldScale;
+            }
+
+            Vector3 parentScale = parent.lossyScale;
+            return new Vector3(
+                SafeDivide(desiredWorldScale.x, parentScale.x),
+                SafeDivide(desiredWorldScale.y, parentScale.y),
+                SafeDivide(desiredWorldScale.z, parentScale.z)
+            );
+        }
+
+        private static float SafeDivide(float numerator, float denominator)
+        {
+            return Mathf.Approximately(denominator, 0f) ? 0f : numerator / denominator;
         }
     }
 }

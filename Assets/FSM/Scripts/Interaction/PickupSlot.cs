@@ -26,6 +26,7 @@ namespace GameInteraction
         [Header("Interaction Input")]
         [SerializeField] private InputConfig inputConfig;
         [ButtonName("inputConfig")]
+        
         [SerializeField] private string requiredButton = "ActionA";
 
         [Header("Rejection Feedback")]
@@ -151,6 +152,7 @@ namespace GameInteraction
             ResetState(playAudio);
             EnablePhysics(go);
             go.transform.SetParent(null, true);
+            SetWorldScale(go.transform, NormalizeWorldScale(go.transform.lossyScale));
             puzzleController?.NotifySlotChanged(this);
             return go;
         }
@@ -163,9 +165,14 @@ namespace GameInteraction
 
             ResetShake();
 
-            go.transform.SetParent(snapPoint, true);
+            Vector3 worldScale = NormalizeWorldScale(go.transform.lossyScale);
+            Quaternion worldRotation = go.transform.rotation;
+
+            go.transform.SetParent(snapPoint, false);
             go.transform.localPosition = Vector3.zero;
             go.transform.localRotation = Quaternion.identity;
+            go.transform.localScale = ComputeLocalScaleForParent(snapPoint, worldScale);
+            go.transform.rotation = worldRotation;
 
             DisablePhysics(go);
         }
@@ -186,6 +193,7 @@ namespace GameInteraction
         private void DropToGround(GameObject go, bool playAudio, bool startFromSnapPoint = false)
         {
             go.transform.SetParent(null, true);
+            SetWorldScale(go.transform, NormalizeWorldScale(go.transform.lossyScale));
 
             if (startFromSnapPoint && snapPoint != null)
             {
@@ -342,6 +350,45 @@ namespace GameInteraction
 
             currentInteractable = null;
             currentMetadata = null;
+        }
+
+        private static Vector3 ComputeLocalScaleForParent(Transform parent, Vector3 desiredWorldScale)
+        {
+            if (parent == null)
+            {
+                return desiredWorldScale;
+            }
+
+            Vector3 parentScale = parent.lossyScale;
+            return new Vector3(
+                SafeDivide(desiredWorldScale.x, parentScale.x),
+                SafeDivide(desiredWorldScale.y, parentScale.y),
+                SafeDivide(desiredWorldScale.z, parentScale.z)
+            );
+        }
+
+        private static float SafeDivide(float numerator, float denominator)
+        {
+            return Mathf.Approximately(denominator, 0f) ? 0f : numerator / denominator;
+        }
+
+        private static Vector3 NormalizeWorldScale(Vector3 scale)
+        {
+            return new Vector3(
+                Mathf.Abs(scale.x),
+                Mathf.Abs(scale.y),
+                Mathf.Abs(scale.z)
+            );
+        }
+
+        private static void SetWorldScale(Transform target, Vector3 worldScale)
+        {
+            if (target == null)
+            {
+                return;
+            }
+
+            target.localScale = ComputeLocalScaleForParent(target.parent, worldScale);
         }
 
         private void AutoAssignSnapPoint()
