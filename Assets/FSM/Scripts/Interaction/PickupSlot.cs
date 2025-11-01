@@ -6,7 +6,7 @@ namespace GameInteraction
     /// <summary>
     /// Slot that accepts either datatype or variable pickups and provides feedback on success/failure.
     /// </summary>
-    public class PickupSlot : MonoBehaviour
+    public class PickupSlot : MonoBehaviour, IActionButtonProvider
     {
         public enum SlotCategory
         {
@@ -21,6 +21,9 @@ namespace GameInteraction
         [SerializeField, HideInInspector] private string slotId = "Slot";
         public PickupSlotDefinition SlotDefinition => slotDefinition;
         public string SlotId => slotDefinition != null ? slotDefinition.SlotId : slotId;
+
+        [Header("Interaction Input")]
+        [SerializeField] private string requiredButton = "ActionA";
 
         [Header("Rejection Feedback")]
         [SerializeField, Min(0f)] private float shakeDuration = 0.25f;
@@ -62,6 +65,7 @@ namespace GameInteraction
         public ScriptDataType CurrentDataType => currentMetadata != null ? currentMetadata.EffectiveDataType : ScriptDataType.None;
         public string CurrentVariableRaw => currentMetadata != null ? currentMetadata.EffectiveVariable : string.Empty;
         public string CurrentVariableNormalized => currentMetadata != null ? currentMetadata.EffectiveVariableNormalized : string.Empty;
+        public string RequiredButton => requiredButton;
 
         /// <summary>
         /// Attempts to place the supplied interactable into the slot.
@@ -129,6 +133,7 @@ namespace GameInteraction
             go.transform.SetParent(snapPoint, false);
             go.transform.localPosition = Vector3.zero;
             go.transform.localRotation = Quaternion.identity;
+            go.transform.localScale = Vector3.one;
 
             DisablePhysics(go);
         }

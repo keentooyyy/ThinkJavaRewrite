@@ -42,7 +42,6 @@ namespace NodeCanvas.Tasks.Actions
         
         protected override void OnUpdate()
         {
-            // Find nearest interactable in radius
             Collider2D[] colliders = Physics2D.OverlapCircleAll(
                 agent.position,
                 detectionRadius.value,
@@ -52,65 +51,53 @@ namespace NodeCanvas.Tasks.Actions
             GameObject closest = null;
             PickupSlot closestSlot = null;
             float closestDistance = Mathf.Infinity;
-            
+
             foreach (var col in colliders)
             {
-                // Check if it has Interactable component
-                Interactable interactable = col.GetComponent<Interactable>();
-                if (interactable == null)
+                if (!string.IsNullOrEmpty(filterTag.value) && !col.CompareTag(filterTag.value))
+                {
                     continue;
-
-                bool isSlot = interactable.kind == InteractableKind.PickupSlot;
-
-                if ((detectionMode == DetectionMode.GenericOnly && isSlot) ||
-                    (detectionMode == DetectionMode.SlotsOnly && !isSlot))
-                    continue;
+                }
 
                 PickupSlot slot = null;
-                if (detectionMode == DetectionMode.SlotsOnly)
+                GameObject candidate = col.gameObject;
+                if (detectionMode == DetectionMode.GenericOnly)
                 {
-                    slot = interactable.slotReference != null ? interactable.slotReference : interactable.GetComponent<PickupSlot>();
-                    if (slot == null)
+                    if (col.GetComponent<Interactable>() == null)
                     {
-                        Debug.LogWarning($"[DetectNearbyInteractable] Slot '{col.name}' is marked as PickupSlot but has no PickupSlot component.");
                         continue;
                     }
                 }
+                else
+                {
+                    slot = col.GetComponent<PickupSlot>();
+                    if (slot == null)
+                    {
+                        continue;
+                    }
+                    candidate = slot.gameObject;
+                }
 
-                // Check tag filter if specified
-                if (!string.IsNullOrEmpty(filterTag.value) && !col.CompareTag(filterTag.value))
-                    continue;
-                
-                // Find closest
                 float distance = Vector2.Distance(agent.position, col.transform.position);
                 if (distance < closestDistance)
                 {
-                    closest = col.gameObject;
-                    closestSlot = slot;
+                    closest = candidate;
+                    if (detectionMode == DetectionMode.SlotsOnly)
+                    {
+                        closestSlot = slot;
+                    }
                     closestDistance = distance;
                 }
             }
-            
-            // Update blackboard
+
             nearbyInteractable.value = closest;
-            if (detectionMode == DetectionMode.SlotsOnly)
-            {
-                nearbySlot.value = closestSlot;
-                if (closestSlot != null)
-                {
-                    Debug.Log($"[DetectNearbyInteractable] Nearby slot set to {closestSlot.name}");
-                }
-            }
+            nearbySlot.value = detectionMode == DetectionMode.SlotsOnly ? closestSlot : null;
         }
-        
+
         protected override void OnStop()
         {
-            // Clear reference
             nearbyInteractable.value = null;
-            if (detectionMode == DetectionMode.SlotsOnly)
-            {
-                nearbySlot.value = null;
-            }
+            nearbySlot.value = null;
         }
         
         // Draw detection radius in editor

@@ -1181,7 +1181,6 @@ GameObject:
   - component: {fileID: 308682787}
   - component: {fileID: 308682790}
   - component: {fileID: 308682786}
-  - component: {fileID: 308682789}
   m_Layer: 10
   m_Name: Datatype Slot
   m_TagString: PickupSlots
@@ -1205,6 +1204,7 @@ MonoBehaviour:
   snapPoint: {fileID: 1587571316}
   slotDefinition: {fileID: 11400000, guid: 7f6a3906f08ba2d419123bc9ae098a9f, type: 2}
   slotId: a_001
+  requiredButton: ActionA
   shakeDuration: 0.25
   shakeMagnitude: 0.15
   dropImpulse: 2
@@ -1278,22 +1278,6 @@ Transform:
   - {fileID: 1587571316}
   m_Father: {fileID: 1306662378}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &308682789
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 308682785}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a7345a259ee1114cb167e0ca375f93d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inputConfig: {fileID: 11400000, guid: 184afc051d097ea499401a26a439f280, type: 2}
-  requiredButton: ActionA
-  kind: 1
-  slotReference: {fileID: 308682786}
 --- !u!61 &308682790
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3211,8 +3195,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inputConfig: {fileID: 11400000, guid: 184afc051d097ea499401a26a439f280, type: 2}
   requiredButton: ActionA
-  kind: 0
-  slotReference: {fileID: 0}
 --- !u!61 &1416034730
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3293,7 +3275,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6e053adbefab8142ab4287ec47c9494, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  kind: 0
+  kind: 1
   dataType: 1
   variableName: 
 --- !u!1 &1465664862
@@ -4305,8 +4287,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inputConfig: {fileID: 11400000, guid: 184afc051d097ea499401a26a439f280, type: 2}
   requiredButton: ActionA
-  kind: 0
-  slotReference: {fileID: 0}
 --- !u!223 &1637028832
 Canvas:
   m_ObjectHideFlags: 0
@@ -4466,7 +4446,6 @@ GameObject:
   - component: {fileID: 1653233679}
   - component: {fileID: 1653233681}
   - component: {fileID: 1653233677}
-  - component: {fileID: 1653233680}
   m_Layer: 10
   m_Name: Variable Slot
   m_TagString: PickupSlots
@@ -4490,6 +4469,7 @@ MonoBehaviour:
   snapPoint: {fileID: 358716210}
   slotDefinition: {fileID: 11400000, guid: ae0cad6c82c64814c8fdf16cdaf36d27, type: 2}
   slotId: a_002
+  requiredButton: ActionA
   shakeDuration: 0.25
   shakeMagnitude: 0.15
   dropImpulse: 2
@@ -4563,22 +4543,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &1653233680
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1653233676}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a7345a259ee1114cb167e0ca375f93d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inputConfig: {fileID: 11400000, guid: 184afc051d097ea499401a26a439f280, type: 2}
-  requiredButton: ActionA
-  kind: 1
-  slotReference: {fileID: 1653233677}
 --- !u!61 &1653233681
 BoxCollider2D:
   m_ObjectHideFlags: 0

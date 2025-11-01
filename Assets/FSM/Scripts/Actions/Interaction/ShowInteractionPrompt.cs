@@ -14,7 +14,8 @@ namespace NodeCanvas.Tasks.Actions
         [Tooltip("Current nearby interactable GameObject (set by collision detection)")]
         public BBParameter<GameObject> nearbyInteractable;
         
-        private Interactable currentInteractable;
+        private IActionButtonProvider currentProvider;
+        private Component currentProviderComponent;
         private string lastShownPrompt = "";
         
         protected override string info
@@ -25,30 +26,34 @@ namespace NodeCanvas.Tasks.Actions
         protected override void OnUpdate()
         {
             GameObject obj = nearbyInteractable.value;
-            
+
             if (obj != null)
             {
-                // Get interactable component
-                Interactable interactable = obj.GetComponent<Interactable>();
-                
-                if (interactable != null)
+                // Get provider component
+                var provider = obj.GetComponent<IActionButtonProvider>();
+
+                if (provider != null)
                 {
-                    // Check if this is a different interactable than before
-                    if (interactable != currentInteractable)
+                    var providerComponent = provider as Component;
+
+                    // Check if this is a different provider than before
+                    if (providerComponent != currentProviderComponent)
                     {
-                        currentInteractable = interactable;
+                        currentProvider = provider;
+                        currentProviderComponent = providerComponent;
                         // Show appropriate prompt based on required button
-                        ShowPromptForButton(interactable.requiredButton);
+                        ShowPromptForButton(provider.RequiredButton);
                     }
                 }
             }
             else
             {
                 // No interactable nearby - hide prompt
-                if (currentInteractable != null)
+                if (currentProviderComponent != null)
                 {
                     HidePrompt();
-                    currentInteractable = null;
+                    currentProvider = null;
+                    currentProviderComponent = null;
                 }
             }
         }
@@ -57,6 +62,8 @@ namespace NodeCanvas.Tasks.Actions
         {
             // Hide prompt when action stops
             HidePrompt();
+            currentProvider = null;
+            currentProviderComponent = null;
         }
         
         private void ShowPromptForButton(string buttonName)

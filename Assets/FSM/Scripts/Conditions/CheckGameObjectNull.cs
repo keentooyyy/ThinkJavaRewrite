@@ -5,11 +5,11 @@ using UnityEngine;
 namespace NodeCanvas.Tasks.Conditions
 {
     [Category("✫ Custom/Blackboard")]
-    [Description("Check whether a GameObject blackboard variable is or isn’t null.")]
+    [Description("Check whether a blackboard reference is or isn’t null.")]
     public class CheckGameObjectNull : ConditionTask
     {
         [BlackboardOnly]
-        public BBParameter<GameObject> target;
+        public BBParameter<Object> target;
 
         [Tooltip("True = pass when the variable is null. False = pass when it’s not null.")]
         public bool shouldBeNull = true;
