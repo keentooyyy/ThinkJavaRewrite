@@ -181,12 +181,18 @@ namespace GameInteraction
         private void RejectObject(GameObject go, PickupPuzzleMetadata metadata, bool playAudio)
         {
             Debug.LogWarning($"PickupSlot '{name}' rejected {DescribeObject(go, metadata)}");
-            DropToGround(go, playAudio);
+            DropToGround(go, playAudio, startFromSnapPoint: true);
         }
 
-        private void DropToGround(GameObject go, bool playAudio)
+        private void DropToGround(GameObject go, bool playAudio, bool startFromSnapPoint = false)
         {
             go.transform.SetParent(null, true);
+
+            if (startFromSnapPoint && snapPoint != null)
+            {
+                go.transform.position = snapPoint.position;
+                go.transform.rotation = snapPoint.rotation;
+            }
 
             if (errorAudio != null && playAudio)
             {
@@ -224,6 +230,14 @@ namespace GameInteraction
             else
             {
                 EnablePhysics(go);
+                if (rb2D != null)
+                {
+                    rb2D.velocity = Vector2.zero;
+                }
+                if (rb3D != null)
+                {
+                    rb3D.velocity = Vector3.zero;
+                }
             }
         }
 
