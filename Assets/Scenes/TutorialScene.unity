@@ -1204,12 +1204,17 @@ MonoBehaviour:
   snapPoint: {fileID: 1587571316}
   slotDefinition: {fileID: 11400000, guid: 7f6a3906f08ba2d419123bc9ae098a9f, type: 2}
   slotId: a_001
+  inputConfig: {fileID: 11400000, guid: 184afc051d097ea499401a26a439f280, type: 2}
   requiredButton: ActionA
   shakeDuration: 0.5
   shakeMagnitude: 0.15
   dropImpulse: 2
   errorAudio: {fileID: 0}
   puzzleController: {fileID: 1093120555}
+  tweenDrop: 1
+  dropTweenDuration: 0.5
+  dropTweenOffset: {x: 0, y: -0.4, z: 0}
+  dropTweenEase: 3
 --- !u!212 &308682787
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -4469,12 +4474,17 @@ MonoBehaviour:
   snapPoint: {fileID: 358716210}
   slotDefinition: {fileID: 11400000, guid: ae0cad6c82c64814c8fdf16cdaf36d27, type: 2}
   slotId: a_002
+  inputConfig: {fileID: 11400000, guid: 184afc051d097ea499401a26a439f280, type: 2}
   requiredButton: ActionA
   shakeDuration: 0.5
   shakeMagnitude: 0.15
   dropImpulse: 2
   errorAudio: {fileID: 0}
   puzzleController: {fileID: 1093120555}
+  tweenDrop: 1
+  dropTweenDuration: 0.5
+  dropTweenOffset: {x: 0, y: -0.4, z: 0}
+  dropTweenEase: 3
 --- !u!4 &1653233678
 Transform:
   m_ObjectHideFlags: 0

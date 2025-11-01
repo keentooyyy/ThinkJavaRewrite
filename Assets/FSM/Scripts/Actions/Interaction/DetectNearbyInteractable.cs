@@ -42,10 +42,11 @@ namespace NodeCanvas.Tasks.Actions
         
         protected override void OnUpdate()
         {
+            int mask = detectionMode == DetectionMode.GenericOnly ? ~0 : interactableLayer;
             Collider2D[] colliders = Physics2D.OverlapCircleAll(
                 agent.position,
                 detectionRadius.value,
-                interactableLayer
+                mask
             );
 
             GameObject closest = null;
@@ -59,39 +60,49 @@ namespace NodeCanvas.Tasks.Actions
                     continue;
                 }
 
-                PickupSlot slot = null;
-                GameObject candidate = col.gameObject;
+                var slot = col.GetComponentInParent<PickupSlot>();
+                var interactable = col.GetComponentInParent<Interactable>();
+                GameObject candidate = null;
+                PickupSlot candidateSlot = null;
+
                 if (detectionMode == DetectionMode.GenericOnly)
                 {
-                    if (col.GetComponent<Interactable>() == null)
+                    if (interactable != null)
+                    {
+                        candidate = interactable.gameObject;
+                        candidateSlot = interactable.GetComponentInParent<PickupSlot>();
+                    }
+                    else if (slot != null && slot.HasItem && slot.CurrentObject != null)
+                    {
+                        candidate = slot.gameObject;
+                        candidateSlot = slot;
+                    }
+                    else
                     {
                         continue;
                     }
                 }
                 else
                 {
-                    slot = col.GetComponent<PickupSlot>();
                     if (slot == null)
                     {
                         continue;
                     }
                     candidate = slot.gameObject;
+                    candidateSlot = slot;
                 }
 
                 float distance = Vector2.Distance(agent.position, col.transform.position);
                 if (distance < closestDistance)
                 {
                     closest = candidate;
-                    if (detectionMode == DetectionMode.SlotsOnly)
-                    {
-                        closestSlot = slot;
-                    }
+                    closestSlot = candidateSlot;
                     closestDistance = distance;
                 }
             }
 
             nearbyInteractable.value = closest;
-            nearbySlot.value = detectionMode == DetectionMode.SlotsOnly ? closestSlot : null;
+            nearbySlot.value = closestSlot;
         }
 
         protected override void OnStop()

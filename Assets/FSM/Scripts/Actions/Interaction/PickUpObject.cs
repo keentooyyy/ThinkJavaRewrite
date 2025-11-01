@@ -1,4 +1,5 @@
 using System.Linq;
+using GameInteraction;
 using NodeCanvas.Framework;
 using ParadoxNotion.Design;
 using UnityEngine;
@@ -40,7 +41,24 @@ namespace NodeCanvas.Tasks.Actions
                 return;
             }
             
-            Transform objectTransform = objectToPickUp.value.transform;
+            GameObject pickupTarget = objectToPickUp.value;
+
+            // If we're targeting a slot, attempt to retrieve its current item first.
+            var slot = pickupTarget.GetComponent<PickupSlot>();
+            if (slot != null)
+            {
+                var retrieved = slot.RetrieveCurrent();
+                if (retrieved == null)
+                {
+                    EndAction(false);
+                    return;
+                }
+
+                objectToPickUp.value = retrieved;
+                pickupTarget = retrieved;
+            }
+
+            Transform objectTransform = pickupTarget.transform;
             
             // Find the carry point (search recursively in children)
             Transform carryPoint = null;
@@ -54,7 +72,7 @@ namespace NodeCanvas.Tasks.Actions
             // Disable physics
             if (disablePhysics.value)
             {
-                Rigidbody2D rb = objectToPickUp.value.GetComponent<Rigidbody2D>();
+                Rigidbody2D rb = pickupTarget.GetComponent<Rigidbody2D>();
                 if (rb != null)
                 {
                     rb.simulated = false;
@@ -64,7 +82,7 @@ namespace NodeCanvas.Tasks.Actions
             // Disable colliders (except triggers)
             if (disableColliders.value)
             {
-                Collider2D[] colliders = objectToPickUp.value.GetComponents<Collider2D>();
+                Collider2D[] colliders = pickupTarget.GetComponents<Collider2D>();
                 foreach (var col in colliders)
                 {
                     if (!col.isTrigger)
@@ -81,7 +99,7 @@ namespace NodeCanvas.Tasks.Actions
             objectTransform.localRotation = Quaternion.identity;
             
             // Store reference for later
-            carriedObject.value = objectToPickUp.value;
+            carriedObject.value = pickupTarget;
             
             EndAction(true);
         }
