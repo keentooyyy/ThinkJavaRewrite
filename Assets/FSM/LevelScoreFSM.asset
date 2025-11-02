@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f945e777233a59f4aba40aeca29093a6, type: 3}
+  m_Name: LevelScoreFSM
+  m_EditorClassIdentifier: 
+  _serializedGraph: '{"type":"NodeCanvas.StateMachines.FSM","nodes":[{"_actionList":{"executionMode":1,"actions":[{"maxTimeSeconds":{"_name":"maxTime","_targetVariableID":"bb2d5eee-91d3-4afd-8ef6-fe01f3b76278"},"continuous":{"_value":true},"outElapsedSeconds":{"_name":"outElapsedSeconds","_targetVariableID":"0cac63b5-f70b-484a-9c6b-ee8791dcbd0e"},"outRemainingSeconds":{"_name":"outRemainingSeconds","_targetVariableID":"32895fb6-77c4-40e1-84e3-e450f26b7491"},"outNormalized":{"_name":"outNormalized","_targetVariableID":"65e07dd9-d210-4f73-8ffb-7957f978f5df"},"$type":"NodeCanvas.Tasks.Actions.ReadOwnerTime"}]},"_color":{"r":1.0,"g":0.42,"b":0.32,"a":1.0},"_name":"Level
+    Running","_position":{"x":540.0,"y":98.0},"$type":"NodeCanvas.StateMachines.ActionState","$id":"0"},{"_actionList":{"executionMode":1,"actions":[{"outScore":{"_name":"outScore","_targetVariableID":"b74209c9-e3f1-4a89-853c-2cba68e1c3de"},"outStars":{"_name":"outStars","_targetVariableID":"192aa5f5-b3e8-488c-93a7-26d8c03fd8af"},"onComputedEventName":{"_name":"onComputedEventName","_targetVariableID":"a18191a7-1c75-4f1b-835d-0e5cf69fd148"},"$type":"NodeCanvas.Tasks.Actions.ComputeLevelScore"},{"eventName":{"_name":"onComputedEventName","_targetVariableID":"a18191a7-1c75-4f1b-835d-0e5cf69fd148"},"$type":"NodeCanvas.Tasks.Actions.TriggerUIEvent"}]},"_color":{"r":1.0,"g":0.42,"b":0.32,"a":1.0},"_name":"Compute
+    Score","_position":{"x":762.0,"y":238.0},"$type":"NodeCanvas.StateMachines.ActionState","$id":"1"}],"connections":[{"_condition":{"eventName":{"_name":"Success","_targetVariableID":"9f8d0140-4870-48e9-ac21-3dba4b9ed96e"},"$type":"NodeCanvas.Tasks.Conditions.CheckUIEvent"},"_sourceNode":{"$ref":"0"},"_targetNode":{"$ref":"1"},"$type":"NodeCanvas.StateMachines.FSMConnection"}],"canvasGroups":[],"localBlackboard":{"_variables":{"Success":{"_value":"ShowSuccessUI","_name":"Success","_id":"9f8d0140-4870-48e9-ac21-3dba4b9ed96e","$type":"NodeCanvas.Framework.Variable`1[[System.String,
+    mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"},"outScore":{"_name":"outScore","_id":"b74209c9-e3f1-4a89-853c-2cba68e1c3de","$type":"NodeCanvas.Framework.Variable`1[[System.Int32,
+    mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"},"outStars":{"_name":"outStars","_id":"192aa5f5-b3e8-488c-93a7-26d8c03fd8af","$type":"NodeCanvas.Framework.Variable`1[[System.Int32,
+    mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"},"onComputedEventName":{"_value":"ScoreComputed","_name":"onComputedEventName","_id":"a18191a7-1c75-4f1b-835d-0e5cf69fd148","$type":"NodeCanvas.Framework.Variable`1[[System.String,
+    mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"},"outElapsedSeconds":{"_name":"outElapsedSeconds","_id":"0cac63b5-f70b-484a-9c6b-ee8791dcbd0e","$type":"NodeCanvas.Framework.Variable`1[[System.Single,
+    mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"},"outNormalized":{"_name":"outNormalized","_id":"65e07dd9-d210-4f73-8ffb-7957f978f5df","$type":"NodeCanvas.Framework.Variable`1[[System.Single,
+    mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"},"maxTime":{"_value":120.0,"_name":"maxTime","_id":"bb2d5eee-91d3-4afd-8ef6-fe01f3b76278","$type":"NodeCanvas.Framework.Variable`1[[System.Single,
+    mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"}}}}'
+  _objectReferences: []
+  _graphSource:
+    _version: 3.3
+    _category: 
+    _comments: 
+    _translation: {x: 270, y: 96}
+    _zoomFactor: 1
+  _haltSerialization: 0
+  _externalSerializationFile: {fileID: 0}

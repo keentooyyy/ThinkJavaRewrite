@@ -14,7 +14,7 @@ namespace NodeCanvas.Tasks.Actions
         [BlackboardOnly]
         public BBParameter<float> iframeDuration = 1.5f;
 
-        private float elapsedTime = 0f;
+        private float localElapsed = 0f;
 
         protected override string info
         {
@@ -23,15 +23,15 @@ namespace NodeCanvas.Tasks.Actions
 
         protected override void OnExecute()
         {
-            elapsedTime = 0f;
+            localElapsed = 0f;
             isInvincible.value = true;
         }
 
         protected override void OnUpdate()
         {
-            elapsedTime += Time.deltaTime;
+            localElapsed += Time.deltaTime;
             
-            if (elapsedTime >= iframeDuration.value)
+            if (localElapsed >= iframeDuration.value)
             {
                 isInvincible.value = false;
                 EndAction(true);

@@ -234,6 +234,15 @@ namespace GameInteraction
                 seq.OnComplete(() =>
                 {
                     EnablePhysics(go);
+                    // Apply a small downward impulse if configured
+                    if (rb2D != null && dropImpulse > 0f)
+                    {
+                        rb2D.AddForce(Vector2.down * dropImpulse, ForceMode2D.Impulse);
+                    }
+                    if (rb3D != null && dropImpulse > 0f)
+                    {
+                        rb3D.AddForce(Vector3.down * dropImpulse, ForceMode.Impulse);
+                    }
                 });
             }
             else
@@ -242,10 +251,18 @@ namespace GameInteraction
                 if (rb2D != null)
                 {
                     rb2D.velocity = Vector2.zero;
+                    if (dropImpulse > 0f)
+                    {
+                        rb2D.AddForce(Vector2.down * dropImpulse, ForceMode2D.Impulse);
+                    }
                 }
                 if (rb3D != null)
                 {
                     rb3D.velocity = Vector3.zero;
+                    if (dropImpulse > 0f)
+                    {
+                        rb3D.AddForce(Vector3.down * dropImpulse, ForceMode.Impulse);
+                    }
                 }
             }
         }
@@ -408,5 +425,4 @@ namespace GameInteraction
         }
     }
 }
-
 

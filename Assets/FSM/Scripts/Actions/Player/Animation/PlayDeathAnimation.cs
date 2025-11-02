@@ -17,7 +17,7 @@ namespace NodeCanvas.Tasks.Actions
         [Tooltip("How long to wait before finishing (allows animation to play)")]
         public BBParameter<float> deathDuration = 1.5f;
 
-        private float elapsedTime = 0f;
+        private float localElapsed = 0f;
 
         protected override string info
         {
@@ -30,14 +30,14 @@ namespace NodeCanvas.Tasks.Actions
             {
                 agent.CrossFade(deathAnimation.value, crossfadeTime.value);
             }
-            elapsedTime = 0f;
+            localElapsed = 0f;
         }
 
         protected override void OnUpdate()
         {
-            elapsedTime += Time.deltaTime;
+            localElapsed += Time.deltaTime;
             
-            if (elapsedTime >= deathDuration.value)
+            if (localElapsed >= deathDuration.value)
             {
                 EndAction(true);
             }
