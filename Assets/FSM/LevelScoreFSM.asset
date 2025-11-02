@@ -20,7 +20,7 @@ MonoBehaviour:
     mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"},"onComputedEventName":{"_value":"ScoreComputed","_name":"onComputedEventName","_id":"a18191a7-1c75-4f1b-835d-0e5cf69fd148","$type":"NodeCanvas.Framework.Variable`1[[System.String,
     mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"},"outElapsedSeconds":{"_name":"outElapsedSeconds","_id":"0cac63b5-f70b-484a-9c6b-ee8791dcbd0e","$type":"NodeCanvas.Framework.Variable`1[[System.Single,
     mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"},"outNormalized":{"_name":"outNormalized","_id":"65e07dd9-d210-4f73-8ffb-7957f978f5df","$type":"NodeCanvas.Framework.Variable`1[[System.Single,
-    mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"},"maxTime":{"_value":120.0,"_name":"maxTime","_id":"bb2d5eee-91d3-4afd-8ef6-fe01f3b76278","$type":"NodeCanvas.Framework.Variable`1[[System.Single,
+    mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"},"maxTime":{"_value":180.0,"_name":"maxTime","_id":"bb2d5eee-91d3-4afd-8ef6-fe01f3b76278","$type":"NodeCanvas.Framework.Variable`1[[System.Single,
     mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"}}}}'
   _objectReferences: []
   _graphSource:
