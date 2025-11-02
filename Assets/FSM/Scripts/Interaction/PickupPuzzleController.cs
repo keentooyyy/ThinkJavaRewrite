@@ -1,4 +1,5 @@
 using UnityEngine;
+using GameEvents;
 
 namespace GameInteraction
 {
@@ -13,6 +14,10 @@ namespace GameInteraction
 
         [Header("Puzzle Configuration")]
         [SerializeField] private PickupPuzzleConfig puzzleConfig;
+
+        [Header("UI Events")]
+        [Tooltip("Event name to show the success UI when the correct pair is placed.")]
+        [SerializeField] private string puzzleSuccessEvent = "ShowSuccessUI";
 
         /// <summary>
         /// Called by slots whenever their occupancy changes. Triggers evaluation when both are filled.
@@ -55,6 +60,13 @@ namespace GameInteraction
             {
                 dataTypeSlot.RejectCurrent();
                 variableSlot.RejectCurrent();
+                return;
+            }
+
+            // Success: trigger configured UI event
+            if (!string.IsNullOrEmpty(puzzleSuccessEvent))
+            {
+                UIEventManager.Trigger(puzzleSuccessEvent);
             }
         }
 
