@@ -1,6 +1,7 @@
 using NodeCanvas.Framework;
 using ParadoxNotion.Design;
 using UnityEngine;
+using GameInput;
 
 namespace NodeCanvas.Tasks.Actions
 {
@@ -57,7 +58,11 @@ namespace NodeCanvas.Tasks.Actions
                 return;
             }
 
-            float v = Input.GetAxisRaw("Vertical");
+            float v = InputManager.GetVerticalAxis();
+            if (Mathf.Approximately(v, 0f))
+            {
+                v = Input.GetAxisRaw("Vertical");
+            }
 
             // Clamp movement at ladder ends
             if (sensor.AtTop() && v > 0f) v = 0f;

@@ -1,6 +1,7 @@
 using NodeCanvas.Framework;
 using ParadoxNotion.Design;
 using UnityEngine;
+using GameInput;
 
 namespace NodeCanvas.Tasks.Actions
 {
@@ -30,7 +31,13 @@ namespace NodeCanvas.Tasks.Actions
             bool touching = sensor.isTouchingLadder;
             bool nearCenter = sensor.NearLadderCenter(agent);
             bool atTop = sensor.AtTop();
-            bool pressingDown = Input.GetAxisRaw("Vertical") < -0.2f;
+
+            float vertical = InputManager.GetVerticalAxis();
+            if (Mathf.Approximately(vertical, 0f))
+            {
+                vertical = Input.GetAxisRaw("Vertical");
+            }
+            bool pressingDown = vertical < -0.2f;
 
             if (touching && nearCenter && atTop && !pressingDown)
             {

@@ -24,6 +24,7 @@ namespace NodeCanvas.Tasks.Actions
         public BBParameter<bool> isGrounded;
 
         private Transform groundCheck;
+        private PlayerFrictionSwitcher frictionSwitcher;
 
         protected override string info
         {
@@ -34,6 +35,7 @@ namespace NodeCanvas.Tasks.Actions
         {
             // Try to find GroundCheck child
             groundCheck = agent.Find(groundCheckName.value);
+            frictionSwitcher = agent.GetComponent<PlayerFrictionSwitcher>();
             return null;
         }
 
@@ -59,7 +61,11 @@ namespace NodeCanvas.Tasks.Actions
             );
 
             isGrounded.value = grounded;
+
+            if (frictionSwitcher != null)
+            {
+                frictionSwitcher.SetGrounded(grounded);
+            }
         }
     }
 }
-
