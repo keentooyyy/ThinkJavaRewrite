@@ -1067,6 +1067,7 @@ MonoBehaviour:
   duration: 1
   ease: 6
   successEventName: ScoreComputed
+  onCompleteEventName: ScoreCounted
 --- !u!1001 &188833429
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1450,6 +1451,7 @@ MonoBehaviour:
   popScale: 1.2
   popEase: 27
   inactiveAlpha: 0.25
+  startEventName: ScoreCounted
   successEventName: ScoreComputed
 --- !u!1 &308682785
 GameObject:

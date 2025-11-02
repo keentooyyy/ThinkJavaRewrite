@@ -25,7 +25,9 @@ namespace GameUI
         [SerializeField] private float inactiveAlpha = 0.25f;
 
         [Header("Events")]
-        [Tooltip("Event fired when FSM computes score (ComputeLevelScore.onComputedEventName)")]
+        [Tooltip("Event to begin star reveal. Default waits for score to finish animating.")]
+        [SerializeField] private string startEventName = "ScoreCounted";
+        [Tooltip("Legacy: if set and startEventName is empty, listen to this old event name.")]
         [SerializeField] private string successEventName = "ScoreComputed";
 
         private Sequence sequence;
@@ -34,13 +36,15 @@ namespace GameUI
 
         private void OnEnable()
         {
-            UIEventManager.Subscribe(successEventName, OnSuccess);
+            var evt = string.IsNullOrEmpty(startEventName) ? successEventName : startEventName;
+            UIEventManager.Subscribe(evt, OnSuccess);
             PrepareInitialState();
         }
 
         private void OnDisable()
         {
-            UIEventManager.Unsubscribe(successEventName, OnSuccess);
+            var evt = string.IsNullOrEmpty(startEventName) ? successEventName : startEventName;
+            UIEventManager.Unsubscribe(evt, OnSuccess);
             if (sequence != null && sequence.IsActive())
             {
                 sequence.Kill();

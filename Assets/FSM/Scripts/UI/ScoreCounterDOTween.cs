@@ -23,6 +23,8 @@ namespace GameUI
         [Header("Events")]
         [Tooltip("Event fired when FSM computes score (ComputeLevelScore.onComputedEventName)")]
         [SerializeField] private string successEventName = "ScoreComputed";
+        [Tooltip("Event fired AFTER the score has finished animating (used to chain star reveal)")]
+        [SerializeField] private string onCompleteEventName = "ScoreCounted";
 
         private Tween activeTween;
 
@@ -91,6 +93,10 @@ namespace GameUI
                 if (scoreText != null)
                 {
                     scoreText.text = target.ToString(numberFormat);
+                }
+                if (!string.IsNullOrEmpty(onCompleteEventName))
+                {
+                    UIEventManager.Trigger(onCompleteEventName);
                 }
             });
         }
