@@ -1807,13 +1807,13 @@ ScriptedImporter:
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
-    border: {x: 0, y: 3, z: 0, w: 6}
+    border: {x: 3, y: 0, z: 3, w: 0}
     rect:
       serializedVersion: 2
       x: 355
-      y: 289
+      y: 312
       width: 14
-      height: 29
+      height: 5
     spriteID: ce1e0d983e4f93e408e23639fa225d0f
     spriteBone: []
     spriteOutline: []
