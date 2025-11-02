@@ -13,23 +13,23 @@ namespace UI
         [Header("Auto-Find Settings")]
         [Tooltip("Tag to find player (e.g., 'Player')")]
         public string playerTag = "Player";
-        
+
         [Tooltip("Name of child transform on player to follow (e.g., 'PromptAnchor')")]
         public string anchorChildName = "PromptAnchor";
-        
+
         [Header("Optional Manual Override")]
         [Tooltip("If set, ignores auto-find and uses this transform")]
         public Transform manualTarget;
-        
+
         [Header("Offset")]
         [Tooltip("Additional offset from anchor position")]
         public Vector3 offset = Vector3.zero;
-        
+
         private Transform worldTarget;
         private RectTransform rectTransform;
         private Canvas canvas;
         private Camera mainCamera;
-        
+
         private void Start()
         {
             rectTransform = GetComponent<RectTransform>();
@@ -43,11 +43,11 @@ namespace UI
                     mainCamera = allCameras[0];
                 }
             }
-            
+
             // Find target at runtime
             FindTarget();
         }
-        
+
         private void FindTarget()
         {
             // Use manual override if set
@@ -56,14 +56,14 @@ namespace UI
                 worldTarget = manualTarget;
                 return;
             }
-            
+
             // Find player by tag
             GameObject player = GameObject.FindGameObjectWithTag(playerTag);
             if (player == null)
             {
                 return;
             }
-            
+
             // Find child by name
             Transform anchor = player.transform.Find(anchorChildName);
             if (anchor != null)
@@ -76,17 +76,17 @@ namespace UI
                 worldTarget = player.transform;
             }
         }
-        
+
         private void Update()
         {
             // Only update if this UI is active and we have a valid target
-            if (!gameObject.activeSelf || worldTarget == null || mainCamera == null) 
+            if (!gameObject.activeSelf || worldTarget == null || mainCamera == null)
                 return;
-            
+
             // Convert world position to screen position
             Vector3 targetPos = worldTarget.position + offset;
             Vector3 screenPos = mainCamera.WorldToScreenPoint(targetPos);
-            
+
             // Update UI position based on canvas render mode
             if (canvas.renderMode == RenderMode.ScreenSpaceOverlay)
             {
@@ -104,7 +104,7 @@ namespace UI
                 rectTransform.localPosition = canvasPos;
             }
         }
-        
+
         // Optional: Allow re-finding target at runtime (if player respawns, etc.)
         public void RefindTarget()
         {
@@ -112,4 +112,3 @@ namespace UI
         }
     }
 }
-

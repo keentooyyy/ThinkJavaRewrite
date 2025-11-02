@@ -25,4 +25,3 @@ namespace NodeCanvas.Tasks.Conditions
         }
     }
 }
-

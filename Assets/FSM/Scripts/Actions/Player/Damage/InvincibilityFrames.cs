@@ -30,7 +30,7 @@ namespace NodeCanvas.Tasks.Actions
         protected override void OnUpdate()
         {
             localElapsed += Time.deltaTime;
-            
+
             if (localElapsed >= iframeDuration.value)
             {
                 isInvincible.value = false;
@@ -39,4 +39,3 @@ namespace NodeCanvas.Tasks.Actions
         }
     }
 }
-

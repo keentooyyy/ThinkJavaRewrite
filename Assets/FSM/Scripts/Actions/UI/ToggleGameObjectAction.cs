@@ -21,7 +21,7 @@ namespace NodeCanvas.Tasks.Actions
 
         [Tooltip("The GameObject to show/hide")]
         public BBParameter<GameObject> targetObject;
-        
+
         [Tooltip("What to do with the GameObject")]
         public ToggleMode mode = ToggleMode.Toggle;
 
@@ -43,11 +43,11 @@ namespace NodeCanvas.Tasks.Actions
                 case ToggleMode.Show:
                     targetObject.value.SetActive(true);
                     break;
-                    
+
                 case ToggleMode.Hide:
                     targetObject.value.SetActive(false);
                     break;
-                    
+
                 case ToggleMode.Toggle:
                     targetObject.value.SetActive(!targetObject.value.activeSelf);
                     break;
@@ -57,4 +57,3 @@ namespace NodeCanvas.Tasks.Actions
         }
     }
 }
-

@@ -26,7 +26,7 @@ namespace NodeCanvas.Tasks.Actions
             {
                 // Kill any existing tween
                 blinkTween?.Kill();
-                
+
                 // Reset alpha
                 Color color = agent.color;
                 color.a = 1f;
@@ -38,7 +38,8 @@ namespace NodeCanvas.Tasks.Actions
                     .SetEase(Ease.Linear)
                     .SetUpdate(false)
                     .SetAutoKill(true)
-                    .OnComplete(() => {
+                    .OnComplete(() =>
+                    {
                         // Ensure fully visible when done
                         if (agent != null)
                         {
@@ -62,7 +63,7 @@ namespace NodeCanvas.Tasks.Actions
             {
                 blinkTween.Kill();
             }
-            
+
             if (agent != null)
             {
                 Color color = agent.color;
@@ -72,4 +73,3 @@ namespace NodeCanvas.Tasks.Actions
         }
     }
 }
-
