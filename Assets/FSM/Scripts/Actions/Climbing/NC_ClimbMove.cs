@@ -7,7 +7,7 @@ public class NC_ClimbMove : ActionTask<Transform>
 {
     [Tooltip("Vertical climb speed in units/sec")] 
     public float climbSpeed = 3f;
-    [Header("Animation (optional)")]
+    [UnityEngine.Header("Animation (optional)")]
     public bool controlAnimation = true;
     public string climbStateName = "Climb";
     public bool setSpeedParam = true;
@@ -19,7 +19,6 @@ public class NC_ClimbMove : ActionTask<Transform>
     private LadderSensor sensor;
     private bool frozeX;
     private Animator animator;
-    private AnimatorControllerHelper animHelper;
 
     protected override void OnExecute()
     {
@@ -32,8 +31,6 @@ public class NC_ClimbMove : ActionTask<Transform>
             return;
         }
 
-        // cache animator(s)
-        animHelper = agent ? agent.GetComponent<AnimatorControllerHelper>() : null;
         animator = agent ? agent.GetComponent<Animator>() : null;
 
         // Align once and freeze X via physics to prevent transform/rigidbody fights
@@ -45,12 +42,9 @@ public class NC_ClimbMove : ActionTask<Transform>
         rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
         frozeX = true;
 
-        if (controlAnimation)
+        if (controlAnimation && animator != null && !string.IsNullOrEmpty(climbStateName))
         {
-            if (animHelper != null)
-                animHelper.PlayAnimation(climbStateName);
-            else if (animator != null && !string.IsNullOrEmpty(climbStateName))
-                animator.Play(climbStateName);
+            animator.Play(climbStateName);
         }
     }
 
@@ -82,12 +76,9 @@ public class NC_ClimbMove : ActionTask<Transform>
             rb.velocity = new Vector2(0f, rb.velocity.y);
         }
 
-        if (controlAnimation && playIdleOnStop)
+        if (controlAnimation && playIdleOnStop && animator != null && !string.IsNullOrEmpty(idleStateName))
         {
-            if (animHelper != null)
-                animHelper.PlayAnimation(idleStateName);
-            else if (animator != null && !string.IsNullOrEmpty(idleStateName))
-                animator.Play(idleStateName);
+            animator.Play(idleStateName);
         }
     }
 }
