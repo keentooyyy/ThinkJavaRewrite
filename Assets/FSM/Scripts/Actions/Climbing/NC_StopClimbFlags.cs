@@ -18,9 +18,12 @@ public class NC_StopClimbFlags : ActionTask<Transform>
         lockToLadderX.value = false;
 
         if (_rb != null)
+        {
             _rb.gravityScale = 1f;
+            // Unfreeze X but keep rotation frozen
+            _rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+        }
 
         EndAction(true);
     }
 }
-

@@ -9,6 +9,7 @@ TagManager:
   - Pickup
   - PuzzleController
   - PickupSlots
+  - Climbable
   layers:
   - Default
   - TransparentFX

@@ -28,16 +28,20 @@ public class NC_StartClimbFlags : ActionTask<Transform>
         lockToLadderX.value = true;
         ladderCenterX.value = _sensor.LadderCenterX();
 
-        if (controlGravity && _rb != null)
+        if (_rb != null)
         {
-            _rb.gravityScale = 0f;
-            _rb.velocity = Vector2.zero;
+            if (controlGravity)
+            {
+                _rb.gravityScale = 0f;
+                _rb.velocity = Vector2.zero;
+            }
+            // Align once and freeze X to avoid jitter during climb
+            var pos = _rb.position;
+            pos.x = ladderCenterX.value;
+            _rb.position = pos;
+            _rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
         }
-
-        var p = agent.position;
-        agent.position = new Vector3(ladderCenterX.value, p.y, p.z);
 
         EndAction(true);
     }
 }
-
