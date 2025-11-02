@@ -11,9 +11,9 @@ namespace GameScoring
         // (thresholdSeconds, score)
         private static readonly List<(float threshold, int score)> LEVEL_SCORE_THRESHOLDS = new()
         {
-            (180f, 100),
-            (120f, 70),
-            (60f, 40),
+            (90f, 100),
+            (60f, 70),
+            (30f, 40),
             (1f, 10),
         };
 
