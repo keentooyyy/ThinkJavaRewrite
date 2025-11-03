@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using GameState;
 
 namespace GameInput
 {
@@ -28,9 +29,11 @@ namespace GameInput
         /// </summary>
         public static void UpdateKeyboardInput(InputConfig config)
         {
-            if (config == null) return;
-            
-            // Clear frame-based flags ONLY for keyboard buttons (not virtual buttons)
+            if (config == null)
+            {
+                return;
+            }
+
             foreach (var kvp in buttons)
             {
                 if (!kvp.Value.isVirtualButton)
@@ -38,27 +41,22 @@ namespace GameInput
                     kvp.Value.pressedThisFrame = false;
                 }
             }
-            
-            // Get keyboard input
-            float horizontal = Input.GetAxisRaw(config.horizontalAxisName);
-            float vertical = Input.GetAxisRaw(config.verticalAxisName);
-            
-            // If no virtual buttons active, use keyboard input
-            // Virtual buttons have priority and are updated via SetDirectionalInput()
+
+            bool movementAllowed = GameFreezeManager.AllowsMovementInput;
+            float horizontal = movementAllowed ? Input.GetAxisRaw(config.horizontalAxisName) : 0f;
+            float vertical = movementAllowed ? Input.GetAxisRaw(config.verticalAxisName) : 0f;
+
             if (!virtualDirectionActive)
             {
-                directionalInput = new Vector2(horizontal, vertical);
+                directionalInput = movementAllowed ? new Vector2(horizontal, vertical) : Vector2.zero;
             }
-            
-            // Reset flag after checking - VirtualButton.Update() will set it again if still pressed
+
             virtualDirectionActive = false;
-            
-            // Check all configured keyboard bindings
+
             foreach (var binding in config.keyboardBindings)
             {
                 CheckKeyboardButton(binding.keyCode, binding.buttonName);
-                
-                // Check alternative key if set
+
                 if (binding.alternativeKey != KeyCode.None)
                 {
                     CheckKeyboardButton(binding.alternativeKey, binding.buttonName);
@@ -83,18 +81,30 @@ namespace GameInput
         /// </summary>
         public static void PressButton(string buttonName, bool isVirtual = false)
         {
-            if (string.IsNullOrEmpty(buttonName)) return;
-            
-            if (!buttons.ContainsKey(buttonName))
+            if (string.IsNullOrEmpty(buttonName))
             {
-                buttons[buttonName] = new ButtonState();
+                return;
             }
-            
-            if (!buttons[buttonName].isPressed)
+
+            if (!buttons.TryGetValue(buttonName, out var state))
             {
-                buttons[buttonName].isPressed = true;
-                buttons[buttonName].pressedThisFrame = true;
-                buttons[buttonName].isVirtualButton = isVirtual;
+                state = new ButtonState();
+                buttons[buttonName] = state;
+            }
+
+            if (!GameFreezeManager.IsButtonAllowed(buttonName))
+            {
+                state.isPressed = false;
+                state.pressedThisFrame = false;
+                state.isVirtualButton = isVirtual;
+                return;
+            }
+
+            if (!state.isPressed)
+            {
+                state.isPressed = true;
+                state.pressedThisFrame = true;
+                state.isVirtualButton = isVirtual;
                 OnButtonPressed?.Invoke(buttonName);
             }
         }
@@ -104,11 +114,14 @@ namespace GameInput
         /// </summary>
         public static void ReleaseButton(string buttonName)
         {
-            if (string.IsNullOrEmpty(buttonName)) return;
-            
-            if (buttons.ContainsKey(buttonName) && buttons[buttonName].isPressed)
+            if (string.IsNullOrEmpty(buttonName))
             {
-                buttons[buttonName].isPressed = false;
+                return;
+            }
+
+            if (buttons.TryGetValue(buttonName, out var state) && state.isPressed)
+            {
+                state.isPressed = false;
                 OnButtonReleased?.Invoke(buttonName);
             }
         }
@@ -118,6 +131,11 @@ namespace GameInput
         /// </summary>
         public static bool GetButton(string buttonName)
         {
+            if (!GameFreezeManager.IsButtonAllowed(buttonName))
+            {
+                return false;
+            }
+
             return buttons.ContainsKey(buttonName) && buttons[buttonName].isPressed;
         }
         
@@ -126,12 +144,18 @@ namespace GameInput
         /// </summary>
         public static bool GetButtonDown(string buttonName)
         {
+            if (!GameFreezeManager.IsButtonAllowed(buttonName))
+            {
+                return false;
+            }
+
             if (buttons.ContainsKey(buttonName) && buttons[buttonName].pressedThisFrame)
             {
                 buttons[buttonName].pressedThisFrame = false;
-                buttons[buttonName].isVirtualButton = false; // Reset virtual flag after consuming
+                buttons[buttonName].isVirtualButton = false;
                 return true;
             }
+
             return false;
         }
         
@@ -140,18 +164,25 @@ namespace GameInput
         /// </summary>
         public static void SetDirectionalInput(float horizontal, float vertical)
         {
+            if (!GameFreezeManager.AllowsMovementInput)
+            {
+                directionalInput = Vector2.zero;
+                virtualDirectionActive = false;
+                return;
+            }
+
             directionalInput = new Vector2(horizontal, vertical);
-            virtualDirectionActive = (Mathf.Abs(horizontal) > 0.01f || Mathf.Abs(vertical) > 0.01f);
+            virtualDirectionActive = Mathf.Abs(horizontal) > 0.01f || Mathf.Abs(vertical) > 0.01f;
         }
         
         public static float GetHorizontalAxis()
         {
-            return directionalInput.x;
+            return GameFreezeManager.AllowsMovementInput ? directionalInput.x : 0f;
         }
         
         public static float GetVerticalAxis()
         {
-            return directionalInput.y;
+            return GameFreezeManager.AllowsMovementInput ? directionalInput.y : 0f;
         }
         
         public static void Clear()
