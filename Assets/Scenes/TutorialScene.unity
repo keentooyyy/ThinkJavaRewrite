@@ -1456,9 +1456,6 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 2817352914058051660, guid: 76ab589e17495b249bdcec7f7e5719c0, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 191089336}
-    - targetCorrespondingSourceObject: {fileID: 2817352914058051660, guid: 76ab589e17495b249bdcec7f7e5719c0, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 191089340}
   m_SourcePrefab: {fileID: 100100000, guid: 76ab589e17495b249bdcec7f7e5719c0, type: 3}
 --- !u!224 &191089334 stripped
@@ -1471,19 +1468,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 2817352914058051660, guid: 76ab589e17495b249bdcec7f7e5719c0, type: 3}
   m_PrefabInstance: {fileID: 191089333}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &191089336
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 191089335}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 751bdc703eef65b4593e293288c00a24, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  eventName: PauseBackButton
 --- !u!114 &191089340
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1493,10 +1477,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 191089335}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 751bdc703eef65b4593e293288c00a24, type: 3}
+  m_Script: {fileID: 11500000, guid: 91ff7091ac1a1da459e44ada01e9f183, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  eventName: FreezeClear
+  eventNames:
+  - PauseBackButton
+  - FreezeClear
 --- !u!1001 &199528813
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6557,7 +6543,6 @@ GameObject:
   - component: {fileID: 1557267144}
   - component: {fileID: 1557267143}
   - component: {fileID: 1557267142}
-  - component: {fileID: 1557267141}
   - component: {fileID: 1557267145}
   m_Layer: 5
   m_Name: Pause Button
@@ -6585,19 +6570,6 @@ RectTransform:
   m_AnchoredPosition: {x: -181, y: -112}
   m_SizeDelta: {x: 133.1, y: 133.1}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1557267141
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1557267139}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 751bdc703eef65b4593e293288c00a24, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  eventName: PauseButton
 --- !u!114 &1557267142
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6689,10 +6661,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1557267139}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 751bdc703eef65b4593e293288c00a24, type: 3}
+  m_Script: {fileID: 11500000, guid: 91ff7091ac1a1da459e44ada01e9f183, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  eventName: FreezeAll
+  eventNames:
+  - PauseButton
+  - FreezeAll
 --- !u!1 &1569714164
 GameObject:
   m_ObjectHideFlags: 0
