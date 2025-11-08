@@ -19,11 +19,15 @@ namespace DialogueRuntime
         public static DialogueSystem Instance { get; private set; }
 
         [Header("UI References")]
-        [SerializeField] private CanvasGroup container;
+        [SerializeField] private GameObject container;
         [SerializeField] private TextMeshProUGUI bodyLabel;
-        [SerializeField] private GameObject continueIndicator;
+        [SerializeField] private TextMeshProUGUI continueIndicator;
 
         [Header("Behaviour")]
+        [Tooltip("Reference to your InputConfig asset (e.g., MainInputConfig)")]
+        [SerializeField] private InputConfig inputConfig;
+        [ButtonName("inputConfig")]
+        [Tooltip("Which button confirms/continues dialogue? (Choose from InputConfig dropdown)")]
         [SerializeField] private string confirmButton = "ActionA";
         [Tooltip("Default characters revealed per second when a line does not override the speed.")]
         [SerializeField] private float defaultLettersPerSecond = 30f;
@@ -166,7 +170,10 @@ namespace DialogueRuntime
             isRevealing = false;
             activeSequence = null;
             SetContainerVisible(false);
-            continueIndicator?.SetActive(false);
+            if (continueIndicator != null)
+            {
+                continueIndicator.gameObject.SetActive(false);
+            }
             onDialogueFinished = null;
             GameFreezeManager.ClearFreeze();
         }
@@ -201,7 +208,10 @@ namespace DialogueRuntime
                 bodyLabel.text = string.Empty;
             }
 
-            continueIndicator?.SetActive(false);
+            if (continueIndicator != null)
+            {
+                continueIndicator.gameObject.SetActive(false);
+            }
 
             float lettersPerSecond = line.LettersPerSecond > 0f ? line.LettersPerSecond : defaultLettersPerSecond;
             float duration = lettersPerSecond > 0f
@@ -229,7 +239,10 @@ namespace DialogueRuntime
         private void OnRevealComplete()
         {
             isRevealing = false;
-            continueIndicator?.SetActive(true);
+            if (continueIndicator != null)
+            {
+                continueIndicator.gameObject.SetActive(true);
+            }
 
             if (!string.IsNullOrEmpty(dialogueLineCompleteEvent))
             {
@@ -302,7 +315,10 @@ namespace DialogueRuntime
             isRevealing = false;
             activeSequence = null;
             SetContainerVisible(false);
-            continueIndicator?.SetActive(false);
+            if (continueIndicator != null)
+            {
+                continueIndicator.gameObject.SetActive(false);
+            }
             lastSoundCharIndex = -1;
 
             GameFreezeManager.ClearFreeze();
@@ -321,10 +337,7 @@ namespace DialogueRuntime
         {
             if (container != null)
             {
-                container.gameObject.SetActive(true);
-                container.alpha = visible ? 1f : 0f;
-                container.interactable = visible;
-                container.blocksRaycasts = visible;
+                container.SetActive(visible);
             }
         }
     }

@@ -3,11 +3,12 @@ using ParadoxNotion;
 using ParadoxNotion.Design;
 using UnityEngine;
 using DG.Tweening;
+using GameHazards;
 
 namespace NodeCanvas.Tasks.Actions
 {
     [Category("✫ Custom/Player")]
-    [Description("Handle damage detection and response without leaving current state")]
+    [Description("Handle damage detection and response without leaving current state. Reads damage and knockback from Hazard component.")]
     public class HandleDamageOnCollision : ActionTask<Transform>
     {
         [Tooltip("Tag of hazard objects")]
@@ -29,14 +30,9 @@ namespace NodeCanvas.Tasks.Actions
         [Tooltip("Duration of invincibility frames")]
         public BBParameter<float> iframeDuration = 1.5f;
 
-        [Tooltip("Damage amount per hit")]
-        public BBParameter<int> damageAmount = 1;
-
-        [Tooltip("Knockback force")]
-        public BBParameter<float> knockbackForce = 5f;
-
-        [Tooltip("Knockback upward force")]
-        public BBParameter<float> knockbackUpForce = 3f;
+        [UnityEngine.Header("Fallback Settings")]
+        [Tooltip("Default damage if hazard has no Hazard component (fallback only)")]
+        public BBParameter<int> defaultDamageAmount = 1;
 
         [Tooltip("Blink effect settings")]
         public BBParameter<int> blinkCount = 5;
@@ -49,7 +45,7 @@ namespace NodeCanvas.Tasks.Actions
 
         protected override string info
         {
-            get { return "Handle Damage (Continuous)"; }
+            get { return "Handle Damage (Dynamic)"; }
         }
 
         protected override void OnExecute()
@@ -83,17 +79,45 @@ namespace NodeCanvas.Tasks.Actions
         {
             Collider2D collision = eventData.value;
             
-            // Check if we hit a hazard and are not invincible
-            if (!isInvincible.value && collision.CompareTag(hazardTag.value))
+            // Check if we hit a hazard
+            if (!collision.CompareTag(hazardTag.value))
             {
-                TakeDamage(collision.transform.position);
+                return;
+            }
+
+            // Get Hazard component from the collided object (or its parent)
+            Hazard hazard = collision.GetComponent<Hazard>();
+            if (hazard == null)
+            {
+                hazard = collision.GetComponentInParent<Hazard>();
+            }
+
+            // Check invincibility (unless hazard bypasses it)
+            bool canDamage = hazard == null 
+                ? !isInvincible.value 
+                : (hazard.BypassInvincibility || !isInvincible.value);
+
+            if (canDamage)
+            {
+                TakeDamage(collision.transform.position, hazard);
             }
         }
 
-        private void TakeDamage(Vector3 hazardPosition)
+        private void TakeDamage(Vector3 hazardPosition, Hazard hazard)
         {
-            // Reduce HP
-            playerHP.value -= damageAmount.value;
+            int damage = hazard != null ? hazard.DamageAmount : defaultDamageAmount.value;
+            bool isInstaDeath = hazard != null && hazard.IsInstaDeath;
+            
+            // Insta-death: set HP to 0 immediately
+            if (isInstaDeath)
+            {
+                playerHP.value = 0;
+            }
+            else
+            {
+                // Regular damage
+                playerHP.value -= damage;
+            }
 
             // Check if dead - if so, skip all damage feedback
             if (playerHP.value <= 0)
@@ -104,33 +128,39 @@ namespace NodeCanvas.Tasks.Actions
                     rb.velocity = Vector2.zero;
                 }
                 
-                // No blink, no knockback, no iframes
+                // No blink, no knockback, no iframes for death
                 // Just let the FSM transition to Dead state
                 return;
             }
 
-            // Still alive - apply damage feedback
-            isInvincible.value = true;
-            iframeTimer = 0f;
-
-            // Apply knockback
-            if (rb != null)
+            // Still alive - apply damage feedback (skip for insta-death zones)
+            if (!isInstaDeath)
             {
-                Vector2 knockbackDirection = (agent.position - hazardPosition).normalized;
-                knockbackDirection.y = 0; // Keep horizontal only
-                
-                // Use the actual isGrounded blackboard variable (from CheckGroundedAction)
-                // Only apply upward knockback force if player is truly grounded
-                Vector2 knockback = new Vector2(
-                    knockbackDirection.x * knockbackForce.value,
-                    isGrounded.value ? knockbackUpForce.value : 0f // No upward force if in air
-                );
-                
-                rb.velocity = knockback;
-            }
+                // Apply invincibility frames (unless bypassed)
+                if (hazard == null || !hazard.BypassInvincibility)
+                {
+                    isInvincible.value = true;
+                    iframeTimer = 0f;
+                }
 
-            // Start blink effect
-            StartBlinkEffect();
+                // Apply knockback (only if hazard component exists and says so)
+                if (rb != null && hazard != null && hazard.ApplyKnockback)
+                {
+                    Vector2 knockbackDirection = (agent.position - hazardPosition).normalized;
+                    knockbackDirection.y = 0; // Keep horizontal only
+                    
+                    // Use hazard-specific knockback values
+                    Vector2 knockback = new Vector2(
+                        knockbackDirection.x * hazard.KnockbackForce,
+                        isGrounded.value ? hazard.KnockbackUpForce : 0f // No upward force if in air
+                    );
+                    
+                    rb.velocity = knockback;
+                }
+
+                // Start blink effect
+                StartBlinkEffect();
+            }
         }
 
         private void StartBlinkEffect()
