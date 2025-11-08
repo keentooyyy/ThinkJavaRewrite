@@ -2059,7 +2059,7 @@ MonoBehaviour:
   shakeMagnitude: 0.15
   dropImpulse: 2
   errorAudio: {fileID: 308682791}
-  puzzleController: {fileID: 0}
+  puzzleController: {fileID: 1093120556}
   tweenDrop: 1
   dropTweenDuration: 0.5
   dropTweenOffset: {x: 0, y: -0.4, z: 0}
@@ -4505,6 +4505,10 @@ MonoBehaviour:
   _updateMode: 0
   _graph: {fileID: 11400000, guid: b3408a7d4bba1c946a56260dd9492c89, type: 2}
   _blackboard: {fileID: 1093120555}
+  dataTypeSlot: {fileID: 0}
+  variableSlot: {fileID: 0}
+  puzzleConfig: {fileID: 11400000, guid: a490836cbaa7e0142a2613a5da7b1272, type: 2}
+  puzzleSuccessEvent: ShowSuccessUI
 --- !u!1 &1094266406 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2817352914058051660, guid: 76ab589e17495b249bdcec7f7e5719c0, type: 3}
@@ -8192,7 +8196,7 @@ MonoBehaviour:
   shakeMagnitude: 0.15
   dropImpulse: 2
   errorAudio: {fileID: 1653233682}
-  puzzleController: {fileID: 0}
+  puzzleController: {fileID: 1093120556}
   tweenDrop: 1
   dropTweenDuration: 0.5
   dropTweenOffset: {x: 0, y: -0.4, z: 0}
