@@ -1,13 +1,17 @@
 #if UNITY_EDITOR
+using UnityEngine;
+using GameInteraction;
 using UnityEditor;
+using EditorBase = UnityEditor.Editor;
 
 namespace GameInteraction
 {
     [CustomEditor(typeof(PickupPuzzleMetadata))]
-    public class PickupPuzzleMetadataEditor : Editor
+    public class PickupPuzzleMetadataEditor : EditorBase
     {
         public override void OnInspectorGUI()
         {
+
             serializedObject.Update();
 
             var kindProp = serializedObject.FindProperty("kind");

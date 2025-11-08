@@ -26,32 +26,32 @@ namespace NodeCanvas.Tasks.Actions
             }
 
             var dataSlot = controller.DataTypeSlot;
-            var variableSlot = controller.VariableSlot;
+            var varSlot = controller.VariableSlot;
             var config = controller.PuzzleConfig;
 
-            if (dataSlot == null || variableSlot == null || config == null)
+            if (dataSlot == null || varSlot == null || config == null)
             {
                 EndAction(false);
                 return;
             }
 
-            if (!dataSlot.HasItem || !variableSlot.HasItem)
+            if (!dataSlot.HasItem || !varSlot.HasItem)
             {
                 EndAction(false);
                 return;
             }
 
             // Try to get the required pair from config
-            if (!config.TryGetPair(dataSlot.SlotDefinition, variableSlot.SlotDefinition, out var pair))
+            if (!config.TryGetPair(dataSlot.SlotDefinition, varSlot.SlotDefinition, out var pair))
             {
-                RejectSlots(dataSlot, variableSlot);
+                RejectSlots(dataSlot, varSlot);
                 EndAction(false);
                 return;
             }
 
             // Check if the placed items match the requirements
             var actualType = dataSlot.CurrentDataType;
-            var actualVariable = variableSlot.CurrentVariableNormalized;
+            var actualVariable = varSlot.CurrentVariableNormalized;
             var expectedVariable = PickupMetadata.NormalizeIdentifier(pair.requiredVariableName);
 
             bool typeMatches = actualType == pair.requiredType;
@@ -59,7 +59,7 @@ namespace NodeCanvas.Tasks.Actions
 
             if (!typeMatches || !variableMatches)
             {
-                RejectSlots(dataSlot, variableSlot);
+                RejectSlots(dataSlot, varSlot);
                 EndAction(false);
                 return;
             }

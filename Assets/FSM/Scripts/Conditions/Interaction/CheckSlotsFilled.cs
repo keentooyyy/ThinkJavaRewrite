@@ -21,12 +21,12 @@ namespace NodeCanvas.Tasks.Conditions
                 return false;
 
             var dataSlot = puzzleController.value.DataTypeSlot;
-            var variableSlot = puzzleController.value.VariableSlot;
+            var varSlot = puzzleController.value.VariableSlot;
 
-            if (dataSlot == null || variableSlot == null)
+            if (dataSlot == null || varSlot == null)
                 return false;
 
-            return dataSlot.HasItem && variableSlot.HasItem;
+            return dataSlot.HasItem && varSlot.HasItem;
         }
     }
 }
