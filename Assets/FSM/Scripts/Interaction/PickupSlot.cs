@@ -36,7 +36,7 @@ namespace GameInteraction
         [SerializeField] private AudioSource errorAudio;
 
         [Header("Coordination")]
-        [SerializeField] private PickupPuzzleController puzzleController;
+        [SerializeField] private PickupPuzzleFSMController puzzleController;
 
         [Header("Drop Animation")]
         [SerializeField] private bool tweenDrop = false;
@@ -118,7 +118,7 @@ namespace GameInteraction
             }
 
             Accept(interactable, metadata);
-            puzzleController?.NotifySlotChanged(this);
+            NotifyPuzzleController();
             return true;
         }
 
@@ -133,7 +133,7 @@ namespace GameInteraction
             currentInteractable = null;
             DropToGround(go, playAudio);
             currentMetadata = null;
-            puzzleController?.NotifySlotChanged(this);
+            NotifyPuzzleController();
         }
 
         /// <summary>
@@ -153,7 +153,7 @@ namespace GameInteraction
             go.transform.SetParent(null, true);
             TransformUtilities.SetWorldScale(go.transform, TransformUtilities.NormalizeWorldScale(go.transform.lossyScale));
             MaintainWorldScale.Detach(go);
-            puzzleController?.NotifySlotChanged(this);
+            NotifyPuzzleController();
             return go;
         }
 
@@ -392,8 +392,13 @@ namespace GameInteraction
             var tagged = GameObject.FindWithTag("PuzzleController");
             if (tagged != null)
             {
-                puzzleController = tagged.GetComponent<PickupPuzzleController>();
+                puzzleController = tagged.GetComponent<PickupPuzzleFSMController>();
             }
+        }
+
+        private void NotifyPuzzleController()
+        {
+            puzzleController?.NotifySlotChanged(this);
         }
 
         private void SyncSlotId()
