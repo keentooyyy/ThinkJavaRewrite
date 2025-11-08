@@ -13,7 +13,7 @@ namespace NodeCanvas.Tasks.Actions
         [UnityEngine.Header("Animation (optional)")]
         public bool controlAnimation = true;
         public string climbStateName = "Climb";
-        public bool setSpeedParam = true;
+        public bool setSpeedParam = false;
         public string verticalSpeedParam = "ClimbSpeed"; // set to empty to skip
         public bool playIdleOnStop = true;
         public string idleStateName = "Idle";
