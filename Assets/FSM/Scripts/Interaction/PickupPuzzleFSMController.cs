@@ -6,7 +6,7 @@ namespace GameInteraction
     /// <summary>
     /// FSM-based Pickup Puzzle Controller. Uses NodeCanvas FSM to handle puzzle logic.
     /// </summary>
-    [AddComponentMenu("NodeCanvas/FSM Owner")]
+    [AddComponentMenu("Game/Pickup Puzzle FSM Controller")]
     public class PickupPuzzleFSMController : FSMOwner, IPickupPuzzleController
     {
         [Header("Slot References")]
