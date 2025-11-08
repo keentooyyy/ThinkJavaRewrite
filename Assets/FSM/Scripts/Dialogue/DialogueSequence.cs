@@ -28,15 +28,11 @@ namespace Dialogue
         [SerializeField, TextArea(2, 5)]
         private string text;
 
-        [SerializeField]
-        private string speaker;
-
         [Tooltip("When positive overrides the controller's default letters-per-second. Set <= 0 to use global rate.")]
         [SerializeField]
         private float lettersPerSecond = 0f;
 
         public string Text => text ?? string.Empty;
-        public string Speaker => speaker ?? string.Empty;
         public float LettersPerSecond => lettersPerSecond;
     }
 }

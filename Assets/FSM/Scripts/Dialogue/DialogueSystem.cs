@@ -20,7 +20,6 @@ namespace DialogueRuntime
 
         [Header("UI References")]
         [SerializeField] private CanvasGroup container;
-        [SerializeField] private TextMeshProUGUI speakerLabel;
         [SerializeField] private TextMeshProUGUI bodyLabel;
         [SerializeField] private GameObject continueIndicator;
 
@@ -196,12 +195,6 @@ namespace DialogueRuntime
             }
 
             var line = activeSequence.GetLine(currentIndex) ?? new DialogueLine();
-
-            if (speakerLabel != null)
-            {
-                speakerLabel.text = line.Speaker;
-                speakerLabel.gameObject.SetActive(!string.IsNullOrEmpty(line.Speaker));
-            }
 
             if (bodyLabel != null)
             {
