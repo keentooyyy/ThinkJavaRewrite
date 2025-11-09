@@ -43,7 +43,7 @@ namespace NodeCanvas.Tasks.Actions
             
             GameObject pickupTarget = objectToPickUp.value;
 
-            // If we're targeting a slot, attempt to retrieve its current item first.
+            // If we're targeting a slot GameObject directly, attempt to retrieve its current item first.
             var slot = pickupTarget.GetComponent<PickupSlot>();
             if (slot != null)
             {
@@ -56,6 +56,25 @@ namespace NodeCanvas.Tasks.Actions
 
                 objectToPickUp.value = retrieved;
                 pickupTarget = retrieved;
+            }
+            
+            // Check if the item is currently in a slot (parented to a slot's snap point)
+            // If so, we need to retrieve it from the slot first
+            var interactable = pickupTarget.GetComponent<Interactable>();
+            if (interactable != null)
+            {
+                var parentSlot = interactable.GetComponentInParent<PickupSlot>();
+                if (parentSlot != null && parentSlot.HasItem && parentSlot.CurrentObject == pickupTarget)
+                {
+                    // Item is in a slot - retrieve it first
+                    var retrieved = parentSlot.RetrieveCurrent();
+                    if (retrieved == null || retrieved != pickupTarget)
+                    {
+                        EndAction(false);
+                        return;
+                    }
+                    // Item has been retrieved, continue with pickup
+                }
             }
 
             Transform objectTransform = pickupTarget.transform;

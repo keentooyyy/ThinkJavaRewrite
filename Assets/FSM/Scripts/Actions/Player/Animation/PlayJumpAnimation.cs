@@ -18,7 +18,12 @@ namespace NodeCanvas.Tasks.Actions
         [Tooltip("Is player grounded? Action finishes when player lands")]
         public BBParameter<bool> isGrounded;
 
+        [Tooltip("Number of consecutive frames player must be grounded to finish (helps with detection reliability)")]
+        [SliderField(1, 5)]
+        public BBParameter<int> groundedFrameBuffer = 2;
+
         private bool hasLeftGround = false;
+        private int groundedFrameCount = 0;
 
         protected override string info
         {
@@ -32,6 +37,7 @@ namespace NodeCanvas.Tasks.Actions
                 agent.CrossFade(jumpAnimation.value, crossfadeTime.value);
             }
             hasLeftGround = false; // Reset the flag
+            groundedFrameCount = 0; // Reset grounded frame counter
         }
 
         protected override void OnUpdate()
@@ -42,14 +48,26 @@ namespace NodeCanvas.Tasks.Actions
                 if (!isGrounded.value)
                 {
                     hasLeftGround = true;
+                    groundedFrameCount = 0; // Reset counter when we leave ground
                 }
                 return; // Don't finish yet
             }
 
-            // Now wait until player lands
+            // Now wait until player lands (with frame buffer for reliability)
             if (isGrounded.value)
             {
-                EndAction(true);
+                groundedFrameCount++;
+                
+                // Only finish if we've been grounded for the required number of frames
+                if (groundedFrameCount >= groundedFrameBuffer.value)
+                {
+                    EndAction(true);
+                }
+            }
+            else
+            {
+                // Reset counter if we're not grounded (player might be bouncing or something)
+                groundedFrameCount = 0;
             }
         }
     }

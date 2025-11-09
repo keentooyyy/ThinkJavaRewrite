@@ -67,14 +67,22 @@ namespace NodeCanvas.Tasks.Actions
 
                 if (detectionMode == DetectionMode.GenericOnly)
                 {
+                    // First, check if this collider belongs to an interactable (standalone or in slot)
                     if (interactable != null)
                     {
-                        candidate = interactable.gameObject;
+                        // Check if this interactable is inside a slot
                         candidateSlot = interactable.GetComponentInParent<PickupSlot>();
+                        
+                        // Return the interactable itself (whether it's in a slot or not)
+                        // This allows picking up items directly, even if they're in slots
+                        candidate = interactable.gameObject;
                     }
+                    // If no interactable found on this collider, check if it's a slot with an item
                     else if (slot != null && slot.HasItem && slot.CurrentObject != null)
                     {
-                        candidate = slot.gameObject;
+                        // Important: Return the item inside the slot, NOT the slot GameObject
+                        // This is the key fix - the item can be picked up, not the slot
+                        candidate = slot.CurrentObject;
                         candidateSlot = slot;
                     }
                     else
@@ -84,6 +92,7 @@ namespace NodeCanvas.Tasks.Actions
                 }
                 else
                 {
+                    // SlotsOnly mode: only detect slots
                     if (slot == null)
                     {
                         continue;
@@ -92,7 +101,10 @@ namespace NodeCanvas.Tasks.Actions
                     candidateSlot = slot;
                 }
 
-                float distance = Vector2.Distance(agent.position, col.transform.position);
+                // Calculate distance to the candidate object (not the collider)
+                Vector2 candidatePosition = candidate != null ? (Vector2)candidate.transform.position : col.transform.position;
+                float distance = Vector2.Distance(agent.position, candidatePosition);
+                
                 if (distance < closestDistance)
                 {
                     closest = candidate;

@@ -54,11 +54,14 @@ namespace NodeCanvas.Tasks.Actions
                 checkPosition = new Vector2(agent.position.x, agent.position.y + groundCheckOffset.value);
             }
 
-            bool grounded = Physics2D.OverlapCircle(
+            // Check for ground using OverlapCircle
+            Collider2D hit = Physics2D.OverlapCircle(
                 checkPosition, 
                 checkRadius.value, 
                 groundLayer
             );
+
+            bool grounded = hit != null;
 
             isGrounded.value = grounded;
 
