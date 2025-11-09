@@ -6,27 +6,27 @@ using GameInteraction;
 namespace NodeCanvas.Tasks.Conditions
 {
     [Category("✫ Custom/Interaction")]
-    [Description("Check if both puzzle slots are filled")]
+    [Description("Check if any puzzle slot pair is filled (for independent pair evaluation)")]
     public class CheckSlotsFilled : ConditionTask
     {
-        [RequiredField]
-        [Tooltip("Reference to the PickupPuzzleFSMController")]
+        [Tooltip("Reference to the PickupPuzzleFSMController (auto-resolves from agent if not set)")]
         public BBParameter<PickupPuzzleFSMController> puzzleController;
 
-        protected override string info => "Both Slots Filled?";
+        protected override string info => "Any Slot Pair Filled?";
 
         protected override bool OnCheck()
         {
-            if (puzzleController.value == null)
+            // Auto-resolve controller from agent (the FSM owner) if blackboard variable is not set
+            var controller = puzzleController.value;
+            if (controller == null && agent != null)
+            {
+                controller = agent as PickupPuzzleFSMController ?? agent.GetComponent<PickupPuzzleFSMController>();
+            }
+            
+            if (controller == null)
                 return false;
 
-            var dataSlot = puzzleController.value.DataTypeSlot;
-            var varSlot = puzzleController.value.VariableSlot;
-
-            if (dataSlot == null || varSlot == null)
-                return false;
-
-            return dataSlot.HasItem && varSlot.HasItem;
+            return controller.HasAnySlotPairFilled();
         }
     }
 }

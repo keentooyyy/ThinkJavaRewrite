@@ -18,16 +18,22 @@ namespace GameInteraction.Editor
             
             EditorGUILayout.LabelField("Puzzle Configuration", EditorStyles.boldLabel);
             
-            // Initialize properties when needed
-            var dataTypeSlotProp = serializedObject.FindProperty("dataTypeSlot");
-            var variableSlotProp = serializedObject.FindProperty("variableSlot");
             var puzzleConfigProp = serializedObject.FindProperty("puzzleConfig");
-            var puzzleSuccessEventProp = serializedObject.FindProperty("puzzleSuccessEvent");
-            
-            EditorGUILayout.PropertyField(dataTypeSlotProp, new GUIContent("Data Type Slot", "The slot that accepts data type pickups"));
-            EditorGUILayout.PropertyField(variableSlotProp, new GUIContent("Variable Slot", "The slot that accepts variable pickups"));
             EditorGUILayout.PropertyField(puzzleConfigProp, new GUIContent("Puzzle Config", "The configuration that defines valid puzzle combinations"));
-            EditorGUILayout.PropertyField(puzzleSuccessEventProp, new GUIContent("Puzzle Success Event", "UI event name to trigger when puzzle is solved"));
+            
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+            
+            EditorGUILayout.LabelField("Slot Pairs", EditorStyles.boldLabel);
+            var slotPairsProp = serializedObject.FindProperty("slotPairs");
+            EditorGUILayout.PropertyField(slotPairsProp, new GUIContent("Slot Pairs", "List of slot pairs. Each pair can have its own success event. Configure success events in config or per-pair."), true);
+            
+            EditorGUILayout.HelpBox("Success Events: Configure in PickupPuzzleConfig per RequiredPair, or set per SlotPair to override. Only wrong slots are rejected, not both.", MessageType.Info);
+            
+            if (slotPairsProp != null && slotPairsProp.arraySize == 0)
+            {
+                EditorGUILayout.HelpBox("At least one slot pair is required. Click the '+' button to add a pair.", MessageType.Warning);
+            }
             
             serializedObject.ApplyModifiedProperties();
         }

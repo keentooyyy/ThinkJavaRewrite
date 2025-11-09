@@ -20,6 +20,9 @@ namespace GameInteraction
 
             [Tooltip("The required variable name for the variable slot.")]
             public string requiredVariableName;
+
+            [Tooltip("Optional UI event name to trigger when this pair is correctly filled. Leave empty for no event.")]
+            public string successEventName;
         }
 
         [Tooltip("List of valid data/variable slot combinations for this puzzle.")]

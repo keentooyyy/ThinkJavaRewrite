@@ -4505,10 +4505,11 @@ MonoBehaviour:
   _updateMode: 0
   _graph: {fileID: 11400000, guid: b3408a7d4bba1c946a56260dd9492c89, type: 2}
   _blackboard: {fileID: 1093120555}
-  dataTypeSlot: {fileID: 0}
-  variableSlot: {fileID: 0}
   puzzleConfig: {fileID: 11400000, guid: a490836cbaa7e0142a2613a5da7b1272, type: 2}
-  puzzleSuccessEvent: ShowSuccessUI
+  slotPairs:
+  - dataTypeSlot: {fileID: 308682786}
+    variableSlot: {fileID: 1653233677}
+    successEventName: 
 --- !u!1 &1094266406 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2817352914058051660, guid: 76ab589e17495b249bdcec7f7e5719c0, type: 3}
@@ -7992,7 +7993,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   kind: 1
   dataType: 1
-  variableName: myName
+  variableName: myNam
 --- !u!114 &1637028831
 MonoBehaviour:
   m_ObjectHideFlags: 0
