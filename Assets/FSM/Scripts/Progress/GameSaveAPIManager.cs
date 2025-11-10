@@ -190,14 +190,12 @@ namespace GameProgress
                 
                 if (saveSuccess)
                 {
-                    var saveData = GameSaveManager.LoadLocal();
-                    Debug.Log($"Successfully saved cloud JSON to local: {saveData.levels.Count} levels, {saveData.achievements.Count} achievements");
-                    OnDownloadSuccess?.Invoke(saveData);
-                    onComplete?.Invoke(true, saveData, jsonResponse);
+                    OnDownloadSuccess?.Invoke(null);
+                    onComplete?.Invoke(true, null, jsonResponse);
                 }
                 else
                 {
-                    string error = $"Failed to parse downloaded save data. Response length: {jsonResponse.Length}";
+                    string error = $"Failed to save downloaded save data. Response length: {jsonResponse.Length}";
                     Debug.LogError(error);
                     Debug.LogError($"Full response: {jsonResponse}");
                     OnDownloadFailed?.Invoke(error);

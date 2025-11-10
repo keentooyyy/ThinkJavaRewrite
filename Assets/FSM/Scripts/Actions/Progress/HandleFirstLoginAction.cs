@@ -78,26 +78,24 @@ namespace NodeCanvas.Tasks.Actions
             // Download from API (using primary ID)
             bool downloadSuccess = false;
             string downloadMessage = "";
-            GameSaveData downloadedData = null;
 
             yield return GameSaveAPIManager.DownloadSaveDataCoroutine(primaryId, studentId, password, (s, data, m) =>
             {
                 downloadSuccess = s;
-                downloadedData = data;
                 downloadMessage = m;
             });
 
-            if (downloadSuccess && downloadedData != null)
+            if (downloadSuccess)
             {
-                // Check if we got actual data (not empty)
-                bool hasData = (downloadedData.levels != null && downloadedData.levels.Count > 0) ||
-                              (downloadedData.achievements != null && downloadedData.achievements.Count > 0);
+                // File was saved, check if it has data
+                var localData = GameSaveManager.LoadLocal();
+                bool hasData = (localData.levels != null && localData.levels.Count > 0) ||
+                              (localData.achievements != null && localData.achievements.Count > 0);
 
                 if (hasData)
                 {
-                    // Cloud save exists, overwrite local
-                    Debug.Log("Cloud save found - overwriting local save");
-                    GameSaveManager.SaveLocal(downloadedData);
+                    // Cloud save exists and was loaded
+                    Debug.Log($"Cloud save found - {localData.levels.Count} levels, {localData.achievements.Count} achievements");
                 }
                 else
                 {

@@ -25,6 +25,7 @@ namespace GameProgress
         public static event Action OnLocalSaveChanged;
         public static event Action OnCloudSaveChanged;
         public static event Action OnSyncComplete;
+        public static event Action OnCloudSaveReadyToCopy;
 
         /// <summary>
         /// Check if this is the first login (no local save exists or first login flag is set)
@@ -123,12 +124,12 @@ namespace GameProgress
             SaveCloud(localData);
             Debug.Log("Pushed local changes to cloud");
 
-            // Step 2: Pull cloud to local (cloud is now authoritative)
-            var cloudData = LoadCloud();
-            SaveLocal(cloudData);
-            Debug.Log("Pulled cloud data to local (cloud is authoritative)");
+            // Step 2: Just copy cloud to local - that's it!
+            CopyCloudToLocal();
+            Debug.Log("Copied cloud to local");
 
             // Update sync timestamp
+            var cloudData = LoadCloud();
             SetLastSyncTimestamp(cloudData.lastModifiedTimestamp);
             OnSyncComplete?.Invoke();
         }
@@ -384,6 +385,39 @@ namespace GameProgress
         }
 
         /// <summary>
+        /// Copy cloud_save.json to local_save.json - verifies file has content before copying
+        /// </summary>
+        public static void CopyCloudToLocal()
+        {
+            string cloudPath = Path.Combine(Application.persistentDataPath, CLOUD_SAVE_FILE);
+            string localPath = Path.Combine(Application.persistentDataPath, LOCAL_SAVE_FILE);
+            
+            if (!File.Exists(cloudPath))
+            {
+                Debug.LogError($"Cloud save file not found: {cloudPath}");
+                return;
+            }
+            
+            // Verify file has content before copying
+            var fileInfo = new FileInfo(cloudPath);
+            if (fileInfo.Length == 0)
+            {
+                Debug.LogError($"Cannot copy {CLOUD_SAVE_FILE} - file is empty!");
+                return;
+            }
+            
+            File.Copy(cloudPath, localPath, true);
+            Debug.Log($"Copied to {LOCAL_SAVE_FILE}");
+            OnLocalSaveChanged?.Invoke();
+        }
+
+        // Static constructor to subscribe CopyCloudToLocal to the event
+        static GameSaveManager()
+        {
+            OnCloudSaveReadyToCopy += CopyCloudToLocal;
+        }
+
+        /// <summary>
         /// Save raw JSON from API: cloud_save.json (full original as-is), local_save.json (just copy the file!)
         /// </summary>
         public static bool SaveCloudJsonToLocal(string json)
@@ -398,22 +432,30 @@ namespace GameProgress
             {
                 Debug.Log($"Saving raw JSON from API. Length: {json.Length}");
                 
-                // Save full JSON to cloud_save.json (original response - save as-is!)
+                // Step 1: Save full JSON to cloud_save.json (original response - save as-is!)
                 string cloudPath = Path.Combine(Application.persistentDataPath, CLOUD_SAVE_FILE);
                 File.WriteAllText(cloudPath, json);
-                Debug.Log($"Saved to {CLOUD_SAVE_FILE}");
                 
-                // Just copy the file to local_save.json - that's it!
-                string localPath = Path.Combine(Application.persistentDataPath, LOCAL_SAVE_FILE);
-                File.Copy(cloudPath, localPath, true);
-                Debug.Log($"Copied to {LOCAL_SAVE_FILE}");
+                // Step 2: Verify cloud save was written successfully
+                if (!File.Exists(cloudPath))
+                {
+                    Debug.LogError($"Failed to create {CLOUD_SAVE_FILE}");
+                    return false;
+                }
                 
-                // Verify it was saved
-                var testData = LoadLocal();
-                Debug.Log($"Successfully saved cloud JSON: {testData.levels.Count} levels, {testData.achievements.Count} achievements");
+                var fileInfo = new FileInfo(cloudPath);
+                if (fileInfo.Length == 0)
+                {
+                    Debug.LogError($"{CLOUD_SAVE_FILE} is empty!");
+                    return false;
+                }
                 
-                OnLocalSaveChanged?.Invoke();
+                Debug.Log($"Successfully saved to {CLOUD_SAVE_FILE}");
+                
+                // Fire event to trigger copy after file is confirmed to have content
                 OnCloudSaveChanged?.Invoke();
+                OnCloudSaveReadyToCopy?.Invoke();
+                
                 return true;
             }
             catch (Exception e)
@@ -451,16 +493,7 @@ namespace GameProgress
             catch (Exception e)
             {
                 Debug.LogError($"Failed to get local save as JSON: {e.Message}");
-                // Fallback: serialize the data object
-                try
-                {
-                    var localData = LoadLocal();
-                    return ParadoxNotion.Serialization.JSONSerializer.Serialize(typeof(GameSaveData), localData, null, false);
-                }
-                catch
-                {
-                    return "{}";
-                }
+                return "{}";
             }
         }
 
