@@ -1,19 +1,20 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 namespace GameProgress
 {
     /// <summary>
-    /// Manages local and cloud saves separately using ES3.
-    /// - local_save.es3: Local save data (1:1 copy of cloud format, used for gameplay)
-    /// - cloud_save.es3: Original cloud response (backup/reference)
+    /// Manages local and cloud saves as plain JSON files.
+    /// - local_save.json: Local save data (levels + achievements only)
+    /// - cloud_save.json: Original cloud response (backup)
     /// - GameSave_Metadata.es3: Metadata (flags, timestamps, etc.)
     /// </summary>
     public static class GameSaveManager
     {
-        private const string LOCAL_SAVE_FILE = "local_save.es3";
-        private const string CLOUD_SAVE_FILE = "cloud_save.es3";
+        private const string LOCAL_SAVE_FILE = "local_save.json";
+        private const string CLOUD_SAVE_FILE = "cloud_save.json";
         private const string METADATA_FILE = "GameSave_Metadata.es3";
         
         // Metadata keys
@@ -34,7 +35,8 @@ namespace GameProgress
             if (!ES3.KeyExists(FIRST_LOGIN_FLAG_KEY, METADATA_FILE))
             {
                 // Check if local save file exists
-                bool hasLocalSave = ES3.FileExists(LOCAL_SAVE_FILE);
+                string filePath = Path.Combine(Application.persistentDataPath, LOCAL_SAVE_FILE);
+                bool hasLocalSave = File.Exists(filePath);
                 
                 // If no local save, it's first login
                 if (!hasLocalSave)
@@ -144,19 +146,31 @@ namespace GameProgress
         }
 
         /// <summary>
-        /// Load local save data (source of truth for gameplay)
-        /// Loads from local_save.es3 which is 1:1 format with cloud
+        /// Load local save data from JSON file - ONLY levels and achievements
+        /// Uses ES3 to parse the JSON
         /// </summary>
         public static GameSaveData LoadLocal()
         {
             try
             {
-                if (!ES3.FileExists(LOCAL_SAVE_FILE))
+                string filePath = Path.Combine(Application.persistentDataPath, LOCAL_SAVE_FILE);
+                if (!File.Exists(filePath))
                 {
                     return new GameSaveData();
                 }
                 
-                var es3File = new ES3File(LOCAL_SAVE_FILE, false);
+                string json = File.ReadAllText(filePath);
+                if (string.IsNullOrEmpty(json))
+                {
+                    return new GameSaveData();
+                }
+                
+                // Use ES3 to parse the JSON
+                const string TEMP_FILE = "temp_load.json";
+                var es3File = new ES3File(TEMP_FILE, false);
+                es3File.SaveRaw(System.Text.Encoding.UTF8.GetBytes(json));
+                es3File.Sync();
+                
                 var data = new GameSaveData();
                 
                 // Load levels
@@ -179,15 +193,15 @@ namespace GameProgress
                     data.achievements = new Dictionary<string, AchievementSaveData>();
                 }
                 
-                // Load timestamp
-                if (es3File.KeyExists("lastModifiedTimestamp"))
-                {
-                    data.lastModifiedTimestamp = es3File.Load<long>("lastModifiedTimestamp", 0);
-                }
+                // Clean up temp file
+                if (ES3.FileExists(TEMP_FILE))
+                    ES3.DeleteFile(TEMP_FILE);
                 
-                // Ensure dictionaries are initialized
-                if (data.levels == null) data.levels = new Dictionary<string, LevelData>();
-                if (data.achievements == null) data.achievements = new Dictionary<string, AchievementSaveData>();
+                // Load timestamp from METADATA (not from save file!)
+                if (ES3.KeyExists(LAST_SYNC_TIMESTAMP_KEY, METADATA_FILE))
+                {
+                    data.lastModifiedTimestamp = ES3.Load<long>(LAST_SYNC_TIMESTAMP_KEY, METADATA_FILE, 0);
+                }
                 
                 return data;
             }
@@ -199,8 +213,8 @@ namespace GameProgress
         }
 
         /// <summary>
-        /// Save data to local storage (source of truth)
-        /// Saves to local_save.es3 in exact same format as cloud (1:1 match)
+        /// Save data to local storage as plain JSON - ONLY levels and achievements (NO timestamp!)
+        /// Uses ES3 to serialize to plain JSON format
         /// </summary>
         public static void SaveLocal(GameSaveData data)
         {
@@ -212,14 +226,30 @@ namespace GameProgress
 
             try
             {
-                data.UpdateTimestamp();
+                // Use ES3 to save - it will create plain JSON
+                const string TEMP_KEY = "temp_save";
+                const string TEMP_FILE = "temp_local.json";
                 
-                // Save to local_save.es3 in same format as cloud (levels, achievements, lastModifiedTimestamp only)
-                var es3File = new ES3File(LOCAL_SAVE_FILE, false);
+                // Save only levels and achievements
+                var es3File = new ES3File(TEMP_FILE, false);
                 es3File.Save("levels", data.levels);
                 es3File.Save("achievements", data.achievements);
-                es3File.Save("lastModifiedTimestamp", data.lastModifiedTimestamp);
                 es3File.Sync();
+                
+                // Get the raw JSON string
+                string json = es3File.LoadRawString();
+                
+                // Save to local_save.json
+                string filePath = Path.Combine(Application.persistentDataPath, LOCAL_SAVE_FILE);
+                File.WriteAllText(filePath, json);
+                
+                // Clean up temp file
+                if (ES3.FileExists(TEMP_FILE))
+                    ES3.DeleteFile(TEMP_FILE);
+                
+                // Update timestamp in metadata only
+                data.UpdateTimestamp();
+                ES3.Save(LAST_SYNC_TIMESTAMP_KEY, data.lastModifiedTimestamp, METADATA_FILE);
                 
                 OnLocalSaveChanged?.Invoke();
             }
@@ -230,18 +260,30 @@ namespace GameProgress
         }
 
         /// <summary>
-        /// Load cloud save data (original response from API)
+        /// Load cloud save data from JSON file (original API response)
         /// </summary>
         public static GameSaveData LoadCloud()
         {
             try
             {
-                if (!ES3.FileExists(CLOUD_SAVE_FILE))
+                string filePath = Path.Combine(Application.persistentDataPath, CLOUD_SAVE_FILE);
+                if (!File.Exists(filePath))
                 {
                     return new GameSaveData();
                 }
                 
-                var es3File = new ES3File(CLOUD_SAVE_FILE, false);
+                string json = File.ReadAllText(filePath);
+                if (string.IsNullOrEmpty(json))
+                {
+                    return new GameSaveData();
+                }
+                
+                // Use ES3 to parse the ES3 format JSON
+                const string TEMP_FILE = "temp_cloud_load.json";
+                var es3File = new ES3File(TEMP_FILE, false);
+                es3File.SaveRaw(System.Text.Encoding.UTF8.GetBytes(json));
+                es3File.Sync();
+                
                 var data = new GameSaveData();
                 
                 // Load levels
@@ -269,6 +311,10 @@ namespace GameProgress
                 {
                     data.lastModifiedTimestamp = es3File.Load<long>("lastModifiedTimestamp", 0);
                 }
+                
+                // Clean up temp file
+                if (ES3.FileExists(TEMP_FILE))
+                    ES3.DeleteFile(TEMP_FILE);
                 
                 // Ensure dictionaries are initialized
                 if (data.levels == null) data.levels = new Dictionary<string, LevelData>();
@@ -298,12 +344,24 @@ namespace GameProgress
             {
                 data.UpdateTimestamp();
                 
-                // Save to cloud_save.es3 (backup of original response)
-                var es3File = new ES3File(CLOUD_SAVE_FILE, false);
+                // Use ES3 to serialize
+                const string TEMP_FILE = "temp_cloud.json";
+                var es3File = new ES3File(TEMP_FILE, false);
                 es3File.Save("levels", data.levels);
                 es3File.Save("achievements", data.achievements);
                 es3File.Save("lastModifiedTimestamp", data.lastModifiedTimestamp);
                 es3File.Sync();
+                
+                // Get the JSON string
+                string json = es3File.LoadRawString();
+                
+                // Write to JSON file
+                string filePath = Path.Combine(Application.persistentDataPath, CLOUD_SAVE_FILE);
+                File.WriteAllText(filePath, json);
+                
+                // Clean up temp file
+                if (ES3.FileExists(TEMP_FILE))
+                    ES3.DeleteFile(TEMP_FILE);
                 
                 OnCloudSaveChanged?.Invoke();
             }
@@ -326,8 +384,7 @@ namespace GameProgress
         }
 
         /// <summary>
-        /// Save raw JSON from API to both cloud_save.es3 (original) and local_save.es3 (copy)
-        /// API returns ES3 file format, we just copy it directly - no parsing needed!
+        /// Save raw JSON from API: cloud_save.json (full original as-is), local_save.json (just copy the file!)
         /// </summary>
         public static bool SaveCloudJsonToLocal(string json)
         {
@@ -341,15 +398,15 @@ namespace GameProgress
             {
                 Debug.Log($"Saving raw JSON from API. Length: {json.Length}");
                 
-                // Save to cloud_save.es3 (original response backup)
-                var cloudFile = new ES3File(CLOUD_SAVE_FILE, false);
-                cloudFile.SaveRaw(System.Text.Encoding.UTF8.GetBytes(json));
-                cloudFile.Sync();
+                // Save full JSON to cloud_save.json (original response - save as-is!)
+                string cloudPath = Path.Combine(Application.persistentDataPath, CLOUD_SAVE_FILE);
+                File.WriteAllText(cloudPath, json);
+                Debug.Log($"Saved to {CLOUD_SAVE_FILE}");
                 
-                // Copy to local_save.es3 (1:1 copy for gameplay)
-                var localFile = new ES3File(LOCAL_SAVE_FILE, false);
-                localFile.SaveRaw(System.Text.Encoding.UTF8.GetBytes(json));
-                localFile.Sync();
+                // Just copy the file to local_save.json - that's it!
+                string localPath = Path.Combine(Application.persistentDataPath, LOCAL_SAVE_FILE);
+                File.Copy(cloudPath, localPath, true);
+                Debug.Log($"Copied to {LOCAL_SAVE_FILE}");
                 
                 // Verify it was saved
                 var testData = LoadLocal();
@@ -367,29 +424,29 @@ namespace GameProgress
         }
 
         /// <summary>
-        /// Get local save as raw JSON string for API upload (ES3 format)
-        /// Reads from local_save.es3
+        /// Get local save as JSON string for API upload
+        /// Reads from local_save.json
         /// </summary>
         public static string GetLocalSaveAsJson()
         {
             try
             {
-                if (!ES3.FileExists(LOCAL_SAVE_FILE))
+                string filePath = Path.Combine(Application.persistentDataPath, LOCAL_SAVE_FILE);
+                if (!File.Exists(filePath))
                 {
                     return "{}";
                 }
                 
-                // Use ES3File to get the raw JSON string from local_save.es3
-                var es3File = new ES3File(LOCAL_SAVE_FILE, false);
-                string rawJson = es3File.LoadRawString();
+                // Read JSON file
+                string json = File.ReadAllText(filePath);
                 
                 // If empty, return empty JSON object
-                if (string.IsNullOrEmpty(rawJson))
+                if (string.IsNullOrEmpty(json))
                 {
                     return "{}";
                 }
                 
-                return rawJson;
+                return json;
             }
             catch (Exception e)
             {
@@ -412,11 +469,14 @@ namespace GameProgress
         /// </summary>
         public static void ClearAllSaves()
         {
-            // Delete save files
-            if (ES3.FileExists(LOCAL_SAVE_FILE))
-                ES3.DeleteFile(LOCAL_SAVE_FILE);
-            if (ES3.FileExists(CLOUD_SAVE_FILE))
-                ES3.DeleteFile(CLOUD_SAVE_FILE);
+            // Delete JSON save files
+            string localPath = Path.Combine(Application.persistentDataPath, LOCAL_SAVE_FILE);
+            if (File.Exists(localPath))
+                File.Delete(localPath);
+            
+            string cloudPath = Path.Combine(Application.persistentDataPath, CLOUD_SAVE_FILE);
+            if (File.Exists(cloudPath))
+                File.Delete(cloudPath);
             
             // Clear metadata
             if (ES3.KeyExists(FIRST_LOGIN_FLAG_KEY, METADATA_FILE))
