@@ -210,6 +210,7 @@ GameObject:
   m_Component:
   - component: {fileID: 154464633}
   - component: {fileID: 154464634}
+  - component: {fileID: 154464635}
   m_Layer: 5
   m_Name: Settings UI
   m_TagString: Untagged
@@ -261,6 +262,28 @@ MonoBehaviour:
   startHidden: 1
   hideOthersOnShow: 1
   canBeHiddenByOthers: 1
+--- !u!114 &154464635
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 154464632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cadc26e84cb08e04f9c024aad8c42cd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  duration: 0.5
+  overshoot: 1.7
+  delay: 0
+  showEventName: SettingsButton
+  animateOnStart: 1
+  hideEventName: SettingsBackButton
+  disableAfterHide: 1
+  hideDurationMultiplier: 0.5
+  excludedGameObjects:
+  - Background
 --- !u!1001 &169325313
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -505,7 +528,7 @@ GameObject:
   - component: {fileID: 280687340}
   - component: {fileID: 280687339}
   m_Layer: 5
-  m_Name: Background Black
+  m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5437,6 +5460,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1413247445}
   - component: {fileID: 1413247446}
+  - component: {fileID: 1413247447}
   m_Layer: 5
   m_Name: Login UI
   m_TagString: Untagged
@@ -5487,10 +5511,32 @@ MonoBehaviour:
   showOnEvents:
   - ShowLoginUI
   hideOnEvents:
-  - 
+  - HideLoginUI
   startHidden: 1
   hideOthersOnShow: 1
   canBeHiddenByOthers: 1
+--- !u!114 &1413247447
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1413247444}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cadc26e84cb08e04f9c024aad8c42cd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  duration: 0.8
+  overshoot: 2
+  delay: 0
+  showEventName: ShowLoginUI
+  animateOnStart: 1
+  hideEventName: HideLoginUI
+  disableAfterHide: 1
+  hideDurationMultiplier: 0.5
+  excludedGameObjects:
+  - Background
 --- !u!1001 &1427959526
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6991,6 +7037,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1966606342}
   - component: {fileID: 1966606343}
+  - component: {fileID: 1966606344}
   m_Layer: 5
   m_Name: Profile UI
   m_TagString: Untagged
@@ -7041,6 +7088,28 @@ MonoBehaviour:
   startHidden: 1
   hideOthersOnShow: 1
   canBeHiddenByOthers: 1
+--- !u!114 &1966606344
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1966606341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cadc26e84cb08e04f9c024aad8c42cd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  duration: 0.5
+  overshoot: 1.7
+  delay: 0
+  showEventName: ProfileButton
+  animateOnStart: 1
+  hideEventName: ProfileBackButton
+  disableAfterHide: 1
+  hideDurationMultiplier: 0.5
+  excludedGameObjects:
+  - Background
 --- !u!1 &2000268867
 GameObject:
   m_ObjectHideFlags: 0

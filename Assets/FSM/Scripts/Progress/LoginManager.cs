@@ -85,7 +85,6 @@ namespace GameProgress
             }
 
             OnLoginSuccess?.Invoke();
-            Debug.Log($"Login state set: LoggedIn=true, StudentID={studentId}, PrimaryID={primaryId}");
         }
 
         /// <summary>

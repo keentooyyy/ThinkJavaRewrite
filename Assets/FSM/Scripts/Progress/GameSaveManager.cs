@@ -25,7 +25,6 @@ namespace GameProgress
         public static event Action OnLocalSaveChanged;
         public static event Action OnCloudSaveChanged;
         public static event Action OnSyncComplete;
-        public static event Action OnCloudSaveReadyToCopy;
 
         /// <summary>
         /// Check if this is the first login (no local save exists or first login flag is set)
@@ -53,7 +52,7 @@ namespace GameProgress
         /// <summary>
         /// Mark that first login has been completed
         /// </summary>
-        private static void MarkFirstLoginComplete()
+        public static void MarkFirstLoginComplete()
         {
             ES3.Save(FIRST_LOGIN_FLAG_KEY, false, METADATA_FILE);
         }
@@ -77,38 +76,6 @@ namespace GameProgress
             ES3.Save(LAST_SYNC_TIMESTAMP_KEY, timestamp, METADATA_FILE);
         }
 
-        /// <summary>
-        /// Handle first login: Check if local save exists (from cloud download), otherwise create new
-        /// </summary>
-        public static void HandleFirstLogin()
-        {
-            if (!IsFirstLogin())
-            {
-                Debug.Log("Not first login, skipping first login sync");
-                return;
-            }
-
-            Debug.Log("First login detected - checking for existing save data");
-
-            // Check if local save exists (could be from cloud download or previous session)
-            var localData = LoadLocal();
-            bool hasLocalData = localData.levels.Count > 0 || localData.achievements.Count > 0;
-
-            if (!hasLocalData)
-            {
-                Debug.Log("No existing save data found - creating new local save");
-                // No save data, create fresh local save
-                var newLocalData = new GameSaveData();
-                SaveLocal(newLocalData);
-            }
-            else
-            {
-                Debug.Log($"Existing save data found: {localData.levels.Count} levels, {localData.achievements.Count} achievements");
-            }
-
-            // Mark first login as complete
-            MarkFirstLoginComplete();
-        }
 
         /// <summary>
         /// Sync on login/connect: Push local to cloud, then pull cloud to local
@@ -208,7 +175,7 @@ namespace GameProgress
             }
             catch (Exception e)
             {
-                Debug.LogError($"Failed to load local save: {e.Message}");
+                Debug.LogError($"Failed to load local save: {e.Message}\nStack trace: {e.StackTrace}");
                 return new GameSaveData();
             }
         }
@@ -228,7 +195,6 @@ namespace GameProgress
             try
             {
                 // Use ES3 to save - it will create plain JSON
-                const string TEMP_KEY = "temp_save";
                 const string TEMP_FILE = "temp_local.json";
                 
                 // Save only levels and achievements
@@ -411,18 +377,17 @@ namespace GameProgress
             OnLocalSaveChanged?.Invoke();
         }
 
-        // Static constructor to subscribe CopyCloudToLocal to the event
-        static GameSaveManager()
-        {
-            OnCloudSaveReadyToCopy += CopyCloudToLocal;
-        }
 
         /// <summary>
-        /// Save raw JSON from API: cloud_save.json (full original as-is), local_save.json (just copy the file!)
+        /// Save raw JSON from API following the flow:
+        /// 1. Save to cloud_save.json
+        /// 2. Verify it matches original response (1:1 comparison)
+        /// 3. Copy to local_save.json
+        /// 4. Complete
         /// </summary>
-        public static bool SaveCloudJsonToLocal(string json)
+        public static bool SaveCloudJsonToLocal(string originalJson)
         {
-            if (string.IsNullOrEmpty(json))
+            if (string.IsNullOrEmpty(originalJson))
             {
                 Debug.LogError("Cannot save empty JSON");
                 return false;
@@ -430,32 +395,45 @@ namespace GameProgress
 
             try
             {
-                Debug.Log($"Saving raw JSON from API. Length: {json.Length}");
-                
-                // Step 1: Save full JSON to cloud_save.json (original response - save as-is!)
+                // Save JSON to cloud_save.json
                 string cloudPath = Path.Combine(Application.persistentDataPath, CLOUD_SAVE_FILE);
-                File.WriteAllText(cloudPath, json);
+                File.WriteAllText(cloudPath, originalJson);
                 
-                // Step 2: Verify cloud save was written successfully
-                if (!File.Exists(cloudPath))
+                // Verify cloud save
+                if (!File.Exists(cloudPath) || new FileInfo(cloudPath).Length == 0)
                 {
-                    Debug.LogError($"Failed to create {CLOUD_SAVE_FILE}");
+                    Debug.LogError($"Failed to save {CLOUD_SAVE_FILE}");
                     return false;
                 }
                 
-                var fileInfo = new FileInfo(cloudPath);
-                if (fileInfo.Length == 0)
+                // Verify content matches original
+                string savedJson = File.ReadAllText(cloudPath);
+                if (savedJson != originalJson)
                 {
-                    Debug.LogError($"{CLOUD_SAVE_FILE} is empty!");
+                    Debug.LogError($"Saved file does not match original response!");
                     return false;
                 }
                 
-                Debug.Log($"Successfully saved to {CLOUD_SAVE_FILE}");
+                // Copy to local_save.json
+                string localPath = Path.Combine(Application.persistentDataPath, LOCAL_SAVE_FILE);
+                File.WriteAllText(localPath, savedJson);
                 
-                // Fire event to trigger copy after file is confirmed to have content
+                // Verify copy
+                if (!File.Exists(localPath))
+                {
+                    Debug.LogError($"Failed to create {LOCAL_SAVE_FILE}!");
+                    return false;
+                }
+                
+                string copiedContent = File.ReadAllText(localPath);
+                if (copiedContent != savedJson)
+                {
+                    Debug.LogError($"Copy failed! Content mismatch.");
+                    return false;
+                }
+                
+                OnLocalSaveChanged?.Invoke();
                 OnCloudSaveChanged?.Invoke();
-                OnCloudSaveReadyToCopy?.Invoke();
-                
                 return true;
             }
             catch (Exception e)

@@ -52,7 +52,6 @@ namespace GameProgress
         public static void SetAPIBaseUrl(string url)
         {
             apiBaseUrl = url.TrimEnd('/');
-            Debug.Log($"API Base URL set to: {apiBaseUrl}");
         }
 
         /// <summary>
@@ -83,7 +82,6 @@ namespace GameProgress
             if (request.result == UnityWebRequest.Result.Success)
             {
                 string responseText = request.downloadHandler.text;
-                Debug.Log($"Login successful. Response: {responseText}");
                 
                 // Parse the login response to extract the primary ID
                 int primaryId = 0;
@@ -93,11 +91,6 @@ namespace GameProgress
                     if (loginResponse != null && loginResponse.student != null && loginResponse.student.id > 0)
                     {
                         primaryId = loginResponse.student.id;
-                        Debug.Log($"Extracted primary ID from login response: {primaryId}");
-                    }
-                    else
-                    {
-                        Debug.LogWarning("Failed to parse primary ID from login response");
                     }
                 }
                 catch (Exception e)
@@ -136,9 +129,6 @@ namespace GameProgress
             
             string url = $"{apiBaseUrl}/progress/{primaryId}/";
             
-            Debug.Log($"Downloading save data from: {url}");
-            Debug.Log($"Primary ID: {primaryId}, Student ID: {studentId}, Password: {(string.IsNullOrEmpty(password) ? "EMPTY" : "***")}");
-            
             // Try POST first (as per API docs with form data)
             WWWForm form = new WWWForm();
             form.AddField("student_id", studentId);
@@ -168,11 +158,6 @@ namespace GameProgress
             if (request.result == UnityWebRequest.Result.Success)
             {
                 string jsonResponse = request.downloadHandler.text;
-                Debug.Log($"Save data downloaded successfully. Response length: {jsonResponse.Length} chars");
-                
-                // Log first 1000 chars for debugging
-                string preview = jsonResponse.Length > 1000 ? jsonResponse.Substring(0, 1000) + "..." : jsonResponse;
-                Debug.Log($"Response preview: {preview}");
 
                 // Check if response is actually empty or error message
                 if (string.IsNullOrEmpty(jsonResponse) || jsonResponse.Trim() == "{}" || jsonResponse.Trim() == "null")

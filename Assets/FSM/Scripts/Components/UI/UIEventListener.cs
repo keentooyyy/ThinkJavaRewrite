@@ -104,6 +104,14 @@ namespace UI
 
         private void Hide()
         {
+            // Check if there's a UIScaleBounceAnimator - if so, let it handle the hiding
+            var animator = GetComponent<UIScaleBounceAnimator>();
+            if (animator != null)
+            {
+                // Animator will handle hiding with animation
+                return;
+            }
+            
             gameObject.SetActive(false);
         }
     }

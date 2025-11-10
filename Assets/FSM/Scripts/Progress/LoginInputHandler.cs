@@ -111,8 +111,6 @@ namespace GameProgress
             // Set values to FSM blackboard
             loginFSM.blackboard.SetVariableValue("studentId", studentId);
             loginFSM.blackboard.SetVariableValue("password", password);
-            
-            Debug.Log($"LoginInputHandler: Set studentId='{studentId}' to FSM blackboard");
         }
         
         /// <summary>

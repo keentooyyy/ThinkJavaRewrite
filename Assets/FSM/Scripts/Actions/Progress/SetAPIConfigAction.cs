@@ -29,8 +29,7 @@ namespace NodeCanvas.Tasks.Actions
 
             GameSaveAPIManager.SetAPIBaseUrl(apiBaseUrl.value);
             GameSaveAPIManager.SetTimeout(timeoutSeconds.value);
-
-            Debug.Log($"API Config set: URL={apiBaseUrl.value}, Timeout={timeoutSeconds.value}s");
+            
             EndAction(true);
         }
     }

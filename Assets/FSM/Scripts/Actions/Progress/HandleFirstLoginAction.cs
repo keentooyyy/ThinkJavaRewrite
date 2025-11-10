@@ -42,7 +42,7 @@ namespace NodeCanvas.Tasks.Actions
                 // Not logged in - create new local save
                 var newLocalData = new GameSaveData();
                 GameSaveManager.SaveLocal(newLocalData);
-                GameSaveManager.HandleFirstLogin(); // Mark first login complete
+                GameSaveManager.MarkFirstLoginComplete();
                 
                 if (outSuccess != null) outSuccess.value = true;
                 if (onCompleteEventName != null && !string.IsNullOrEmpty(onCompleteEventName.value))
@@ -87,34 +87,22 @@ namespace NodeCanvas.Tasks.Actions
 
             if (downloadSuccess)
             {
-                // File was saved, check if it has data
-                var localData = GameSaveManager.LoadLocal();
-                bool hasData = (localData.levels != null && localData.levels.Count > 0) ||
-                              (localData.achievements != null && localData.achievements.Count > 0);
-
-                if (hasData)
-                {
-                    // Cloud save exists and was loaded
-                    Debug.Log($"Cloud save found - {localData.levels.Count} levels, {localData.achievements.Count} achievements");
-                }
-                else
-                {
-                    // No cloud save, create fresh local save
-                    Debug.Log("No cloud save found - creating new local save");
-                    var newLocalData = new GameSaveData();
-                    GameSaveManager.SaveLocal(newLocalData);
-                }
+                // File was saved successfully - just mark first login complete
+                GameSaveManager.MarkFirstLoginComplete();
             }
             else
             {
                 // Download failed (network error, etc.), create fresh local save
-                Debug.LogWarning($"Could not download from API: {downloadMessage}. Creating new local save.");
                 var newLocalData = new GameSaveData();
                 GameSaveManager.SaveLocal(newLocalData);
+                GameSaveManager.MarkFirstLoginComplete();
             }
 
-            // Mark first login as complete
-            GameSaveManager.HandleFirstLogin();
+            // Fire HideLoginUI event and wait for animation to complete
+            UIEventManager.Trigger("HideLoginUI");
+            
+            // Wait for hide animation to complete (0.8s base * 0.5 multiplier = 0.4s + buffer)
+            yield return new UnityEngine.WaitForSeconds(0.5f);
 
             if (outSuccess != null) outSuccess.value = true;
 
