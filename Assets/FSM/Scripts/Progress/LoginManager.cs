@@ -13,6 +13,9 @@ namespace GameProgress
         private const string LOGIN_RESPONSE_KEY = "GameSave_LoginResponse"; // Complete login response with all fields
         private const string ES3_FILE = "LoginData.es3";
 
+        // Track if logout just happened (to prevent HandleFirstLoginAction from creating cloud save)
+        private static bool justLoggedOut = false;
+
         // Events
         public static event Action OnLoginSuccess;
         public static event Action OnLogout;
@@ -82,6 +85,9 @@ namespace GameProgress
             // Save the complete parsed response object (contains ALL fields: status, student, section, profile, test_status)
             ES3.Save(LOGIN_RESPONSE_KEY, loginResponse, ES3_FILE);
 
+            // Clear logout flag when logging in
+            justLoggedOut = false;
+
             OnLoginSuccess?.Invoke();
         }
 
@@ -116,8 +122,26 @@ namespace GameProgress
             if (ES3.KeyExists(LOGIN_RESPONSE_KEY, ES3_FILE))
                 ES3.DeleteKey(LOGIN_RESPONSE_KEY, ES3_FILE);
             
+            // Set flag to indicate logout just happened
+            justLoggedOut = true;
+            
             OnLogout?.Invoke();
-            Debug.Log("Logged out");
+        }
+
+        /// <summary>
+        /// Check if logout just happened (to prevent HandleFirstLoginAction from creating cloud save)
+        /// </summary>
+        public static bool HasJustLoggedOut()
+        {
+            return justLoggedOut;
+        }
+
+        /// <summary>
+        /// Clear the logout flag (call this after handling logout)
+        /// </summary>
+        public static void ClearLogoutFlag()
+        {
+            justLoggedOut = false;
         }
 
         /// <summary>

@@ -21,13 +21,14 @@ MonoBehaviour:
     mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"},"RetryClicked":{"_value":"RetryButton","_name":"RetryClicked","_id":"e473d04e-2493-4efc-a901-1bc2c67f54c2","$type":"NodeCanvas.Framework.Variable`1[[System.String,
     mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"},"MenuClicked":{"_value":"MenuButton","_name":"MenuClicked","_id":"61291c6f-bf3e-4057-ad05-5b0058d8fdac","$type":"NodeCanvas.Framework.Variable`1[[System.String,
     mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"},"PauseClicked":{"_value":"PauseButton","_name":"PauseClicked","_id":"ea6e7d17-d924-45df-959c-19b4d9813395","$type":"NodeCanvas.Framework.Variable`1[[System.String,
+    mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"},"LogoutClicked":{"_value":"LogoutButton","_name":"LogoutClicked","_id":"8a365e33-a08a-4785-b7dc-da56307c52ab","$type":"NodeCanvas.Framework.Variable`1[[System.String,
     mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"}}}}'
   _objectReferences: []
   _graphSource:
     _version: 3.3
     _category: 
     _comments: 
-    _translation: {x: 84.01225, y: 209.81386}
-    _zoomFactor: 0.7297769
+    _translation: {x: -641.7435, y: 242.6812}
+    _zoomFactor: 0.93556106
   _haltSerialization: 0
   _externalSerializationFile: {fileID: 0}

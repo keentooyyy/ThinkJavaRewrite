@@ -23,6 +23,20 @@ namespace NodeCanvas.Tasks.Actions
 
         protected override void OnExecute()
         {
+            // Check if logout just happened - if so, skip creating cloud save
+            if (LoginManager.HasJustLoggedOut())
+            {
+                LoginManager.ClearLogoutFlag(); // Clear the flag
+                
+                if (outSuccess != null) outSuccess.value = true;
+                if (onCompleteEventName != null && !string.IsNullOrEmpty(onCompleteEventName.value))
+                {
+                    UIEventManager.Trigger(onCompleteEventName.value);
+                }
+                EndAction(true);
+                return;
+            }
+
             // Check if logged in
             if (LoginManager.IsLoggedIn())
             {

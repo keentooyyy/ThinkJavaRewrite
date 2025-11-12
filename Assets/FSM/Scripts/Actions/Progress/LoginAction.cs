@@ -8,7 +8,7 @@ using UnityEngine;
 namespace NodeCanvas.Tasks.Actions
 {
     [Category("■ Custom/Progress/Login")]
-    [Description("Login to API with student_id and password. Saves credentials if successful.")]
+    [Description("Login to API with student_id and password. Saves credentials if successful. Clears blackboard variables after successful login.")]
     public class LoginAction : ActionTask
     {
         [Tooltip("Student ID (from blackboard)")]
@@ -69,6 +69,9 @@ namespace NodeCanvas.Tasks.Actions
                 // Save credentials - only password and complete LoginResponse (all other data is in LoginResponse)
                 LoginManager.SetLoggedIn(password.value, loginResponse);
                 
+                // Clear blackboard variables after successful login
+                ClearBlackboardVariables();
+                
                 if (outSuccess != null) outSuccess.value = true;
                 if (outError != null) outError.value = "";
 
@@ -89,6 +92,35 @@ namespace NodeCanvas.Tasks.Actions
             }
 
             EndAction(success);
+        }
+
+        private void ClearBlackboardVariables()
+        {
+            try
+            {
+                // Clear studentId and password from blackboard
+                if (blackboard != null)
+                {
+                    if (blackboard.variables.ContainsKey("studentId"))
+                    {
+                        blackboard.SetVariableValue("studentId", "");
+                    }
+                    if (blackboard.variables.ContainsKey("password"))
+                    {
+                        blackboard.SetVariableValue("password", "");
+                    }
+                }
+                
+                // Also clear the BBParameter values directly
+                if (studentId != null)
+                    studentId.value = "";
+                if (password != null)
+                    password.value = "";
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning($"LoginAction: Failed to clear blackboard variables: {e.Message}");
+            }
         }
 
         protected override void OnStop()

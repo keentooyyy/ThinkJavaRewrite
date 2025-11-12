@@ -40,6 +40,9 @@ namespace GameProgress
             // Subscribe to login button event
             UIEventManager.Subscribe(loginButtonEventName, OnLoginButtonClicked);
             
+            // Subscribe to login success event to clear input fields
+            LoginManager.OnLoginSuccess += ClearInputFields;
+            
             // Cache input field components
             CacheInputFields();
         }
@@ -136,10 +139,27 @@ namespace GameProgress
             return "";
         }
         
+        /// <summary>
+        /// Clear input field text values
+        /// </summary>
+        private void ClearInputFields()
+        {
+            if (studentIdTMPInput != null)
+                studentIdTMPInput.text = "";
+            else if (studentIdLegacyInput != null)
+                studentIdLegacyInput.text = "";
+            
+            if (passwordTMPInput != null)
+                passwordTMPInput.text = "";
+            else if (passwordLegacyInput != null)
+                passwordLegacyInput.text = "";
+        }
+
         private void OnDestroy()
         {
-            // Unsubscribe from event
+            // Unsubscribe from events
             UIEventManager.Unsubscribe(loginButtonEventName, OnLoginButtonClicked);
+            LoginManager.OnLoginSuccess -= ClearInputFields;
         }
         
         // Editor validation

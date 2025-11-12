@@ -97,32 +97,35 @@ namespace NodeCanvas.Tasks.Actions
             }
 
             // Load profile picture from URL
+            bool loadingImage = false;
             if (profileImage.value != null && loginResponse != null && loginResponse.profile != null)
             {
                 string profilePictureUrl = loginResponse.profile.profile_picture;
                 if (!string.IsNullOrEmpty(profilePictureUrl))
                 {
+                    loadingImage = true;
                     loadImageCoroutine = CoroutineHelper.StartStaticCoroutine(LoadProfilePicture(profilePictureUrl));
                 }
                 else
                 {
                     // No profile picture URL - clear image
+                    Debug.LogWarning("UpdateProfileUI: Profile picture URL is empty or null");
                     profileImage.value.sprite = null;
+                    profileImage.value.enabled = false;
                 }
-            }
-
-            // Log the complete response for debugging
-            if (loginResponse != null)
-            {
-                string fullName = FormatFullName(loginResponse);
-                Debug.Log($"UpdateProfileUI: Updated profile with complete response. Status: {loginResponse.status}, Student ID: {studentData.student_id}, Name: {fullName}, Section: {loginResponse.section?.full_section ?? "N/A"}");
             }
             else
             {
-                Debug.Log($"UpdateProfileUI: Updated profile with Student ID: {studentData.student_id}, Name: {studentData.first_name} {studentData.last_name}");
+                Debug.LogWarning($"UpdateProfileUI: Cannot load profile picture - profileImage: {profileImage.value != null}, loginResponse: {loginResponse != null}, profile: {loginResponse?.profile != null}");
             }
+
             
-            EndAction(true);
+            // Only end action immediately if we're not loading an image
+            // If loading image, the coroutine will call EndAction when done
+            if (!loadingImage)
+            {
+                EndAction(true);
+            }
         }
 
         /// <summary>
@@ -184,23 +187,22 @@ namespace NodeCanvas.Tasks.Actions
         private IEnumerator LoadProfilePicture(string url)
         {
             if (profileImage.value == null || string.IsNullOrEmpty(url))
+            {
+                EndAction(true);
                 yield break;
+            }
 
             // Generate cache key from URL
             string cacheKey = GetCacheKey(url);
             
-            // Try to load from cache first
-            Texture2D cachedTexture = LoadCachedTexture(cacheKey);
-            if (cachedTexture != null)
+            // Try to load sprite from cache first
+            Sprite cachedSprite = LoadCachedSprite(cacheKey);
+            if (cachedSprite != null)
             {
-                // Use cached texture
-                Sprite sprite = Sprite.Create(
-                    cachedTexture,
-                    new Rect(0, 0, cachedTexture.width, cachedTexture.height),
-                    new Vector2(0.5f, 0.5f)
-                );
-                profileImage.value.sprite = sprite;
-                Debug.Log($"UpdateProfileUI: Loaded profile picture from cache for {url}");
+                // Use cached sprite
+                profileImage.value.sprite = cachedSprite;
+                profileImage.value.enabled = true;
+                EndAction(true);
                 yield break;
             }
 
@@ -214,9 +216,6 @@ namespace NodeCanvas.Tasks.Actions
                     Texture2D texture = DownloadHandlerTexture.GetContent(www);
                     if (texture != null)
                     {
-                        // Save to cache
-                        SaveTextureToCache(cacheKey, texture);
-                        
                         // Create sprite from texture
                         Sprite sprite = Sprite.Create(
                             texture,
@@ -224,16 +223,31 @@ namespace NodeCanvas.Tasks.Actions
                             new Vector2(0.5f, 0.5f)
                         );
                         
+                        // Save sprite to cache
+                        SaveSpriteToCache(cacheKey, sprite);
+                        
                         // Set sprite to image component
                         profileImage.value.sprite = sprite;
-                        Debug.Log($"UpdateProfileUI: Downloaded and cached profile picture from {url}");
+                        profileImage.value.enabled = true;
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"UpdateProfileUI: Failed to create texture from downloaded data");
                     }
                 }
                 else
                 {
-                    Debug.LogWarning($"UpdateProfileUI: Failed to load profile picture from {url}: {www.error}");
+                    Debug.LogWarning($"UpdateProfileUI: Failed to load profile picture from {url}: {www.error} (Result: {www.result})");
+                    // Clear image on failure
+                    if (profileImage.value != null)
+                    {
+                        profileImage.value.sprite = null;
+                    }
                 }
             }
+            
+            // End action after image loading completes (success or failure)
+            EndAction(true);
         }
 
         /// <summary>
@@ -254,41 +268,75 @@ namespace NodeCanvas.Tasks.Actions
         }
 
         /// <summary>
-        /// Load cached texture from ES3
+        /// Load cached sprite from ES3
         /// </summary>
-        private Texture2D LoadCachedTexture(string cacheKey)
+        private Sprite LoadCachedSprite(string cacheKey)
         {
             try
             {
                 if (ES3.KeyExists(cacheKey))
                 {
-                    Texture2D texture = ES3.Load<Texture2D>(cacheKey);
-                    if (texture != null)
+                    // Load PNG bytes from ES3
+                    byte[] imageBytes = ES3.Load<byte[]>(cacheKey);
+                    if (imageBytes != null && imageBytes.Length > 0)
                     {
-                        return texture;
+                        // Create texture from bytes
+                        Texture2D texture = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+                        if (texture.LoadImage(imageBytes))
+                        {
+                            // Make texture readable
+                            texture.Apply(false, false);
+                            
+                            // Create sprite from texture
+                            Sprite sprite = Sprite.Create(
+                                texture,
+                                new Rect(0, 0, texture.width, texture.height),
+                                new Vector2(0.5f, 0.5f),
+                                100f // pixels per unit
+                            );
+                            
+                            return sprite;
+                        }
+                        else
+                        {
+                            Debug.LogWarning("UpdateProfileUI: Failed to load image from cached bytes");
+                            Object.Destroy(texture);
+                        }
                     }
                 }
             }
             catch (System.Exception e)
             {
-                Debug.LogWarning($"UpdateProfileUI: Failed to load cached texture: {e.Message}");
+                Debug.LogWarning($"UpdateProfileUI: Failed to load cached sprite: {e.Message}");
             }
             return null;
         }
 
         /// <summary>
-        /// Save texture to ES3 cache
+        /// Save sprite to ES3 cache as PNG bytes
         /// </summary>
-        private void SaveTextureToCache(string cacheKey, Texture2D texture)
+        private void SaveSpriteToCache(string cacheKey, Sprite sprite)
         {
             try
             {
-                ES3.Save(cacheKey, texture);
-                Debug.Log($"UpdateProfileUI: Saved profile picture to cache with key: {cacheKey}");
+                if (sprite != null && sprite.texture != null)
+                {
+                    // Encode sprite's texture to PNG bytes
+                    byte[] pngBytes = sprite.texture.EncodeToPNG();
+                    if (pngBytes != null && pngBytes.Length > 0)
+                    {
+                        // Save PNG bytes to ES3
+                        ES3.Save(cacheKey, pngBytes);
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"UpdateProfileUI: Failed to encode sprite texture to PNG");
+                    }
+                }
             }
             catch (System.Exception e)
             {
-                Debug.LogWarning($"UpdateProfileUI: Failed to save texture to cache: {e.Message}");
+                Debug.LogWarning($"UpdateProfileUI: Failed to save sprite to cache: {e.Message}");
             }
         }
 

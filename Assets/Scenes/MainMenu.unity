@@ -1765,6 +1765,7 @@ MonoBehaviour:
     Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]"},"studentID":{"_value":2,"_name":"studentID","_id":"d4c4bde0-9e76-49b7-85be-5d226a82c684","$type":"NodeCanvas.Framework.Variable`1[[TMPro.TMP_Text,
     Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]"},"profilePicture":{"_value":3,"_name":"profilePicture","_id":"3d37992a-0947-435e-8ea2-d1ec76765480","$type":"NodeCanvas.Framework.Variable`1[[UnityEngine.UI.Image,
     UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"},"sectionText":{"_value":4,"_name":"sectionText","_id":"f7ca2411-04ef-4e40-8de0-b8be615b93ee","$type":"NodeCanvas.Framework.Variable`1[[TMPro.TMP_Text,
+    Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]"},"bioText":{"_value":5,"_name":"bioText","_id":"7306c074-7ac1-44bb-a60d-31a5615552d9","$type":"NodeCanvas.Framework.Variable`1[[TMPro.TMP_Text,
     Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]"}}}'
   _objectReferences:
   - {fileID: 0}
@@ -1772,6 +1773,7 @@ MonoBehaviour:
   - {fileID: 1562704122}
   - {fileID: 4123587654150882688}
   - {fileID: 343437824}
+  - {fileID: 1544028362}
   _serializedVariables:
   - _json: '{"_value":1,"_name":"studentName","_id":"c667fb76-af43-438d-9794-ce9a11989826","$type":"NodeCanvas.Framework.Variable`1[[TMPro.TMP_Text,
       Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]"}'
@@ -1793,6 +1795,11 @@ MonoBehaviour:
     _references:
     - {fileID: 0}
     - {fileID: 343437824}
+  - _json: '{"_value":1,"_name":"bioText","_id":"7306c074-7ac1-44bb-a60d-31a5615552d9","$type":"NodeCanvas.Framework.Variable`1[[TMPro.TMP_Text,
+      Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]"}'
+    _references:
+    - {fileID: 0}
+    - {fileID: 1544028362}
 --- !u!114 &787556459
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7619,6 +7626,7 @@ GameObject:
   - component: {fileID: 1866288864}
   - component: {fileID: 1866288863}
   - component: {fileID: 1866288862}
+  - component: {fileID: 1866288865}
   m_Layer: 5
   m_Name: Logout
   m_TagString: Untagged
@@ -7727,6 +7735,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1866288860}
   m_CullTransparentMesh: 1
+--- !u!114 &1866288865
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1866288860}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 751bdc703eef65b4593e293288c00a24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eventName: LogoutButton
 --- !u!1 &1966606341
 GameObject:
   m_ObjectHideFlags: 0
