@@ -5,7 +5,7 @@ using UnityEngine;
 namespace GameProgress
 {
     /// <summary>
-    /// Runtime manager for achievements. Works with local save as source of truth.
+    /// Runtime manager for achievements. Works with cloud save as source of truth.
     /// </summary>
     public static class AchievementManager
     {
@@ -13,11 +13,11 @@ namespace GameProgress
         public static event Action<string> OnAchievementUnlocked;
 
         /// <summary>
-        /// Get all achievements from local save
+        /// Get all achievements from cloud save
         /// </summary>
         public static Dictionary<string, AchievementSaveData> GetAllAchievements()
         {
-            var saveData = GameSaveManager.LoadLocal();
+            var saveData = GameSaveManager.LoadCloud();
             return saveData.achievements ?? new Dictionary<string, AchievementSaveData>();
         }
 
@@ -44,11 +44,11 @@ namespace GameProgress
         }
 
         /// <summary>
-        /// Unlock an achievement (updates local save with timestamp)
+        /// Unlock an achievement (updates cloud save with timestamp)
         /// </summary>
         public static void UnlockAchievement(string achievementId, string title = null, string description = null)
         {
-            var saveData = GameSaveManager.LoadLocal();
+            var saveData = GameSaveManager.LoadCloud();
 
             if (!saveData.achievements.ContainsKey(achievementId))
             {
@@ -69,22 +69,22 @@ namespace GameProgress
                 if (!string.IsNullOrEmpty(description)) achievement.description = description;
 
                 // Save updates timestamp automatically
-                GameSaveManager.SaveLocal(saveData);
+                GameSaveManager.SaveCloud(saveData);
                 OnAchievementUnlocked?.Invoke(achievementId);
                 Debug.Log($"Achievement unlocked: {achievementId} - {achievement.title}");
             }
         }
 
         /// <summary>
-        /// Lock an achievement (for testing/reset) - updates local save
+        /// Lock an achievement (for testing/reset) - updates cloud save
         /// </summary>
         public static void LockAchievement(string achievementId)
         {
-            var saveData = GameSaveManager.LoadLocal();
+            var saveData = GameSaveManager.LoadCloud();
             if (saveData.achievements.ContainsKey(achievementId))
             {
                 saveData.achievements[achievementId].unlocked = false;
-                GameSaveManager.SaveLocal(saveData);
+                GameSaveManager.SaveCloud(saveData);
             }
         }
 
@@ -93,11 +93,11 @@ namespace GameProgress
         /// </summary>
         public static void InitializeAchievement(string achievementId, string title, string description)
         {
-            var saveData = GameSaveManager.LoadLocal();
+            var saveData = GameSaveManager.LoadCloud();
             if (!saveData.achievements.ContainsKey(achievementId))
             {
                 saveData.achievements[achievementId] = new AchievementSaveData(title, description, false);
-                GameSaveManager.SaveLocal(saveData);
+                GameSaveManager.SaveCloud(saveData);
             }
         }
     }

@@ -16,23 +16,84 @@ namespace GameProgress
     public static class GameSaveAPIManager
     {
         /// <summary>
-        /// Login response structure from Django API
+        /// Login response structure from Django API - contains all fields from the API response
         /// </summary>
         [Serializable]
-        private class LoginResponse
+        public class LoginResponse
         {
             public string status;
             public StudentData student;
+            public SectionData section;
+            public ProfileData profile;
+            public TestStatusData test_status;
         }
 
+        /// <summary>
+        /// Student data structure from login response
+        /// </summary>
         [Serializable]
-        private class StudentData
+        public class StudentData
         {
             public int id; // Primary ID used in progress endpoints
             public string student_id; // String student ID like "17-2168-338"
             public string first_name;
             public string last_name;
             public string role;
+        }
+
+        /// <summary>
+        /// Section data from login response
+        /// </summary>
+        [Serializable]
+        public class SectionData
+        {
+            public string dept;
+            public int year_level;
+            public string section_letter;
+            public string full_section;
+        }
+
+        /// <summary>
+        /// Profile data from login response
+        /// </summary>
+        [Serializable]
+        public class ProfileData
+        {
+            public string middle_initial;
+            public string suffix;
+            public string date_of_birth;
+            public int? age;
+            public string bio;
+            public string phone;
+            public string father_name;
+            public string mother_name;
+            public AddressData address;
+            public string profile_picture;
+            public object[] education; // Can be array of education objects
+        }
+
+        /// <summary>
+        /// Address data from profile
+        /// </summary>
+        [Serializable]
+        public class AddressData
+        {
+            public string street;
+            public string barangay;
+            public string city;
+            public string province;
+        }
+
+        /// <summary>
+        /// Test status data from login response
+        /// </summary>
+        [Serializable]
+        public class TestStatusData
+        {
+            public bool has_taken_pretest;
+            public bool has_taken_posttest;
+            public bool all_levels_completed;
+            public bool can_take_posttest;
         }
         // API Configuration
         private static string apiBaseUrl = "https://your-api-domain.com/api";
@@ -64,9 +125,9 @@ namespace GameProgress
 
         /// <summary>
         /// Login to API (POST /api/student_login/)
-        /// Returns the primary student ID in the onComplete callback as the second parameter (if successful)
+        /// Returns the primary student ID, full student data, and complete login response in the onComplete callback (if successful)
         /// </summary>
-        public static IEnumerator LoginCoroutine(string studentId, string password, Action<bool, string, int> onComplete = null)
+        public static IEnumerator LoginCoroutine(string studentId, string password, Action<bool, string, int, StudentData, LoginResponse> onComplete = null)
         {
             string url = $"{apiBaseUrl}/student_login/";
             
@@ -83,14 +144,17 @@ namespace GameProgress
             {
                 string responseText = request.downloadHandler.text;
                 
-                // Parse the login response to extract the primary ID
+                // Parse the login response to extract the primary ID, full student data, and complete response
                 int primaryId = 0;
+                StudentData studentData = null;
+                LoginResponse loginResponse = null;
                 try
                 {
-                    var loginResponse = JsonUtility.FromJson<LoginResponse>(responseText);
+                    loginResponse = JsonUtility.FromJson<LoginResponse>(responseText);
                     if (loginResponse != null && loginResponse.student != null && loginResponse.student.id > 0)
                     {
                         primaryId = loginResponse.student.id;
+                        studentData = loginResponse.student;
                     }
                 }
                 catch (Exception e)
@@ -99,14 +163,14 @@ namespace GameProgress
                 }
                 
                 OnLoginSuccess?.Invoke();
-                onComplete?.Invoke(true, responseText, primaryId);
+                onComplete?.Invoke(true, responseText, primaryId, studentData, loginResponse);
             }
             else
             {
                 string error = $"Login failed: {request.error} (Code: {request.responseCode})";
                 Debug.LogError(error);
                 OnLoginFailed?.Invoke(error);
-                onComplete?.Invoke(false, error, 0);
+                onComplete?.Invoke(false, error, 0, null, null);
             }
 
             request.Dispose();
@@ -170,8 +234,8 @@ namespace GameProgress
                     yield break;
                 }
 
-                // Save raw JSON directly to local (no parsing needed!)
-                bool saveSuccess = GameSaveManager.SaveCloudJsonToLocal(jsonResponse);
+                // Save raw JSON directly to cloud_save.json (no parsing needed!)
+                bool saveSuccess = GameSaveManager.SaveCloudJson(jsonResponse);
                 
                 if (saveSuccess)
                 {
@@ -234,7 +298,7 @@ namespace GameProgress
                 yield break;
             }
             
-            string jsonData = GameSaveManager.GetLocalSaveAsJson();
+            string jsonData = GameSaveManager.GetCloudSaveAsJson();
             
             if (string.IsNullOrEmpty(jsonData) || jsonData == "{}")
             {

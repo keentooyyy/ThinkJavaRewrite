@@ -8,41 +8,32 @@ using UnityEngine;
 namespace NodeCanvas.Tasks.Actions
 {
     [Category("■ Custom/Progress/Login")]
-    [Description("Handle first login: If logged in, download from API. Otherwise, create new local save.")]
+    [Description("Initialize save: If logged in, sync with cloud. Otherwise, create new local save.")]
     public class HandleFirstLoginAction : ActionTask
     {
-        [Tooltip("Optional: Event to trigger after first login handling")]
+        [Tooltip("Optional: Event to trigger after initialization")]
         public BBParameter<string> onCompleteEventName;
 
         [Tooltip("Output: Success status")]
         public BBParameter<bool> outSuccess;
 
-        private Coroutine firstLoginCoroutine;
+        private Coroutine initCoroutine;
 
-        protected override string info => "Handle First Login";
+        protected override string info => "Initialize Save";
 
         protected override void OnExecute()
         {
-            if (!GameSaveManager.IsFirstLogin())
-            {
-                Debug.Log("Not first login, skipping");
-                if (outSuccess != null) outSuccess.value = true;
-                EndAction(true);
-                return;
-            }
-
             // Check if logged in
             if (LoginManager.IsLoggedIn())
             {
-                // Logged in - download from API
-                firstLoginCoroutine = CoroutineHelper.StartStaticCoroutine(FirstLoginWithAPI());
+                // Logged in - sync with cloud (download, compare, upload if different)
+                initCoroutine = CoroutineHelper.StartStaticCoroutine(InitWithCloudSync());
             }
             else
             {
-                // Not logged in - create new local save
-                var newLocalData = new GameSaveData();
-                GameSaveManager.SaveLocal(newLocalData);
-                GameSaveManager.MarkFirstLoginComplete();
+                // Not logged in - create new cloud save
+                var newCloudData = new GameSaveData();
+                GameSaveManager.SaveCloud(newCloudData);
                 
                 if (outSuccess != null) outSuccess.value = true;
                 if (onCompleteEventName != null && !string.IsNullOrEmpty(onCompleteEventName.value))
@@ -53,7 +44,7 @@ namespace NodeCanvas.Tasks.Actions
             }
         }
 
-        private IEnumerator FirstLoginWithAPI()
+        private IEnumerator InitWithCloudSync()
         {
             int primaryId = LoginManager.GetStudentPrimaryID();
             string studentId = LoginManager.GetStudentID();
@@ -61,7 +52,7 @@ namespace NodeCanvas.Tasks.Actions
 
             if (primaryId <= 0)
             {
-                Debug.LogError("No primary ID found for first login. User may need to login again.");
+                Debug.LogError("No primary ID found. User may need to login again.");
                 if (outSuccess != null) outSuccess.value = false;
                 EndAction(false);
                 yield break;
@@ -69,7 +60,7 @@ namespace NodeCanvas.Tasks.Actions
 
             if (string.IsNullOrEmpty(studentId) || string.IsNullOrEmpty(password))
             {
-                Debug.LogError("No credentials found for first login");
+                Debug.LogError("No credentials found");
                 if (outSuccess != null) outSuccess.value = false;
                 EndAction(false);
                 yield break;
@@ -85,23 +76,19 @@ namespace NodeCanvas.Tasks.Actions
                 downloadMessage = m;
             });
 
-            if (downloadSuccess)
+            if (!downloadSuccess)
             {
-                // File was saved successfully - just mark first login complete
-                GameSaveManager.MarkFirstLoginComplete();
+                // Download failed (network error, etc.), create fresh cloud save
+                Debug.LogWarning("Download failed, creating fresh cloud save");
+                var newCloudData = new GameSaveData();
+                GameSaveManager.SaveCloud(newCloudData);
             }
-            else
-            {
-                // Download failed (network error, etc.), create fresh local save
-                var newLocalData = new GameSaveData();
-                GameSaveManager.SaveLocal(newLocalData);
-                GameSaveManager.MarkFirstLoginComplete();
-            }
+            // If download succeeded, data is already saved to cloud_save.json
 
             // Fire HideLoginUI event and wait for animation to complete
             UIEventManager.Trigger("HideLoginUI");
             
-            // Wait for hide animation to complete (0.8s base * 0.5 multiplier = 0.4s + buffer)
+            // Wait for hide animation to complete
             yield return new UnityEngine.WaitForSeconds(0.5f);
 
             if (outSuccess != null) outSuccess.value = true;
@@ -116,9 +103,9 @@ namespace NodeCanvas.Tasks.Actions
 
         protected override void OnStop()
         {
-            if (firstLoginCoroutine != null)
+            if (initCoroutine != null)
             {
-                CoroutineHelper.StopStaticCoroutine(firstLoginCoroutine);
+                CoroutineHelper.StopStaticCoroutine(initCoroutine);
             }
         }
     }

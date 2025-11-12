@@ -5,7 +5,7 @@ using UnityEngine;
 namespace GameProgress
 {
     /// <summary>
-    /// Runtime manager for level progress. Works with local save as source of truth.
+    /// Runtime manager for level progress. Works with cloud save as source of truth.
     /// </summary>
     public static class LevelManager
     {
@@ -14,11 +14,11 @@ namespace GameProgress
         public static event Action<string, float> OnBestTimeUpdated;
 
         /// <summary>
-        /// Get all levels from local save
+        /// Get all levels from cloud save
         /// </summary>
         public static Dictionary<string, LevelData> GetAllLevels()
         {
-            var saveData = GameSaveManager.LoadLocal();
+            var saveData = GameSaveManager.LoadCloud();
             return saveData.levels ?? new Dictionary<string, LevelData>();
         }
 
@@ -45,11 +45,11 @@ namespace GameProgress
         }
 
         /// <summary>
-        /// Unlock a level (updates local save with timestamp)
+        /// Unlock a level (updates cloud save with timestamp)
         /// </summary>
         public static void UnlockLevel(string levelId)
         {
-            var saveData = GameSaveManager.LoadLocal();
+            var saveData = GameSaveManager.LoadCloud();
 
             if (!saveData.levels.ContainsKey(levelId))
             {
@@ -62,7 +62,7 @@ namespace GameProgress
                 {
                     level.unlocked = true;
                     // Save updates timestamp automatically
-                    GameSaveManager.SaveLocal(saveData);
+                    GameSaveManager.SaveCloud(saveData);
                     OnLevelUnlocked?.Invoke(levelId);
                     Debug.Log($"Level unlocked: {levelId}");
                     return;
@@ -70,15 +70,15 @@ namespace GameProgress
             }
 
             // Save if new level was created
-            GameSaveManager.SaveLocal(saveData);
+            GameSaveManager.SaveCloud(saveData);
         }
 
         /// <summary>
-        /// Update level completion time (updates bestTime if better) - updates local save
+        /// Update level completion time (updates bestTime if better) - updates cloud save
         /// </summary>
         public static void UpdateLevelTime(string levelId, float completionTime)
         {
-            var saveData = GameSaveManager.LoadLocal();
+            var saveData = GameSaveManager.LoadCloud();
 
             if (!saveData.levels.ContainsKey(levelId))
             {
@@ -98,7 +98,7 @@ namespace GameProgress
             }
 
             // Save updates timestamp automatically
-            GameSaveManager.SaveLocal(saveData);
+            GameSaveManager.SaveCloud(saveData);
         }
 
         /// <summary>
@@ -120,15 +120,15 @@ namespace GameProgress
         }
 
         /// <summary>
-        /// Lock a level (for testing/reset) - updates local save
+        /// Lock a level (for testing/reset) - updates cloud save
         /// </summary>
         public static void LockLevel(string levelId)
         {
-            var saveData = GameSaveManager.LoadLocal();
+            var saveData = GameSaveManager.LoadCloud();
             if (saveData.levels.ContainsKey(levelId))
             {
                 saveData.levels[levelId].unlocked = false;
-                GameSaveManager.SaveLocal(saveData);
+                GameSaveManager.SaveCloud(saveData);
             }
         }
     }

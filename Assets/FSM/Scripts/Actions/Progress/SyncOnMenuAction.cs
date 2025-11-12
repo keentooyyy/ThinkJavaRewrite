@@ -8,8 +8,8 @@ using UnityEngine;
 namespace NodeCanvas.Tasks.Actions
 {
     [Category("■ Custom/Progress/Login")]
-    [Description("Sync on login: Push local to cloud, upload to API, download from API, pull cloud to local. Only works if logged in.")]
-    public class SyncOnLoginAction : ActionTask
+    [Description("Sync on menu: Download from cloud, compare with local. If different, upload local to cloud (overwrite). If same, skip.")]
+    public class SyncOnMenuAction : ActionTask
     {
         [Tooltip("Optional: Event to trigger on sync complete")]
         public BBParameter<string> onSyncCompleteEventName;
@@ -20,9 +20,12 @@ namespace NodeCanvas.Tasks.Actions
         [Tooltip("Output: Error message if failed")]
         public BBParameter<string> outError;
 
+        [Tooltip("Output: Whether data was different and upload was performed")]
+        public BBParameter<bool> outDataWasDifferent;
+
         private Coroutine syncCoroutine;
 
-        protected override string info => "Sync On Login";
+        protected override string info => "Sync On Menu (Compare & Upload if Different)";
 
         protected override void OnExecute()
         {
@@ -32,6 +35,7 @@ namespace NodeCanvas.Tasks.Actions
                 Debug.LogWarning("Cannot sync: User is not logged in");
                 if (outSuccess != null) outSuccess.value = false;
                 if (outError != null) outError.value = "Not logged in";
+                if (outDataWasDifferent != null) outDataWasDifferent.value = false;
                 EndAction(false);
                 return;
             }
@@ -50,6 +54,7 @@ namespace NodeCanvas.Tasks.Actions
                 Debug.LogError("No primary ID found for sync. User may need to login again.");
                 if (outSuccess != null) outSuccess.value = false;
                 if (outError != null) outError.value = "No primary ID - please login again";
+                if (outDataWasDifferent != null) outDataWasDifferent.value = false;
                 EndAction(false);
                 yield break;
             }
@@ -59,54 +64,69 @@ namespace NodeCanvas.Tasks.Actions
                 Debug.LogError("No credentials found for sync");
                 if (outSuccess != null) outSuccess.value = false;
                 if (outError != null) outError.value = "No credentials";
+                if (outDataWasDifferent != null) outDataWasDifferent.value = false;
                 EndAction(false);
                 yield break;
             }
 
-            // Step 1: Get cloud_save.json for upload
-            Debug.Log("Step 1: Preparing cloud save for upload");
-
-            // Step 2: Upload cloud to API (using primary ID)
-            bool uploadSuccess = false;
-            string uploadMessage = "";
-            yield return GameSaveAPIManager.UploadSaveDataCoroutine(primaryId, studentId, password, (s, m) =>
-            {
-                uploadSuccess = s;
-                uploadMessage = m;
-            });
-
-            if (!uploadSuccess)
-            {
-                Debug.LogError($"Upload failed: {uploadMessage}");
-                if (outSuccess != null) outSuccess.value = false;
-                if (outError != null) outError.value = $"Upload failed: {uploadMessage}";
-                EndAction(false);
-                yield break;
-            }
-
-            Debug.Log("Step 2: Uploaded to API");
-
-            // Step 3: Download from API (gets latest from server, using primary ID)
+            // Step 1: Download latest from API
+            Debug.Log("Step 1: Downloading latest data from cloud...");
             bool downloadSuccess = false;
-            string downloadMessage = "";
+            string apiResponseJson = "";
             yield return GameSaveAPIManager.DownloadSaveDataCoroutine(primaryId, studentId, password, (s, data, m) =>
             {
                 downloadSuccess = s;
-                downloadMessage = m;
+                apiResponseJson = m; // m is the raw JSON response string
             });
 
             if (!downloadSuccess)
             {
-                Debug.LogError($"Download failed: {downloadMessage}");
+                Debug.LogError($"Download failed: {apiResponseJson}");
                 if (outSuccess != null) outSuccess.value = false;
-                if (outError != null) outError.value = $"Download failed: {downloadMessage}";
+                if (outError != null) outError.value = $"Download failed: {apiResponseJson}";
+                if (outDataWasDifferent != null) outDataWasDifferent.value = false;
                 EndAction(false);
                 yield break;
             }
 
-            Debug.Log("Step 3: Downloaded from API");
+            Debug.Log("Step 1: Downloaded from cloud");
 
-            // Step 4: Cloud save is already updated by DownloadSaveDataCoroutine
+            // Step 2: Compare API response JSON with cloud_save.json
+            bool dataIsDifferent = GameSaveManager.IsCloudResponseDifferent(apiResponseJson);
+            
+            if (outDataWasDifferent != null)
+                outDataWasDifferent.value = dataIsDifferent;
+
+            if (dataIsDifferent)
+            {
+                Debug.Log("Step 2: API response and cloud_save.json are different - uploading cloud_save.json to cloud...");
+                
+                // Step 3: Upload cloud_save.json to API (overwrite)
+                bool uploadSuccess = false;
+                string uploadMessage = "";
+                yield return GameSaveAPIManager.UploadSaveDataCoroutine(primaryId, studentId, password, (s, m) =>
+                {
+                    uploadSuccess = s;
+                    uploadMessage = m;
+                });
+
+                if (!uploadSuccess)
+                {
+                    Debug.LogError($"Upload failed: {uploadMessage}");
+                    if (outSuccess != null) outSuccess.value = false;
+                    if (outError != null) outError.value = $"Upload failed: {uploadMessage}";
+                    EndAction(false);
+                    yield break;
+                }
+
+                Debug.Log("Step 3: Uploaded cloud_save.json to cloud (overwritten)");
+            }
+            else
+            {
+                Debug.Log("Step 2: API response and cloud_save.json are the same - skipping upload");
+            }
+
+            // Step 4: API response is already saved to cloud_save.json by DownloadSaveDataCoroutine
             Debug.Log("Step 4: Cloud save is up to date");
 
             if (outSuccess != null) outSuccess.value = true;

@@ -51,19 +51,23 @@ namespace NodeCanvas.Tasks.Actions
         {
             bool success = false;
             string error = "";
+            string responseJson = "";
             int primaryId = 0;
+            GameSaveAPIManager.LoginResponse loginResponse = null;
 
-            yield return GameSaveAPIManager.LoginCoroutine(studentId.value, password.value, (s, msg, id) =>
+            yield return GameSaveAPIManager.LoginCoroutine(studentId.value, password.value, (s, msg, id, data, response) =>
             {
                 success = s;
                 error = msg;
+                responseJson = s ? msg : ""; // msg is the response JSON when successful
                 primaryId = id;
+                loginResponse = response;
             });
 
             if (success)
             {
-                // Save credentials and set logged in with primary ID
-                LoginManager.SetLoggedIn(studentId.value, password.value, primaryId);
+                // Save credentials - only password and complete LoginResponse (all other data is in LoginResponse)
+                LoginManager.SetLoggedIn(password.value, loginResponse);
                 
                 if (outSuccess != null) outSuccess.value = true;
                 if (outError != null) outError.value = "";
