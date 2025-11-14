@@ -88,6 +88,7 @@ namespace GameUI
                 }
             }, target, duration)
             .SetEase(ease)
+            .SetUpdate(true)
             .OnComplete(() =>
             {
                 if (scoreText != null)

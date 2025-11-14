@@ -1,6 +1,7 @@
 using NodeCanvas.Framework;
 using ParadoxNotion.Design;
 using UnityEngine;
+using GameState;
 
 namespace NodeCanvas.Tasks.Actions
 {
@@ -27,10 +28,13 @@ namespace NodeCanvas.Tasks.Actions
         [Tooltip("Output: normalized progress (elapsed / max), clamped 0..1.")]
         public BBParameter<float> outNormalized;
 
+        private float accumulatedElapsed;
+
         protected override string info => "Read Owner Time";
 
         protected override void OnExecute()
         {
+            accumulatedElapsed = outElapsedSeconds != null ? outElapsedSeconds.value : 0f;
             UpdateOutputs();
             if (!continuous.value)
             {
@@ -42,18 +46,21 @@ namespace NodeCanvas.Tasks.Actions
         {
             if (continuous.value)
             {
-                UpdateOutputs();
+                if (GameFreezeManager.AllowsGameplayUpdate)
+                {
+                    accumulatedElapsed += Time.deltaTime;
+                    UpdateOutputs();
+                }
             }
         }
 
         private void UpdateOutputs()
         {
-            float elapsed = ownerSystemElapsedTime;
             float max = Mathf.Max(0.0001f, maxTimeSeconds.value);
-            float remaining = Mathf.Max(0f, max - elapsed);
-            float normalized = Mathf.Clamp01(elapsed / max);
+            float remaining = Mathf.Max(0f, max - accumulatedElapsed);
+            float normalized = Mathf.Clamp01(accumulatedElapsed / max);
 
-            if (outElapsedSeconds != null) outElapsedSeconds.value = elapsed;
+            if (outElapsedSeconds != null) outElapsedSeconds.value = accumulatedElapsed;
             if (outRemainingSeconds != null) outRemainingSeconds.value = remaining;
             if (outNormalized != null) outNormalized.value = normalized;
         }

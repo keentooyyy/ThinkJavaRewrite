@@ -29,7 +29,6 @@ namespace GameUI
         [SerializeField] private string startEventName = "ScoreCounted";
         [Tooltip("Legacy: if set and startEventName is empty, listen to this old event name.")]
         [SerializeField] private string successEventName = "ScoreComputed";
-
         private Sequence sequence;
 
         private void Awake() { }
@@ -78,7 +77,7 @@ namespace GameUI
             {
                 sequence.Kill();
             }
-            sequence = DOTween.Sequence();
+            sequence = DOTween.Sequence().SetUpdate(true);
 
             for (int i = 0; i < stars.Length; i++)
             {
@@ -92,7 +91,7 @@ namespace GameUI
                     t.localScale = Vector3.zero;
                     cg.alpha = 0f;
 
-                    var s = DOTween.Sequence();
+                    var s = DOTween.Sequence().SetUpdate(true);
                     s.AppendInterval(startDelay + i * perStarDelay);
                     s.Append(t.DOScale(popScale, popDuration * 0.6f).SetEase(popEase));
                     s.Join(cg.DOFade(1f, popDuration * 0.6f));
@@ -106,6 +105,7 @@ namespace GameUI
                     cg.alpha = inactiveAlpha;
                 }
             }
+            
         }
 
         private static CanvasGroup GetOrAddCanvasGroup(GameObject go)

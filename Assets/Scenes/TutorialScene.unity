@@ -1081,7 +1081,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000061035156, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &121649638
@@ -2017,6 +2017,7 @@ MonoBehaviour:
   inactiveAlpha: 0.25
   startEventName: ScoreCounted
   successEventName: ScoreComputed
+  onCompleteEventName: StarsRevealed
 --- !u!1 &308682785
 GameObject:
   m_ObjectHideFlags: 0
@@ -4244,7 +4245,7 @@ MonoBehaviour:
   slotPairs:
   - dataTypeSlot: {fileID: 308682786}
     variableSlot: {fileID: 1653233677}
-    successEventName: 
+    successEventName: ShowSuccessUI
 --- !u!1 &1094266406 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2817352914058051660, guid: 76ab589e17495b249bdcec7f7e5719c0, type: 3}
@@ -7463,7 +7464,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   kind: 1
   dataType: 1
-  variableName: myNam
+  variableName: myName
 --- !u!114 &1637028831
 MonoBehaviour:
   m_ObjectHideFlags: 0

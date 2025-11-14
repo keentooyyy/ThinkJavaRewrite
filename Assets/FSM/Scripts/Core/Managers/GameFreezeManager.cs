@@ -14,7 +14,7 @@ namespace GameState
 
     /// <summary>
     /// Centralized helper for pausing gameplay while allowing selective inputs.
-    /// Dialogue freeze blocks movement but lets whitelisted buttons through.
+    /// Dialogue freeze pauses gameplay time but lets whitelisted buttons through.
     /// Full freeze pauses time scale and ignores all gameplay buttons.
     /// </summary>
     public static class GameFreezeManager
@@ -43,7 +43,7 @@ namespace GameState
         public static bool IsDialogueFreeze => currentFreeze == GameFreezeType.Dialogue;
         public static bool IsFullFreeze => currentFreeze == GameFreezeType.Full;
         public static bool AllowsMovementInput => currentFreeze == GameFreezeType.None;
-        public static bool AllowsGameplayUpdate => currentFreeze != GameFreezeType.Full;
+        public static bool AllowsGameplayUpdate => currentFreeze == GameFreezeType.None;
 
         public static void SetFreeze(GameFreezeType freezeType)
         {
@@ -52,16 +52,17 @@ namespace GameState
                 return;
             }
 
-            if (currentFreeze == GameFreezeType.Full && freezeType != GameFreezeType.Full)
-            {
-                RestoreTimeScale();
-            }
+            bool wasFullFreeze = currentFreeze == GameFreezeType.Full;
 
             currentFreeze = freezeType;
 
             if (currentFreeze == GameFreezeType.Full)
             {
                 ApplyTimeScaleFreeze();
+            }
+            else if (wasFullFreeze)
+            {
+                RestoreTimeScale();
             }
 
             InputManager.Clear();
