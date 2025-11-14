@@ -35,6 +35,12 @@ namespace GameInteraction
         [SerializeField, Min(0f)] private float dropImpulse = 2f;
         [SerializeField] private AudioSource errorAudio;
 
+        [Header("Pickup Parenting")]
+        [Tooltip("Optional override for where rejected pickups are reparented to.")]
+        [SerializeField] private Transform pickupsParentOverride;
+        [Tooltip("Fallback lookup name if no override is assigned.")]
+        [SerializeField] private string pickupsParentName = "Pickups & Interactables Canvas";
+
         [Header("Coordination")]
         [SerializeField] private PickupPuzzleFSMController puzzleController;
 
@@ -48,12 +54,14 @@ namespace GameInteraction
         private PickupPuzzleMetadata currentMetadata;
         private Tween shakeTween;
         private Vector3 originalLocalPosition;
+        private Transform resolvedPickupsParent;
 
         private void Awake()
         {
             AutoAssignSnapPoint();
             ResolvePuzzleController();
             SyncSlotId();
+            ResolvePickupsParent();
             originalLocalPosition = transform.localPosition;
         }
 
@@ -68,6 +76,7 @@ namespace GameInteraction
             AutoAssignSnapPoint();
             ResolvePuzzleController();
             SyncSlotId();
+            resolvedPickupsParent = pickupsParentOverride;
         }
 #endif
 
@@ -112,7 +121,7 @@ namespace GameInteraction
                 var existing = currentInteractable.gameObject;
                 ResetState(false);
                 EnablePhysics(existing);
-                existing.transform.SetParent(null, true);
+                existing.transform.SetParent(GetPickupsParent(), true);
                 TransformUtilities.SetWorldScale(existing.transform, TransformUtilities.NormalizeWorldScale(existing.transform.lossyScale));
                 MaintainWorldScale.Detach(existing);
             }
@@ -150,7 +159,7 @@ namespace GameInteraction
             var go = currentInteractable.gameObject;
             ResetState(playAudio);
             EnablePhysics(go);
-            go.transform.SetParent(null, true);
+            go.transform.SetParent(GetPickupsParent(), true);
             TransformUtilities.SetWorldScale(go.transform, TransformUtilities.NormalizeWorldScale(go.transform.lossyScale));
             MaintainWorldScale.Detach(go);
             NotifyPuzzleController();
@@ -193,7 +202,7 @@ namespace GameInteraction
 
         private void DropToGround(GameObject go, bool playAudio, bool startFromSnapPoint = false)
         {
-            go.transform.SetParent(null, true);
+            go.transform.SetParent(GetPickupsParent(), true);
             TransformUtilities.SetWorldScale(go.transform, TransformUtilities.NormalizeWorldScale(go.transform.lossyScale));
             MaintainWorldScale.Detach(go);
 
@@ -393,6 +402,44 @@ namespace GameInteraction
             if (tagged != null)
             {
                 puzzleController = tagged.GetComponent<PickupPuzzleFSMController>();
+            }
+        }
+
+        private Transform GetPickupsParent()
+        {
+            if (pickupsParentOverride != null)
+            {
+                return pickupsParentOverride;
+            }
+
+            if (resolvedPickupsParent == null && !string.IsNullOrEmpty(pickupsParentName))
+            {
+                var go = GameObject.Find(pickupsParentName);
+                if (go != null)
+                {
+                    resolvedPickupsParent = go.transform;
+                }
+            }
+
+            return resolvedPickupsParent;
+        }
+
+        private void ResolvePickupsParent()
+        {
+            if (pickupsParentOverride != null)
+            {
+                resolvedPickupsParent = pickupsParentOverride;
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(pickupsParentName))
+            {
+                var go = GameObject.Find(pickupsParentName);
+                resolvedPickupsParent = go != null ? go.transform : null;
+            }
+            else
+            {
+                resolvedPickupsParent = null;
             }
         }
 
