@@ -3039,12 +3039,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _parentBlackboard: {fileID: 0}
   _serializedBlackboard: '{"_variables":{"outRemainingSeconds":{"_name":"outRemainingSeconds","_id":"32895fb6-77c4-40e1-84e3-e450f26b7491","$type":"NodeCanvas.Framework.Variable`1[[System.Single,
-    mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"}}}'
-  _objectReferences: []
+    mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"},"gameOverTextObject":{"_value":1,"_name":"gameOverTextObject","_id":"d190f77c-eeb6-4441-bcf3-2023b234175e","$type":"NodeCanvas.Framework.Variable`1[[UnityEngine.GameObject,
+    UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]"}}}'
+  _objectReferences:
+  - {fileID: 0}
+  - {fileID: 1537805232}
   _serializedVariables:
   - _json: '{"_name":"outRemainingSeconds","_id":"32895fb6-77c4-40e1-84e3-e450f26b7491","$type":"NodeCanvas.Framework.Variable`1[[System.Single,
       mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"}'
     _references: []
+  - _json: '{"_value":1,"_name":"gameOverTextObject","_id":"d190f77c-eeb6-4441-bcf3-2023b234175e","$type":"NodeCanvas.Framework.Variable`1[[UnityEngine.GameObject,
+      UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]"}'
+    _references:
+    - {fileID: 0}
+    - {fileID: 1537805232}
 --- !u!114 &506383990
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10418,9 +10426,9 @@ GameObject:
   - component: {fileID: 2072971874}
   - component: {fileID: 2072971876}
   - component: {fileID: 2072971875}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Floor
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

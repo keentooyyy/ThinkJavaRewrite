@@ -2,7 +2,6 @@ using NodeCanvas.Framework;
 using ParadoxNotion.Design;
 using UnityEngine;
 using GameState;
-
 namespace NodeCanvas.Tasks.Actions
 {
     [Category("■ Custom/Timing")]
@@ -14,11 +13,6 @@ namespace NodeCanvas.Tasks.Actions
 
         [Tooltip("Continuously update outputs every frame while the state is active.")]
         public BBParameter<bool> continuous = true;
-
-        [RequiredField]
-        [BlackboardOnly]
-        [Tooltip("Output: elapsed seconds since this FSM started running.")]
-        public BBParameter<float> outElapsedSeconds;
 
         [BlackboardOnly]
         [Tooltip("Output: remaining seconds (max - elapsed), clamped to >= 0.")]
@@ -34,7 +28,7 @@ namespace NodeCanvas.Tasks.Actions
 
         protected override void OnExecute()
         {
-            accumulatedElapsed = outElapsedSeconds != null ? outElapsedSeconds.value : 0f;
+            accumulatedElapsed = 0f;
             UpdateOutputs();
             if (!continuous.value)
             {
@@ -60,9 +54,20 @@ namespace NodeCanvas.Tasks.Actions
             float remaining = Mathf.Max(0f, max - accumulatedElapsed);
             float normalized = Mathf.Clamp01(accumulatedElapsed / max);
 
-            if (outElapsedSeconds != null) outElapsedSeconds.value = accumulatedElapsed;
-            if (outRemainingSeconds != null) outRemainingSeconds.value = remaining;
-            if (outNormalized != null) outNormalized.value = normalized;
+            if (outRemainingSeconds != null)
+            {
+                outRemainingSeconds.value = remaining;
+            }
+
+            if (outNormalized != null)
+            {
+                outNormalized.value = normalized;
+            }
+
+            if (continuous.value && remaining <= 0f)
+            {
+                EndAction(true);
+            }
         }
     }
 }
