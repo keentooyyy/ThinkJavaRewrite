@@ -47,10 +47,19 @@ namespace NodeCanvas.Tasks.Actions
 
             // Only evaluate pairs that are filled - each pair works independently
             var filledPairs = new List<(PickupPuzzleFSMController.SlotPair pair, PickupPuzzleConfig.RequiredPair config, string successEvent)>();
-            var slotsToReject = new List<(PickupSlot slot, PickupPuzzleFSMController.SlotPair pair)>();
+            var slotsToReject = new HashSet<PickupSlot>(); // Use HashSet to avoid duplicate rejections
 
+            int pairIndex = 0;
             foreach (var slotPair in slotPairs)
             {
+                pairIndex++;
+                
+                // Skip pairs that have already succeeded
+                if (controller.IsPairSuccessful(pairIndex - 1)) // pairIndex is 1-based, but we store 0-based
+                {
+                    continue;
+                }
+                
                 var dataSlot = slotPair.dataTypeSlot;
                 var varSlot = slotPair.variableSlot;
 
@@ -69,8 +78,8 @@ namespace NodeCanvas.Tasks.Actions
                 if (!config.TryGetPair(dataSlot.SlotDefinition, varSlot.SlotDefinition, out var requiredPair))
                 {
                     // Slot combination not found in config - reject both slots
-                    if (dataSlot.HasItem) slotsToReject.Add((dataSlot, slotPair));
-                    if (varSlot.HasItem) slotsToReject.Add((varSlot, slotPair));
+                    if (dataSlot.HasItem) slotsToReject.Add(dataSlot);
+                    if (varSlot.HasItem) slotsToReject.Add(varSlot);
                     continue;
                 }
 
@@ -82,20 +91,20 @@ namespace NodeCanvas.Tasks.Actions
                 bool typeMatches = actualType == requiredPair.requiredType;
                 bool variableMatches = actualVariable == expectedVariable;
 
-                // Determine which slots are wrong and reject only those
-                if (!typeMatches && dataSlot.HasItem)
+                // If pair is wrong (either slot is wrong), reject BOTH slots
+                if (!typeMatches || !variableMatches)
                 {
-                    slotsToReject.Add((dataSlot, slotPair));
-                }
-
-                if (!variableMatches && varSlot.HasItem)
-                {
-                    slotsToReject.Add((varSlot, slotPair));
+                    // Reject both slots in the pair when either is wrong
+                    if (dataSlot.HasItem) slotsToReject.Add(dataSlot);
+                    if (varSlot.HasItem) slotsToReject.Add(varSlot);
                 }
 
                 // If both are correct, this pair is valid
                 if (typeMatches && variableMatches)
                 {
+                    // Mark this pair as successful so we skip it in future evaluations
+                    controller.MarkPairSuccessful(pairIndex - 1); // pairIndex is 1-based, but we store 0-based
+                    
                     // Determine success event: use pair-specific event, then config event, then nothing
                     string successEvent = !string.IsNullOrEmpty(slotPair.successEventName) 
                         ? slotPair.successEventName 
@@ -107,12 +116,12 @@ namespace NodeCanvas.Tasks.Actions
                 }
             }
 
-            // Reject incorrect slots (only the ones that are wrong, not both)
+            // Reject incorrect slots (both slots in a pair are rejected if the pair is wrong)
             if (slotsToReject.Count > 0)
             {
-                foreach (var (slot, _) in slotsToReject)
+                foreach (var slot in slotsToReject)
                 {
-                    if (slot != null)
+                    if (slot != null && slot.HasItem)
                     {
                         slot.RejectCurrent();
                     }
@@ -138,17 +147,15 @@ namespace NodeCanvas.Tasks.Actions
                 }
             }
 
-            // Check if all pairs are filled (required for full puzzle success)
-            bool allPairsFilled = controller.AreAllSlotPairsFilled();
-
-            // Success: all pairs are filled and correct (events already triggered above for configured pairs)
-            if (allPairsFilled)
+            // Each pair works independently - if any pair is correct, it succeeds immediately
+            // No need to wait for other pairs
+            if (filledPairs.Count > 0)
             {
                 EndAction(true);
                 return;
             }
-
-            // Not all pairs are filled yet, but the filled ones are correct - keep waiting
+            
+            // No correct pairs found - this shouldn't happen if we got here, but just in case
             EndAction(false);
         }
     }

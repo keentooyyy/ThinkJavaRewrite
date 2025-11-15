@@ -37,6 +37,33 @@ namespace GameInteraction
         public SlotPair[] SlotPairs => slotPairs;
         public int SlotPairCount => slotPairs != null ? slotPairs.Length : 0;
 
+        // Track which pairs have already succeeded (by index) - runtime only, resets on scene load
+        private HashSet<int> successfulPairIndices = new HashSet<int>();
+
+        /// <summary>
+        /// Checks if a pair at the given index has already succeeded
+        /// </summary>
+        public bool IsPairSuccessful(int pairIndex)
+        {
+            return successfulPairIndices.Contains(pairIndex);
+        }
+
+        /// <summary>
+        /// Marks a pair as successful (by index)
+        /// </summary>
+        public void MarkPairSuccessful(int pairIndex)
+        {
+            successfulPairIndices.Add(pairIndex);
+        }
+
+        /// <summary>
+        /// Resets all successful pairs (useful for level restart)
+        /// </summary>
+        public void ResetSuccessfulPairs()
+        {
+            successfulPairIndices.Clear();
+        }
+
         // Backwards compatibility - returns first pair
         public PickupSlot DataTypeSlot => slotPairs != null && slotPairs.Length > 0 ? slotPairs[0].dataTypeSlot : null;
         public PickupSlot VariableSlot => slotPairs != null && slotPairs.Length > 0 ? slotPairs[0].variableSlot : null;
@@ -84,8 +111,13 @@ namespace GameInteraction
         {
             if (slotPairs == null || slotPairs.Length == 0) return false;
             
-            foreach (var pair in slotPairs)
+            for (int i = 0; i < slotPairs.Length; i++)
             {
+                var pair = slotPairs[i];
+                // Skip pairs that have already succeeded
+                if (IsPairSuccessful(i))
+                    continue;
+                    
                 if (pair.dataTypeSlot != null && pair.variableSlot != null &&
                     pair.dataTypeSlot.HasItem && pair.variableSlot.HasItem)
                 {

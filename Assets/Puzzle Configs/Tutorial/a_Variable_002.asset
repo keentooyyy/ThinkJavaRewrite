@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 877a40eee73efe74581b368ea8228d57, type: 3}
   m_Name: a_Variable_002
   m_EditorClassIdentifier: 
-  slotId: a_002
+  slotId: a_004
