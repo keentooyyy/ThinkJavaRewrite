@@ -2,6 +2,7 @@ using NodeCanvas.Framework;
 using ParadoxNotion.Design;
 using UnityEngine;
 using DialogueRuntime;
+using GameDataBank;
 
 namespace NodeCanvas.Tasks.Actions
 {
@@ -17,6 +18,7 @@ namespace NodeCanvas.Tasks.Actions
         public bool waitForCompletion = true;
 
         private bool awaitingCompletion;
+        private Dialogue.DialogueSequence pendingSequence;
 
         protected override string info => "Start Dialogue From Interactable";
 
@@ -46,6 +48,7 @@ namespace NodeCanvas.Tasks.Actions
             if (waitForCompletion)
             {
                 awaitingCompletion = true;
+                pendingSequence = source.Sequence;
                 system.BeginDialogue(source.Sequence, OnDialogueFinished);
             }
             else
@@ -67,11 +70,17 @@ namespace NodeCanvas.Tasks.Actions
             }
 
             awaitingCompletion = false;
+            pendingSequence = null;
         }
 
         private void OnDialogueFinished()
         {
             awaitingCompletion = false;
+            if (pendingSequence != null)
+            {
+                LevelDataBankRuntime.Instance?.UnlockByDialogue(pendingSequence);
+            }
+            pendingSequence = null;
             EndAction(true);
         }
     }

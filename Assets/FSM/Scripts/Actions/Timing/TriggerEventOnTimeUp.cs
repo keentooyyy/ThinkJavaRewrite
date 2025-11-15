@@ -90,7 +90,6 @@ namespace NodeCanvas.Tasks.Actions
             if (eventName != null && !string.IsNullOrEmpty(eventName.value))
             {
                 UIEventManager.Trigger(eventName.value);
-                // SendEvent(eventName.value);
             }
         }
 
