@@ -10862,6 +10862,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1727453317}
   - component: {fileID: 1727453318}
+  - component: {fileID: 1727453319}
   m_Layer: 5
   m_Name: Information UI
   m_TagString: Untagged
@@ -10914,6 +10915,28 @@ MonoBehaviour:
   startHidden: 1
   hideOthersOnShow: 1
   canBeHiddenByOthers: 1
+--- !u!114 &1727453319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1727453316}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cadc26e84cb08e04f9c024aad8c42cd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  duration: 0.5
+  overshoot: 1.7
+  delay: 0
+  showEventName: InfoButtton
+  animateOnStart: 1
+  hideEventName: InfoBackButton
+  disableAfterHide: 1
+  hideDurationMultiplier: 0.5
+  excludedGameObjects:
+  - Background
 --- !u!1 &1748363345
 GameObject:
   m_ObjectHideFlags: 0
