@@ -20,7 +20,6 @@ namespace GameProgress
 
         // Events
         public static event Action OnCloudSaveChanged;
-        public static event Action OnSyncComplete;
 
         /// <summary>
         /// Compare cloud API response JSON with cloud_save.json content

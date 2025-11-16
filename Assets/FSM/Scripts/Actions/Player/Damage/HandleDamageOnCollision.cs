@@ -4,6 +4,7 @@ using ParadoxNotion.Design;
 using UnityEngine;
 using DG.Tweening;
 using GameHazards;
+using GameEnemies;
 
 namespace NodeCanvas.Tasks.Actions
 {
@@ -85,6 +86,13 @@ namespace NodeCanvas.Tasks.Actions
                 return;
             }
 
+            // CRITICAL: Check if this is an enemy that's being stomped
+            // This prevents damage when player lands on enemy head (stomp detection)
+            if (IsStompingEnemy(collision))
+            {
+                return;
+            }
+
             // Get Hazard component from the collided object (or its parent)
             Hazard hazard = collision.GetComponent<Hazard>();
             if (hazard == null)
@@ -101,6 +109,70 @@ namespace NodeCanvas.Tasks.Actions
             {
                 TakeDamage(collision.transform.position, hazard);
             }
+        }
+
+        /// <summary>
+        /// Check if player is stomping an enemy (above enemy and falling/landing)
+        /// This prevents damage when stomping enemies
+        /// </summary>
+        private bool IsStompingEnemy(Collider2D hazardCollider)
+        {
+            // Check if this collider belongs to an enemy
+            Enemy enemy = hazardCollider.GetComponent<Enemy>();
+            if (enemy == null)
+            {
+                enemy = hazardCollider.GetComponentInParent<Enemy>();
+            }
+
+            if (enemy == null || enemy.IsDead)
+            {
+                return false; // Not an enemy or already dead
+            }
+
+            // Check if enemy has a head stomp detector (indicates it can be stomped)
+            if (enemy.HeadStompDetector == null)
+            {
+                return false; // Enemy can't be stomped
+            }
+
+            // Check if player is above the enemy AND directly on top (not from the side)
+            float playerY = agent.position.y;
+            float enemyY = enemy.transform.position.y;
+            float playerX = agent.position.x;
+            float enemyX = enemy.transform.position.x;
+            
+            float verticalDistance = playerY - enemyY;
+            float horizontalDistance = Mathf.Abs(playerX - enemyX);
+            
+            // Player must be significantly above enemy (not just slightly higher)
+            // AND horizontally close (directly above, not from the side)
+            bool playerIsAbove = verticalDistance > 0.3f; // At least 0.3 units above
+            bool isDirectlyAbove = horizontalDistance < 0.8f; // Within 0.8 units horizontally
+            
+            if (!playerIsAbove || !isDirectlyAbove)
+            {
+                return false; // Player is not directly above enemy - allow normal damage
+            }
+
+            // Check if player is falling or was recently falling (stomping)
+            if (rb != null)
+            {
+                float playerVelocityY = rb.velocity.y;
+                
+                // Player is stomping if:
+                // 1. Currently falling (negative velocity) AND directly above enemy
+                // 2. Or velocity is very low/zero AND player is very close vertically (just landed on top)
+                // This prevents damage when player lands on enemy head, even if velocity was zeroed by physics
+                bool isFalling = playerVelocityY < -0.5f;
+                bool justLanded = playerVelocityY <= 0.1f && verticalDistance < 1.0f; // Very close vertically and low velocity = just landed
+                
+                if (isFalling || justLanded)
+                {
+                    return true; // Player is stomping this enemy - don't apply damage
+                }
+            }
+
+            return false;
         }
 
         private void TakeDamage(Vector3 hazardPosition, Hazard hazard)

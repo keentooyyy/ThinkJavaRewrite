@@ -1,6 +1,7 @@
 using NodeCanvas.Framework;
 using ParadoxNotion.Design;
 using UnityEngine;
+using GameEnemies;
 
 namespace NodeCanvas.Tasks.Actions
 {
@@ -61,7 +62,33 @@ namespace NodeCanvas.Tasks.Actions
                 groundLayer
             );
 
-            bool grounded = hit != null;
+            // Filter out dead/dying enemies from ground check
+            bool grounded = false;
+            if (hit != null)
+            {
+                // Check if this collider belongs to a dead or dying enemy
+                Enemy enemy = hit.GetComponent<Enemy>();
+                if (enemy == null)
+                {
+                    // Check parent for enemy component
+                    enemy = hit.GetComponentInParent<Enemy>();
+                }
+                
+                // If it's an enemy, only count as ground if it's alive (stomped enemies still count until dead)
+                if (enemy != null)
+                {
+                    if (!enemy.IsDead)
+                    {
+                        grounded = true;
+                    }
+                    // Enemy is dead - don't count as ground
+                }
+                else
+                {
+                    // Not an enemy - count as ground normally
+                    grounded = true;
+                }
+            }
 
             isGrounded.value = grounded;
 
