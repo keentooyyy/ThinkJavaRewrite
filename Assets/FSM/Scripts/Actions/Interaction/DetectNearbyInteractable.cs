@@ -17,6 +17,10 @@ namespace NodeCanvas.Tasks.Actions
         [Tooltip("Store the nearby pickup slot (if any)")]
         public BBParameter<PickupSlot> nearbySlot;
 
+        [BlackboardOnly]
+        [Tooltip("Optional: Only detect empty slots when player is holding an object (carriedObject)")]
+        public BBParameter<GameObject> carriedObject;
+
         public enum DetectionMode
         {
             GenericOnly,
@@ -83,6 +87,15 @@ namespace NodeCanvas.Tasks.Actions
                         // Important: Return the item inside the slot, NOT the slot GameObject
                         // This is the key fix - the item can be picked up, not the slot
                         candidate = slot.CurrentObject;
+                        candidateSlot = slot;
+                    }
+                    // If no interactable and no slot with item, check if it's an empty slot
+                    // Only detect empty slots when player is holding an object (for placing items)
+                    // This allows placing items into empty slots (the slot itself implements IActionButtonProvider)
+                    else if (slot != null && !slot.HasItem && carriedObject.value != null)
+                    {
+                        // Return the slot GameObject itself so ShowInteractionPrompt can get IActionButtonProvider
+                        candidate = slot.gameObject;
                         candidateSlot = slot;
                     }
                     else
