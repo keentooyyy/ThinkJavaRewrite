@@ -20,6 +20,10 @@ namespace GameEnemies
         [Tooltip("Event name to trigger when stomped (will be sent to parent FSM)")]
         [SerializeField] private string stompEventName = "OnStomped";
 
+        [Header("Stomp Feedback")]
+        [Tooltip("Upward force applied to player when stomping enemy")]
+        [SerializeField] private float stompBounceForce = 8f;
+
         private bool wasStomped = false;
         private Enemy cachedEnemy;
         private Collider2D headStompCollider; // Cache the head stomp collider (CapsuleCollider2D)
@@ -130,6 +134,14 @@ namespace GameEnemies
             {
                 wasStomped = true;
                 
+                // Apply upward bounce force to player for feedback
+                if (playerRb != null)
+                {
+                    Vector2 currentVelocity = playerRb.velocity;
+                    currentVelocity.y = stompBounceForce;
+                    playerRb.velocity = currentVelocity;
+                }
+                
                 // Notify parent Enemy component (this is the important part)
                 cachedEnemy.MarkStomped();
                 
@@ -192,6 +204,15 @@ namespace GameEnemies
                     if (!wasStomped) // Only process once
                     {
                         wasStomped = true;
+                        
+                        // Apply upward bounce force to player for feedback
+                        if (playerRb != null)
+                        {
+                            Vector2 currentVelocity = playerRb.velocity;
+                            currentVelocity.y = stompBounceForce;
+                            playerRb.velocity = currentVelocity;
+                        }
+                        
                         cachedEnemy.MarkStomped();
                         
                         // Try to trigger event

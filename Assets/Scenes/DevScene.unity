@@ -12035,6 +12035,7 @@ MonoBehaviour:
   playerTag: Player
   minStompVelocity: -2
   stompEventName: OnStomped
+  stompBounceForce: 2
 --- !u!114 &2022158980
 MonoBehaviour:
   m_ObjectHideFlags: 0

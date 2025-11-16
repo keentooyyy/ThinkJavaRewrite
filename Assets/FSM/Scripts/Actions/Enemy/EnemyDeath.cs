@@ -3,6 +3,7 @@ using ParadoxNotion.Design;
 using UnityEngine;
 using GameEnemies;
 using System.Collections.Generic;
+using DG.Tweening;
 
 namespace NodeCanvas.Tasks.Actions
 {
@@ -22,6 +23,19 @@ namespace NodeCanvas.Tasks.Actions
         [Tooltip("Should disable colliders on death?")]
         public BBParameter<bool> disableColliders = true;
 
+        [UnityEngine.Header("Death Animation")]
+        [Tooltip("Enable blinking effect for dead enemies")]
+        [SerializeField] private bool enableBlinking = true;
+
+        [Tooltip("Blink duration (how long to blink before destroy)")]
+        [SerializeField] private float blinkDuration = 0.5f;
+
+        [Tooltip("Number of blinks before destroy")]
+        [SerializeField] private int blinkCount = 3;
+
+        [Tooltip("Minimum alpha during blink (0 = fully transparent, 1 = fully visible)")]
+        [SerializeField] private float minBlinkAlpha = 0.2f;
+
         [Tooltip("Time bonus in seconds for each enemy defeated")]
         public BBParameter<float> timeBonusPerEnemy = 10f;
 
@@ -30,6 +44,7 @@ namespace NodeCanvas.Tasks.Actions
 
         private Dictionary<Enemy, float> deathTimers = new Dictionary<Enemy, float>();
         private List<Enemy> enemiesToKill = new List<Enemy>();
+        private Dictionary<Enemy, Tween> blinkTweens = new Dictionary<Enemy, Tween>();
 
         protected override string info
         {
@@ -150,7 +165,51 @@ namespace NodeCanvas.Tasks.Actions
                 animator.enabled = false;
             }
 
-            // No death animation - just instant death
+            // Start blinking effect if enabled
+            if (enableBlinking && spriteRenderer != null)
+            {
+                StartBlinkingEffect(enemy, spriteRenderer);
+            }
+        }
+
+        private void StartBlinkingEffect(Enemy enemy, SpriteRenderer spriteRenderer)
+        {
+            // Kill any existing blink tween for this enemy
+            if (blinkTweens.ContainsKey(enemy) && blinkTweens[enemy] != null && blinkTweens[enemy].IsActive())
+            {
+                blinkTweens[enemy].Kill();
+            }
+
+            // Reset alpha to full
+            Color color = spriteRenderer.color;
+            color.a = 1f;
+            spriteRenderer.color = color;
+
+            // Calculate blink interval based on duration and count
+            float blinkInterval = blinkDuration / (blinkCount * 2f);
+
+            // Create blinking sequence
+            Tween blinkTween = spriteRenderer.DOFade(minBlinkAlpha, blinkInterval)
+                .SetLoops(blinkCount * 2, LoopType.Yoyo)
+                .SetEase(Ease.Linear)
+                .SetUpdate(false)
+                .OnComplete(() =>
+                {
+                    // Ensure fully visible when done (before destroy)
+                    if (spriteRenderer != null)
+                    {
+                        Color finalColor = spriteRenderer.color;
+                        finalColor.a = 1f;
+                        spriteRenderer.color = finalColor;
+                    }
+                    // Remove from dictionary
+                    if (blinkTweens.ContainsKey(enemy))
+                    {
+                        blinkTweens.Remove(enemy);
+                    }
+                });
+
+            blinkTweens[enemy] = blinkTween;
         }
 
         protected override void OnUpdate()
@@ -180,6 +239,16 @@ namespace NodeCanvas.Tasks.Actions
                 deathTimers[enemy] += Time.deltaTime;
                 if (deathTimers[enemy] >= destroyDelay.value)
                 {
+                    // Kill blink tween before destroying
+                    if (blinkTweens.ContainsKey(enemy))
+                    {
+                        if (blinkTweens[enemy] != null && blinkTweens[enemy].IsActive())
+                        {
+                            blinkTweens[enemy].Kill();
+                        }
+                        blinkTweens.Remove(enemy);
+                    }
+
                     UnityEngine.Object.Destroy(enemy.gameObject);
                     toRemove.Add(enemy);
                 }
@@ -228,6 +297,16 @@ namespace NodeCanvas.Tasks.Actions
 
         protected override void OnStop()
         {
+            // Kill all active blink tweens
+            foreach (var kvp in blinkTweens)
+            {
+                if (kvp.Value != null && kvp.Value.IsActive())
+                {
+                    kvp.Value.Kill();
+                }
+            }
+            blinkTweens.Clear();
+
             deathTimers.Clear();
             enemiesToKill.Clear();
         }
