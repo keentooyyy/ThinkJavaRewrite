@@ -94,6 +94,14 @@ namespace NodeCanvas.Tasks.Actions
                 {
                     Debug.LogWarning($"[MOVE_ENEMIES] Enemy {enemy.gameObject.name} has NO Animator! Animation will not work.");
                 }
+                else
+                {
+                    // Ensure animator is enabled
+                    if (!animator.enabled)
+                    {
+                        animator.enabled = true;
+                    }
+                }
 
                 // Determine initial facing direction based on PointA to PointB
                 bool initialFacingRight = enemy.PointB.transform.position.x > enemy.PointA.transform.position.x;
@@ -303,6 +311,12 @@ namespace NodeCanvas.Tasks.Actions
         private void UpdateAnimation(EnemyMovementState state, bool isMoving)
         {
             if (state.animator == null) return;
+            
+            // Ensure animator is enabled before playing animations
+            if (!state.animator.enabled)
+            {
+                state.animator.enabled = true;
+            }
 
             string targetAnimation = isMoving ? moveAnimation.value : idleAnimation.value;
 

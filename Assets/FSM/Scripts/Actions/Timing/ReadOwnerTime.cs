@@ -26,6 +26,19 @@ namespace NodeCanvas.Tasks.Actions
 
         protected override string info => "Read Owner Time";
 
+        /// <summary>
+        /// Add time bonus by reducing accumulated elapsed time.
+        /// This effectively gives the player more remaining time.
+        /// </summary>
+        public void AddTimeBonus(float timeBonus)
+        {
+            if (timeBonus > 0f)
+            {
+                accumulatedElapsed = Mathf.Max(0f, accumulatedElapsed - timeBonus);
+                UpdateOutputs();
+            }
+        }
+
         protected override void OnExecute()
         {
             accumulatedElapsed = 0f;

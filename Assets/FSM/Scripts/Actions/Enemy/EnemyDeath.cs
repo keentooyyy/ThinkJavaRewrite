@@ -272,7 +272,12 @@ namespace NodeCanvas.Tasks.Actions
             if (timeToAdd <= 0f)
                 return;
 
-            // Search all GraphOwners in the scene to find the one with the remaining time variable
+            // Since EnemyDeath and ReadOwnerTime are on different FSM owners, we need to:
+            // 1. Find the GraphOwner that has the remaining time variable
+            // 2. Find the ReadOwnerTime action that belongs to that GraphOwner's graph
+            
+            // First, find the GraphOwner with the variable
+            GraphOwner targetGraphOwner = null;
             var allGraphOwners = Object.FindObjectsByType<GraphOwner>(FindObjectsSortMode.None);
             
             foreach (var graphOwner in allGraphOwners)
@@ -280,19 +285,45 @@ namespace NodeCanvas.Tasks.Actions
                 if (graphOwner == null || graphOwner.blackboard == null)
                     continue;
 
-                // Try to get the remaining seconds variable from this blackboard
-                // This searches the blackboard and all parent blackboards
                 var remainingVar = graphOwner.blackboard.GetVariable<float>(remainingSecondsVarName.value);
                 if (remainingVar != null)
                 {
-                    // Found it! Add time directly to the variable, clamped to 180 max
-                    float newTime = Mathf.Clamp(remainingVar.value + timeToAdd, 0f, 180f);
-                    remainingVar.value = newTime;
+                    targetGraphOwner = graphOwner;
+                    break;
+                }
+            }
+
+            if (targetGraphOwner == null)
+            {
+                Debug.LogWarning($"[ENEMY_DEATH] Could not find remaining time variable '{remainingSecondsVarName.value}' in any GraphOwner blackboard! Make sure ReadOwnerTime is running and the variable name matches.");
+                return;
+            }
+
+            // Now find the ReadOwnerTime action that belongs to this GraphOwner's graph
+            if (targetGraphOwner.graph != null)
+            {
+                var readOwnerTimeActions = targetGraphOwner.graph.GetAllTasksOfType<ReadOwnerTime>();
+                
+                foreach (var readOwnerTime in readOwnerTimeActions)
+                {
+                    if (readOwnerTime == null)
+                        continue;
+
+                    // Found the ReadOwnerTime in this graph! Add time by reducing elapsed time
+                    readOwnerTime.AddTimeBonus(timeToAdd);
                     return;
                 }
             }
 
-            Debug.LogWarning($"[ENEMY_DEATH] Could not find remaining time variable '{remainingSecondsVarName.value}' in any GraphOwner blackboard! Make sure ReadOwnerTime is running and the variable name matches.");
+            // Fallback: If ReadOwnerTime isn't found, directly modify the variable
+            // This will work temporarily but will be overwritten on the next frame
+            var fallbackRemainingVar = targetGraphOwner.blackboard.GetVariable<float>(remainingSecondsVarName.value);
+            if (fallbackRemainingVar != null)
+            {
+                float newTime = Mathf.Clamp(fallbackRemainingVar.value + timeToAdd, 0f, 180f);
+                fallbackRemainingVar.value = newTime;
+                Debug.LogWarning($"[ENEMY_DEATH] ReadOwnerTime action not found on target GraphOwner. Using fallback method (time may be overwritten). Make sure ReadOwnerTime is running on the same GraphOwner that has the '{remainingSecondsVarName.value}' variable.");
+            }
         }
 
         protected override void OnStop()
