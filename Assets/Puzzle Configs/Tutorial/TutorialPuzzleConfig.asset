@@ -10,16 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fa468e0b4b9ecb498c2d0924ae0f258, type: 3}
-  m_Name: DevScenePuzzleConfig
+  m_Name: TutorialPuzzleConfig
   m_EditorClassIdentifier: 
   requiredPairs:
   - dataSlot: {fileID: 11400000, guid: 7f6a3906f08ba2d419123bc9ae098a9f, type: 2}
     variableSlot: {fileID: 11400000, guid: ae0cad6c82c64814c8fdf16cdaf36d27, type: 2}
     requiredType: 1
     requiredVariableName: myName
-    successEventName: 
-  - dataSlot: {fileID: 11400000, guid: 5dead7759d12e714a8193f12355b7578, type: 2}
-    variableSlot: {fileID: 11400000, guid: 05810ca52c30aec429f8f2b5fc13f7b9, type: 2}
-    requiredType: 2
-    requiredVariableName: myAge
     successEventName: 

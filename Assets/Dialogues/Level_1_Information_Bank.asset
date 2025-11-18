@@ -14,20 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   entries:
   - entryId: Hint_001
-    summary: Test databank information
+    summary: '"string" and "myName" is really important.'
     icon: {fileID: 0}
     unlockDialogue: {fileID: 11400000, guid: 5a320187b340b784bb48748e3a00d3da, type: 2}
     unlockOnDialogueComplete: 1
     unlockedByDefault: 0
   - entryId: Hint_002
-    summary: Test databank information 2
+    summary: Slots are an important factor in completing the level.
     icon: {fileID: 0}
-    unlockDialogue: {fileID: 11400000, guid: 5a320187b340b784bb48748e3a00d3da, type: 2}
-    unlockOnDialogueComplete: 1
-    unlockedByDefault: 0
-  - entryId: Hint_003
-    summary: Test databank information 3
-    icon: {fileID: 0}
-    unlockDialogue: {fileID: 11400000, guid: 5a320187b340b784bb48748e3a00d3da, type: 2}
+    unlockDialogue: {fileID: 11400000, guid: 0c55309b7b5aa1f45a6781d1815ef27a, type: 2}
     unlockOnDialogueComplete: 1
     unlockedByDefault: 0

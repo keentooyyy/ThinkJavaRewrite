@@ -3,6 +3,7 @@ using ParadoxNotion.Design;
 using UnityEngine;
 using GameEnemies;
 using System.Collections.Generic;
+using GameState;
 
 namespace NodeCanvas.Tasks.Actions
 {
@@ -160,6 +161,8 @@ namespace NodeCanvas.Tasks.Actions
                 return;
             }
 
+            bool gameplayAllowed = GameFreezeManager.AllowsGameplayUpdate;
+
             // Update all alive enemies
             var aliveEnemies = manager.AliveEnemies;
             var toRemove = new List<Enemy>();
@@ -221,6 +224,14 @@ namespace NodeCanvas.Tasks.Actions
                 {
                     Debug.LogWarning($"[MOVE_ENEMIES] Enemy {enemy.gameObject.name} has NULL currentTarget!");
                     toRemove.Add(enemy);
+                    continue;
+                }
+
+                // During freezes stop movement/animation but keep state timers intact
+                if (!gameplayAllowed)
+                {
+                    rb.velocity = new Vector2(0, rb.velocity.y);
+                    UpdateAnimation(state, false);
                     continue;
                 }
 

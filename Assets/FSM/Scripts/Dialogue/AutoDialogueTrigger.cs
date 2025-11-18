@@ -1,5 +1,7 @@
+using System.Collections;
 using UnityEngine;
 using DialogueRuntime;
+using GameDataBank;
 
 namespace DialogueRuntime
 {
@@ -27,14 +29,41 @@ namespace DialogueRuntime
         [Tooltip("Check every frame when using proximity mode")]
         [SerializeField] private float proximityCheckInterval = 0.1f;
 
+        [Tooltip("Delay before dialogue begins once auto-trigger conditions are met")]
+        [SerializeField] private float triggerDelay = 0f;
+
         private DialogueSource dialogueSource;
         private Collider2D triggerCollider;
         private float lastProximityCheck = 0f;
         private bool hasTriggeredThisSession = false;
+        private Coroutine delayRoutine;
+        private Dialogue.DialogueSequence pendingSequence;
 
         private void Awake()
         {
-            dialogueSource = GetComponent<DialogueSource>();
+            SyncWithSource(null);
+        }
+
+        private void OnDisable()
+        {
+            if (delayRoutine != null)
+            {
+                StopCoroutine(delayRoutine);
+                delayRoutine = null;
+            }
+        }
+
+        internal void SyncWithSource(DialogueSource sourceOverride)
+        {
+            if (sourceOverride != null)
+            {
+                dialogueSource = sourceOverride;
+            }
+            else if (dialogueSource == null)
+            {
+                dialogueSource = GetComponent<DialogueSource>();
+            }
+
             if (dialogueSource == null)
             {
                 Debug.LogError($"AutoDialogueTrigger on {gameObject.name} requires a DialogueSource component!");
@@ -42,26 +71,14 @@ namespace DialogueRuntime
                 return;
             }
 
-            // Check if auto trigger is enabled
             if (!dialogueSource.AutoTrigger)
             {
                 enabled = false;
                 return;
             }
 
-            triggerCollider = GetComponent<Collider2D>();
-            
-            if (useTriggerCollider)
-            {
-                // Ensure collider is set up as trigger
-                if (triggerCollider == null)
-                {
-                    Debug.LogWarning($"AutoDialogueTrigger on {gameObject.name} is set to use trigger collider but no Collider2D found. Adding BoxCollider2D.");
-                    triggerCollider = gameObject.AddComponent<BoxCollider2D>();
-                }
-                
-                triggerCollider.isTrigger = true;
-            }
+            enabled = true;
+            EnsureTriggerCollider();
         }
 
         private void Update()
@@ -113,16 +130,17 @@ namespace DialogueRuntime
             if (!ShouldTrigger())
                 return;
 
-            // Check if dialogue system is already active
-            if (DialogueSystem.Instance != null && DialogueSystem.Instance.IsActive)
-                return;
-
-            // Trigger the dialogue
-            DialogueSystem.Instance?.BeginDialogue(dialogueSource.Sequence);
-            
-            // Mark as triggered
-            dialogueSource.MarkTriggered();
-            hasTriggeredThisSession = true;
+            if (triggerDelay > 0f)
+            {
+                if (delayRoutine == null)
+                {
+                    delayRoutine = StartCoroutine(TriggerDialogueAfterDelay());
+                }
+            }
+            else
+            {
+                TriggerDialogueImmediately();
+            }
         }
 
         private bool IsPlayer(Collider2D collision)
@@ -150,6 +168,64 @@ namespace DialogueRuntime
                 Gizmos.DrawWireSphere(transform.position, radius);
             }
         }
+
+        private IEnumerator TriggerDialogueAfterDelay()
+        {
+            yield return new WaitForSeconds(triggerDelay);
+            delayRoutine = null;
+
+            if (!ShouldTrigger())
+                yield break;
+
+            TriggerDialogueImmediately();
+        }
+
+        private void TriggerDialogueImmediately()
+        {
+            // Check if dialogue system is already active
+            if (DialogueSystem.Instance != null && DialogueSystem.Instance.IsActive)
+                return;
+
+            pendingSequence = dialogueSource.Sequence;
+            var system = DialogueSystem.Instance;
+            if (system == null)
+            {
+                pendingSequence = null;
+                return;
+            }
+
+            system.BeginDialogue(pendingSequence, OnAutoDialogueFinished);
+            dialogueSource.MarkTriggered();
+            hasTriggeredThisSession = true;
+        }
+
+        private void OnAutoDialogueFinished()
+        {
+            if (pendingSequence != null)
+            {
+                LevelDataBankRuntime.Instance?.UnlockByDialogue(pendingSequence);
+            }
+
+            pendingSequence = null;
+        }
+
+        private void EnsureTriggerCollider()
+        {
+            if (!useTriggerCollider)
+            {
+                triggerCollider = null;
+                return;
+            }
+
+            triggerCollider = GetComponent<Collider2D>();
+
+            if (triggerCollider == null)
+            {
+                Debug.LogWarning($"AutoDialogueTrigger on {gameObject.name} is set to use trigger collider but no Collider2D found. Adding BoxCollider2D.");
+                triggerCollider = gameObject.AddComponent<BoxCollider2D>();
+            }
+
+            triggerCollider.isTrigger = true;
+        }
     }
 }
-

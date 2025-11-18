@@ -4,9 +4,9 @@ using Dialogue;
 namespace DialogueRuntime
 {
     /// <summary>
-    /// Attach alongside an Interactable to link a DialogueSequence with it.
+    /// Provides a dialogue sequence reference that can be triggered via interaction or automatically.
+    /// When AutoTrigger is enabled the helper component (AutoDialogueTrigger) is injected automatically.
     /// </summary>
-    [RequireComponent(typeof(GameInteraction.Interactable))]
     public class DialogueSource : MonoBehaviour
     {
         [SerializeField] private DialogueSequence sequence;
@@ -22,6 +22,7 @@ namespace DialogueRuntime
         [SerializeField] private float autoTriggerRadius = 2f;
 
         private bool hasTriggered = false;
+        [SerializeField, HideInInspector] private AutoDialogueTrigger autoTriggerBehaviour;
 
         public DialogueSequence Sequence => sequence;
         public bool HasDialogue => sequence != null;
@@ -45,6 +46,46 @@ namespace DialogueRuntime
         {
             hasTriggered = false;
         }
+
+        private void Reset()
+        {
+            SyncAutoTriggerBehaviour();
+        }
+
+        private void Awake()
+        {
+            SyncAutoTriggerBehaviour();
+        }
+
+        private void OnValidate()
+        {
+            SyncAutoTriggerBehaviour();
+        }
+
+        private void SyncAutoTriggerBehaviour()
+        {
+            if (autoTriggerBehaviour != null && autoTriggerBehaviour.gameObject != gameObject)
+            {
+                autoTriggerBehaviour = null;
+            }
+
+            if (autoTriggerBehaviour == null)
+            {
+                autoTriggerBehaviour = GetComponent<AutoDialogueTrigger>();
+            }
+
+            if (!autoTrigger)
+            {
+                autoTriggerBehaviour?.SyncWithSource(this);
+                return;
+            }
+
+            if (autoTriggerBehaviour == null)
+            {
+                autoTriggerBehaviour = gameObject.AddComponent<AutoDialogueTrigger>();
+            }
+
+            autoTriggerBehaviour.SyncWithSource(this);
+        }
     }
 }
-

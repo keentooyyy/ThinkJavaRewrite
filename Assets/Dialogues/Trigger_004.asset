@@ -9,7 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 877a40eee73efe74581b368ea8228d57, type: 3}
-  m_Name: a_Datatype_002
+  m_Script: {fileID: 11500000, guid: 08b17f322d0e1cf4fad18cdbbba8915e, type: 3}
+  m_Name: Trigger_004
   m_EditorClassIdentifier: 
-  slotId: a_003
+  lines:
+  - text: Wow! a pickup, try putting it back to one of the slots and see what would
+      happen.
+    lettersPerSecond: 0
