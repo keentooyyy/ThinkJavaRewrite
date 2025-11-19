@@ -50,6 +50,20 @@ namespace NodeCanvas.Tasks.Actions
 
         protected override void OnExecute()
         {
+            // Set "logging out" status code in blackboard for status text updates (show immediately)
+            // Use -4 as a special code for "logging out" (in progress)
+            if (blackboard != null)
+            {
+                if (!blackboard.variables.ContainsKey("httpResponseCode"))
+                {
+                    blackboard.AddVariable("httpResponseCode", -4L);
+                }
+                else
+                {
+                    blackboard.SetVariableValue("httpResponseCode", -4L);
+                }
+            }
+
             // Clear credentials (LoginData.es3)
             LoginManager.Logout();
 
@@ -64,6 +78,13 @@ namespace NodeCanvas.Tasks.Actions
 
             // Clear profile UI elements if provided
             ClearProfileUI();
+
+            // Set logout complete status code in blackboard for status text updates
+            // Use -2 as a special code for logout complete (0 = success, -1 = timeout, -2 = logout, -3 = logging in, -4 = logging out)
+            if (blackboard != null)
+            {
+                blackboard.SetVariableValue("httpResponseCode", -2L);
+            }
 
             // Load scene if specified
             if (!string.IsNullOrEmpty(loadSceneName.value))

@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Trigger_003
   m_EditorClassIdentifier: 
   lines:
-  - text: Ooh, a ladder try pressing the arrow key to go up.
+  - text: Ooh, a ladder try pressing the arrow up key.
     lettersPerSecond: 0

@@ -25,3 +25,9 @@ MonoBehaviour:
     unlockDialogue: {fileID: 11400000, guid: 0c55309b7b5aa1f45a6781d1815ef27a, type: 2}
     unlockOnDialogueComplete: 1
     unlockedByDefault: 0
+  - entryId: Hint_003
+    summary: There "pickups" all over maybe you can put them in a slot.
+    icon: {fileID: 0}
+    unlockDialogue: {fileID: 11400000, guid: bf289d0b1c28bfb4c9bf5375392b7099, type: 2}
+    unlockOnDialogueComplete: 1
+    unlockedByDefault: 0

@@ -125,9 +125,9 @@ namespace GameProgress
 
         /// <summary>
         /// Login to API (POST /api/student_login/)
-        /// Returns the primary student ID, full student data, and complete login response in the onComplete callback (if successful)
+        /// Returns the primary student ID, full student data, complete login response, and HTTP response code in the onComplete callback
         /// </summary>
-        public static IEnumerator LoginCoroutine(string studentId, string password, Action<bool, string, int, StudentData, LoginResponse> onComplete = null)
+        public static IEnumerator LoginCoroutine(string studentId, string password, Action<bool, string, int, StudentData, LoginResponse, long> onComplete = null)
         {
             string url = $"{apiBaseUrl}/student_login/";
             
@@ -139,6 +139,8 @@ namespace GameProgress
             request.timeout = timeoutSeconds;
 
             yield return request.SendWebRequest();
+
+            long responseCode = request.responseCode;
 
             if (request.result == UnityWebRequest.Result.Success)
             {
@@ -163,14 +165,14 @@ namespace GameProgress
                 }
                 
                 OnLoginSuccess?.Invoke();
-                onComplete?.Invoke(true, responseText, primaryId, studentData, loginResponse);
+                onComplete?.Invoke(true, responseText, primaryId, studentData, loginResponse, responseCode);
             }
             else
             {
                 string error = $"Login failed: {request.error} (Code: {request.responseCode})";
                 Debug.LogError(error);
                 OnLoginFailed?.Invoke(error);
-                onComplete?.Invoke(false, error, 0, null, null);
+                onComplete?.Invoke(false, error, 0, null, null, responseCode);
             }
 
             request.Dispose();
