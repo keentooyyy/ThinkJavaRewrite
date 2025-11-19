@@ -895,7 +895,6 @@ MonoBehaviour:
   hideDurationMultiplier: 0.5
   excludedGameObjects:
   - Background
-  - Mask
   - Slide Content
 --- !u!114 &296823497
 MonoBehaviour:
@@ -5845,10 +5844,12 @@ MonoBehaviour:
   _serializedBlackboard: '{"_variables":{"password":{"_name":"password","_id":"36c0574b-2016-45a0-a3ad-2d5c778cae3f","$type":"NodeCanvas.Framework.Variable`1[[System.String,
     mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"},"studentId":{"_name":"studentId","_id":"88595c89-271f-4fb6-ba18-717a6447112c","$type":"NodeCanvas.Framework.Variable`1[[System.String,
     mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"},"statusText":{"_value":1,"_name":"statusText","_id":"bdc78253-e282-4fa7-8c70-8411b819d375","$type":"NodeCanvas.Framework.Variable`1[[TMPro.TMP_Text,
-    Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]"}}}'
+    Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]"},"slideContainer":{"_value":2,"_name":"slideContainer","_id":"02f10410-d161-413e-821c-1dcf5119a1ee","$type":"NodeCanvas.Framework.Variable`1[[UnityEngine.Transform,
+    UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]"}}}'
   _objectReferences:
   - {fileID: 0}
   - {fileID: 919706606}
+  - {fileID: 1484012872}
   _serializedVariables:
   - _json: '{"_name":"password","_id":"36c0574b-2016-45a0-a3ad-2d5c778cae3f","$type":"NodeCanvas.Framework.Variable`1[[System.String,
       mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"}'
@@ -5861,6 +5862,11 @@ MonoBehaviour:
     _references:
     - {fileID: 0}
     - {fileID: 919706606}
+  - _json: '{"_value":1,"_name":"slideContainer","_id":"02f10410-d161-413e-821c-1dcf5119a1ee","$type":"NodeCanvas.Framework.Variable`1[[UnityEngine.Transform,
+      UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]"}'
+    _references:
+    - {fileID: 0}
+    - {fileID: 1484012872}
 --- !u!114 &1290406753
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6913,7 +6919,7 @@ MonoBehaviour:
     m_Bottom: 0
   m_ChildAlignment: 0
   m_Spacing: 30
-  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0
   m_ChildControlHeight: 0
