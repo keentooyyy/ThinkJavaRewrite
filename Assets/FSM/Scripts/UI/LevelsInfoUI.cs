@@ -1,8 +1,10 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro;
 using GameProgress;
 using GameScoring;
 using GameEvents;
+using GameCore;
 
 namespace GameUI
 {
@@ -25,6 +27,9 @@ namespace GameUI
         [Header("Events")]
         [Tooltip("Event name to listen for to update and show this UI (e.g., 'ShowLevelInfo')")]
         [SerializeField] private string showEventName = "ShowLevelInfo";
+
+        [Tooltip("Event name to listen for to load the level scene (e.g., 'PlayLevel'). Leave empty to disable.")]
+        [SerializeField] private string playEventName = "PlayLevel";
 
         [Header("Score Display")]
         [Tooltip("Format string for score display (e.g., '000' for 3 digits with leading zeros). Default: '000'")]
@@ -51,6 +56,12 @@ namespace GameUI
             {
                 UIEventManager.Subscribe(showEventName, OnShowEvent);
             }
+
+            // Subscribe to the play event
+            if (!string.IsNullOrEmpty(playEventName))
+            {
+                UIEventManager.Subscribe(playEventName, LoadLevelScene);
+            }
         }
 
         private void OnDisable()
@@ -59,6 +70,12 @@ namespace GameUI
             if (!string.IsNullOrEmpty(showEventName))
             {
                 UIEventManager.Unsubscribe(showEventName, OnShowEvent);
+            }
+
+            // Unsubscribe from the play event
+            if (!string.IsNullOrEmpty(playEventName))
+            {
+                UIEventManager.Unsubscribe(playEventName, LoadLevelScene);
             }
         }
 
@@ -288,6 +305,63 @@ namespace GameUI
                 
                 canvasGroup.alpha = shouldShow ? 1f : inactiveStarAlpha;
             }
+        }
+
+        /// <summary>
+        /// Load the scene for the currently selected level.
+        /// Called by the Play button to start the level.
+        /// Loads the loading screen first, which will then load the target scene.
+        /// </summary>
+        public void LoadLevelScene()
+        {
+            if (string.IsNullOrEmpty(lastClickedLevelId))
+            {
+                Debug.LogWarning("LevelsInfoUI: No level selected. Cannot load scene.");
+                return;
+            }
+
+            string sceneName = GetSceneNameForLevel(lastClickedLevelId);
+            
+            if (string.IsNullOrEmpty(sceneName))
+            {
+                Debug.LogWarning($"LevelsInfoUI: Could not determine scene name for level '{lastClickedLevelId}'");
+                return;
+            }
+
+            Debug.Log($"LevelsInfoUI: Loading scene '{sceneName}' for level '{lastClickedLevelId}'");
+            
+            // Set the target scene for the loading screen
+            SceneLoader.SetTargetScene(sceneName);
+            
+            // Load the loading screen scene
+            SceneManager.LoadScene("LoadingScene");
+        }
+
+        /// <summary>
+        /// Get the scene name for a given level ID.
+        /// Tutorial → TutorialScene, Level1 → Level1Scene, Level2 → Level2Scene, etc.
+        /// </summary>
+        private string GetSceneNameForLevel(string levelId)
+        {
+            if (string.IsNullOrEmpty(levelId))
+            {
+                return null;
+            }
+
+            // Special case: Tutorial → TutorialScene
+            if (levelId.Equals("Tutorial", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return "TutorialScene";
+            }
+
+            // Level1 → Level1Scene, Level2 → Level2Scene, etc.
+            if (levelId.StartsWith("Level", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return $"{levelId}Scene";
+            }
+
+            // Fallback: try appending "Scene" to the level ID
+            return $"{levelId}Scene";
         }
     }
 }

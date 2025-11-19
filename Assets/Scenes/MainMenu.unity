@@ -5890,7 +5890,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 751bdc703eef65b4593e293288c00a24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  eventName: 
+  eventName: PlayLevel
 --- !u!1 &1148177440
 GameObject:
   m_ObjectHideFlags: 0
@@ -5994,6 +5994,7 @@ MonoBehaviour:
   scoreText: {fileID: 833660481}
   starsContainer: {fileID: 649941332}
   showEventName: ShowLevelInfo
+  playEventName: PlayLevel
   scoreFormat: 000
   inactiveStarAlpha: 0.25
 --- !u!1001 &1170644224
