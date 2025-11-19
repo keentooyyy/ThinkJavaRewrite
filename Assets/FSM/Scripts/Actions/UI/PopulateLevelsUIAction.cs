@@ -6,6 +6,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using GameProgress;
+using GameUI;
+using GameEvents;
 
 namespace NodeCanvas.Tasks.Actions
 {
@@ -36,6 +38,12 @@ namespace NodeCanvas.Tasks.Actions
         [Tooltip("Name of the Level Name Text component (TMP_Text). Leave empty to auto-detect.")]
         public BBParameter<string> levelNameTextChildName = "Level Name";
 
+        [UnityEngine.Header("Levels Info UI")]
+        [Tooltip("LevelsInfoUI component to update when level button is clicked. Leave empty to auto-detect in scene.")]
+        public BBParameter<LevelsInfoUI> levelsInfoUI;
+
+        [Tooltip("Event name to trigger when level button is clicked (e.g., 'ShowLevelInfo'). The Levels Info UI should listen to this event via UIEventListener.")]
+        public BBParameter<string> levelButtonClickEvent = "ShowLevelInfo";
 
         [UnityEngine.Header("Formatting")]
         [Tooltip("Format string for best time display (e.g., '{0:F1}s' for 1 decimal). Default: '{0:F2}s'")]
@@ -94,6 +102,28 @@ namespace NodeCanvas.Tasks.Actions
             // Get level order (use provided order or alphabetical)
             var levelIds = GetLevelOrder(allLevels);
 
+            // Resolve LevelsInfoUI component (auto-detect if not provided)
+            var infoUI = levelsInfoUI.value;
+            if (infoUI == null)
+            {
+                // First try to find by GameObject name (works even if inactive)
+                var levelsInfoGameObject = GameObject.Find("Levels Info UI");
+                if (levelsInfoGameObject != null)
+                {
+                    infoUI = levelsInfoGameObject.GetComponent<LevelsInfoUI>();
+                }
+                
+                // Fallback: search all objects including inactive
+                if (infoUI == null)
+                {
+                    var allLevelsInfoUIs = Resources.FindObjectsOfTypeAll<LevelsInfoUI>();
+                    if (allLevelsInfoUIs != null && allLevelsInfoUIs.Length > 0)
+                    {
+                        infoUI = allLevelsInfoUIs[0];
+                    }
+                }
+            }
+
             // Instantiate and configure each level button
             int spawnedCount = 0;
             foreach (var levelId in levelIds)
@@ -108,7 +138,7 @@ namespace NodeCanvas.Tasks.Actions
                 var instance = UnityEngine.Object.Instantiate(prefab, container);
                 instance.name = $"{levelId} Button";
                 
-                ConfigureLevelButton(instance, levelId, levelData);
+                ConfigureLevelButton(instance, levelId, levelData, infoUI);
                 spawnedCount++;
             }
 
@@ -153,7 +183,7 @@ namespace NodeCanvas.Tasks.Actions
             return ordered;
         }
 
-        private void ConfigureLevelButton(GameObject instance, string levelId, LevelData levelData)
+        private void ConfigureLevelButton(GameObject instance, string levelId, LevelData levelData, LevelsInfoUI infoUI)
         {
             // Set instance name
             instance.name = $"{levelId} Button";
@@ -163,6 +193,56 @@ namespace NodeCanvas.Tasks.Actions
             var lockIcon = FindChildGameObject(instance, lockIconChildName.value);
             var textsGroup = FindChildGameObject(instance, textsGroupChildName.value);
             var levelNameText = FindChildComponent<TMP_Text>(instance, levelNameTextChildName.value);
+
+            // Wire up button click to trigger event for Levels Info UI
+            if (button != null && levelData.unlocked)
+            {
+                // Create a proper closure by copying levelId and levelData to local variables
+                // This ensures each button captures its own values, not the loop variable
+                string buttonLevelId = levelId;
+                LevelData buttonLevelData = levelData;
+                
+                button.onClick.AddListener(() =>
+                {
+                    // Set the clicked level ID so LevelsInfoUI can read it when event fires
+                    LevelsInfoUI.SetClickedLevelId(buttonLevelId);
+                    
+                    // Find LevelsInfoUI dynamically (in case it wasn't found during OnExecute or was created later)
+                    var levelsInfoUI = infoUI;
+                    if (levelsInfoUI == null)
+                    {
+                        // Try to find by GameObject name first (works even if inactive)
+                        var levelsInfoGameObject = GameObject.Find("Levels Info UI");
+                        if (levelsInfoGameObject != null)
+                        {
+                            levelsInfoUI = levelsInfoGameObject.GetComponent<LevelsInfoUI>();
+                        }
+                        
+                        // Fallback: search all objects including inactive
+                        if (levelsInfoUI == null)
+                        {
+                            var allLevelsInfoUIs = Resources.FindObjectsOfTypeAll<LevelsInfoUI>();
+                            if (allLevelsInfoUIs != null && allLevelsInfoUIs.Length > 0)
+                            {
+                                levelsInfoUI = allLevelsInfoUIs[0];
+                            }
+                        }
+                    }
+                    
+                    // Update directly with the level data to avoid any timing issues
+                    if (levelsInfoUI != null)
+                    {
+                        levelsInfoUI.UpdateLevelInfo(buttonLevelId, buttonLevelData);
+                    }
+                    
+                    // Trigger event to show Levels Info UI (UIEventListener will handle showing)
+                    string eventName = levelButtonClickEvent.value;
+                    if (!string.IsNullOrEmpty(eventName))
+                    {
+                        UIEventManager.Trigger(eventName);
+                    }
+                });
+            }
 
             // Get all TMP_Text components in Texts Group (for cases with multiple text components)
             TMP_Text[] textsGroupTexts = null;

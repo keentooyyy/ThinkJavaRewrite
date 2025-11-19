@@ -31,12 +31,12 @@ MonoBehaviour:
     please wait..."},"messageLoggingOut":{"_value":"Logging out, please wait..."},"$type":"NodeCanvas.Tasks.Actions.UpdateStatusTextAction"}]},"_color":{"r":1.0,"g":0.42,"b":0.32,"a":1.0},"_name":"Show
     Login Error","_position":{"x":909.0,"y":848.0},"$type":"NodeCanvas.StateMachines.ActionState","$id":"5"},{"_actionList":{"executionMode":1,"actions":[{"onCompleteEventName":{"_name":"firstLoginComplete","_targetVariableID":"51017201-23e7-4066-98b9-e96ad531259b"},"outSuccess":{},"$type":"NodeCanvas.Tasks.Actions.HandleFirstLoginAction"},{"eventName":{"_name":"hideStatusUI","_targetVariableID":"05a20e53-a542-4aa7-98eb-ebf4f9c1e335"},"$type":"NodeCanvas.Tasks.Actions.TriggerUIEvent"}]},"_color":{"r":1.0,"g":0.42,"b":0.32,"a":1.0},"_name":"HandleFirstLogin","_position":{"x":685.9299,"y":439.3017},"$type":"NodeCanvas.StateMachines.ActionState","$id":"6"},{"_actionList":{"executionMode":1,"actions":[{"slideContentContainer":{"_name":"slideContainer","_targetVariableID":"02f10410-d161-413e-821c-1dcf5119a1ee"},"levelButtonPrefab":{"_name":"levelButtonPrefab","_targetVariableID":"d67aa0c6-5bcf-4784-8139-d243c70dfd41"},"buttonChildName":{"_value":"Button"},"lockIconChildName":{"_value":"Lock
     Icon"},"textsGroupChildName":{"_value":"Texts Group"},"levelNameTextChildName":{"_value":"Level
-    Name"},"timeFormat":{"_value":"{0:F2}s"},"noTimeText":{"_value":"--"},"$type":"NodeCanvas.Tasks.Actions.PopulateLevelsUIAction"}]},"_color":{"r":1.0,"g":0.42,"b":0.32,"a":1.0},"_name":"Populate
-    Levels","_position":{"x":534.3295,"y":334.6658},"$type":"NodeCanvas.StateMachines.ActionState","$id":"7"},{"_actionList":{"executionMode":1,"actions":[{"slideContentContainer":{"_name":"slideContainer","_targetVariableID":"02f10410-d161-413e-821c-1dcf5119a1ee"},"levelButtonPrefab":{"_name":"levelButtonPrefab","_targetVariableID":"d67aa0c6-5bcf-4784-8139-d243c70dfd41"},"buttonChildName":{"_value":"Button"},"lockIconChildName":{"_value":"Lock
+    Name"},"levelsInfoUI":{},"levelButtonClickEvent":{"_value":"ShowLevelInfo"},"timeFormat":{"_value":"{0:F2}s"},"noTimeText":{"_value":"--"},"$type":"NodeCanvas.Tasks.Actions.PopulateLevelsUIAction"}]},"_color":{"r":1.0,"g":0.42,"b":0.32,"a":1.0},"_name":"Populate
+    Levels","_position":{"x":518.3295,"y":353.6658},"$type":"NodeCanvas.StateMachines.ActionState","$id":"7"},{"_actionList":{"executionMode":1,"actions":[{"slideContentContainer":{"_name":"slideContainer","_targetVariableID":"02f10410-d161-413e-821c-1dcf5119a1ee"},"levelButtonPrefab":{"_name":"levelButtonPrefab","_targetVariableID":"d67aa0c6-5bcf-4784-8139-d243c70dfd41"},"buttonChildName":{"_value":"Button"},"lockIconChildName":{"_value":"Lock
     Icon"},"textsGroupChildName":{"_value":"Texts Group"},"levelNameTextChildName":{"_value":"Level
-    Name"},"timeFormat":{"_value":"{0:F2}s"},"noTimeText":{"_value":"--"},"$type":"NodeCanvas.Tasks.Actions.PopulateLevelsUIAction"}]},"_color":{"r":1.0,"g":0.42,"b":0.32,"a":1.0},"_name":"Populate
+    Name"},"levelsInfoUI":{},"levelButtonClickEvent":{"_value":"ShowLevelInfo"},"timeFormat":{"_value":"{0:F2}s"},"noTimeText":{"_value":"--"},"$type":"NodeCanvas.Tasks.Actions.PopulateLevelsUIAction"}]},"_color":{"r":1.0,"g":0.42,"b":0.32,"a":1.0},"_name":"Populate
     Levels","_position":{"x":1210.914,"y":159.3621},"$type":"NodeCanvas.StateMachines.ActionState","$id":"8"},{"_actionList":{"executionMode":1,"actions":[{"eventName":{"_name":"LogoutClicked","_targetVariableID":"6ab745b1-b8ba-48bd-817e-9e8ed3c8bc2f"},"$type":"NodeCanvas.Tasks.Actions.WaitUIEvent"}]},"_color":{"r":1.0,"g":0.42,"b":0.32,"a":1.0},"_name":"Wait
-    for Logout Button","_position":{"x":1268.0,"y":31.0},"$type":"NodeCanvas.StateMachines.ActionState","$id":"9"},{"_actionList":{"executionMode":1,"actions":[{"profileImage":{"_name":""},"studentIdText":{"_name":""},"studentNameText":{"_name":""},"sectionText":{"_name":""},"bioText":{"_name":""},"loadSceneName":{},"$type":"NodeCanvas.Tasks.Actions.LogoutAction"},{"eventName":{"_name":"showStatusUI","_targetVariableID":"20e97116-1c1a-45d2-bccd-9f2555e2bfe1"},"$type":"NodeCanvas.Tasks.Actions.TriggerUIEvent"},{"statusText":{"_name":"statusText","_targetVariableID":"bdc78253-e282-4fa7-8c70-8411b819d375"},"responseCode":{"_name":"responseCode","_targetVariableID":"38c247f9-af5f-48e7-b504-477129c2fcd1"},"directMessage":{"_value":"Processing..."},"showStatusUIEvent":{},"hideStatusUIEvent":{},"message401":{"_value":"Invalid
+    for Logout Button","_position":{"x":1322.0,"y":42.0},"$type":"NodeCanvas.StateMachines.ActionState","$id":"9"},{"_actionList":{"executionMode":1,"actions":[{"profileImage":{"_name":""},"studentIdText":{"_name":""},"studentNameText":{"_name":""},"sectionText":{"_name":""},"bioText":{"_name":""},"loadSceneName":{},"$type":"NodeCanvas.Tasks.Actions.LogoutAction"},{"eventName":{"_name":"showStatusUI","_targetVariableID":"20e97116-1c1a-45d2-bccd-9f2555e2bfe1"},"$type":"NodeCanvas.Tasks.Actions.TriggerUIEvent"},{"statusText":{"_name":"statusText","_targetVariableID":"bdc78253-e282-4fa7-8c70-8411b819d375"},"responseCode":{"_name":"responseCode","_targetVariableID":"38c247f9-af5f-48e7-b504-477129c2fcd1"},"directMessage":{"_value":"Processing..."},"showStatusUIEvent":{},"hideStatusUIEvent":{},"message401":{"_value":"Invalid
     username or password"},"message404":{"_value":"Server connection error"},"message500":{"_value":"Server
     error. Please try again later"},"messageTimeout":{"_value":"Connection timeout.
     Please check your internet connection"},"messageLogout":{"_value":"Logged out
@@ -54,7 +54,8 @@ MonoBehaviour:
     mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"},"hideStatusUI":{"_value":"HideStatusUI","_name":"hideStatusUI","_id":"05a20e53-a542-4aa7-98eb-ebf4f9c1e335","$type":"NodeCanvas.Framework.Variable`1[[System.String,
     mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"},"responseCode":{"_name":"responseCode","_id":"38c247f9-af5f-48e7-b504-477129c2fcd1","$type":"NodeCanvas.Framework.Variable`1[[System.Int64,
     mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"},"levelButtonPrefab":{"_value":1,"_name":"levelButtonPrefab","_id":"d67aa0c6-5bcf-4784-8139-d243c70dfd41","$type":"NodeCanvas.Framework.Variable`1[[UnityEngine.GameObject,
-    UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]"}}}}'
+    UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]"},"levelInfoUI":{"_value":"ShowLevelInfo","_name":"levelInfoUI","_id":"f9426a18-4a8d-489c-8c34-d2353bd3e70f","$type":"NodeCanvas.Framework.Variable`1[[System.String,
+    mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"}}}}'
   _objectReferences:
   - {fileID: 0}
   - {fileID: 4568630412841893353, guid: 9b591df406ea5c3419743ed67af6b49d, type: 3}
@@ -62,7 +63,7 @@ MonoBehaviour:
     _version: 3.3
     _category: 
     _comments: 
-    _translation: {x: -222, y: 30}
-    _zoomFactor: 0.7500986
+    _translation: {x: -551, y: 25}
+    _zoomFactor: 1
   _haltSerialization: 0
   _externalSerializationFile: {fileID: 0}
