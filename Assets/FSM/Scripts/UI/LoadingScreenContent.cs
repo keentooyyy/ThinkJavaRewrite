@@ -32,13 +32,6 @@ namespace GameUI
         [Tooltip("List of sprites/images to display as banners during loading")]
         public List<Sprite> bannerImages = new List<Sprite>();
 
-        [Header("Display Settings")]
-        [Tooltip("Time to show each quote/image before switching (in seconds)")]
-        public float displayDuration = 2f;
-
-        [Tooltip("Should content cycle/loop? If false, stops at last item.")]
-        public bool loopContent = true;
-
         /// <summary>
         /// Get a random quote from the list
         /// </summary>

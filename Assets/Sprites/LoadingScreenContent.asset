@@ -22,5 +22,7 @@ MonoBehaviour:
   bannerImages:
   - {fileID: 21300000, guid: d9da6d241de46394d91b85206f1d0b5b, type: 3}
   - {fileID: 21300000, guid: 9b81357d05f05b34aa5722e4eccf4fc8, type: 3}
+  - {fileID: 21300000, guid: a930d8526db096d4ca64fcb1d962d167, type: 3}
+  - {fileID: 21300000, guid: ee47001eea3f5724d93b84afc1381630, type: 3}
   displayDuration: 10
   loopContent: 0

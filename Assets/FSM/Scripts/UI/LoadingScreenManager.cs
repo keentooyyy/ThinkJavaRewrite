@@ -75,7 +75,6 @@ namespace GameUI
         private Animator playerAnimator = null;
         private Vector2 progressBarFinalPosition = Vector2.zero;
         private float[] skipPoints = null;
-        private Coroutine contentUpdateCoroutine = null;
 
         private void Start()
         {
@@ -108,23 +107,13 @@ namespace GameUI
                 }
             }
 
-            // Start content display (quotes and images)
-            if (loadingContent != null)
-            {
-                contentUpdateCoroutine = StartCoroutine(UpdateContentCoroutine());
-            }
+            // Display random content (one quote and one image for entire loading)
+            DisplayRandomContent();
 
             // Start loading process
             StartCoroutine(LoadingCoroutine());
         }
 
-        private void OnDestroy()
-        {
-            if (contentUpdateCoroutine != null)
-            {
-                StopCoroutine(contentUpdateCoroutine);
-            }
-        }
 
 
         private IEnumerator LoadingCoroutine()
@@ -286,48 +275,42 @@ namespace GameUI
             return progress;
         }
 
-        private IEnumerator UpdateContentCoroutine()
+        private void DisplayRandomContent()
         {
             if (loadingContent == null)
-                yield break;
+                return;
 
-            while (true)
+            // Pick one random quote and display it for the entire loading duration
+            if (loadingContent.quotes != null && loadingContent.quotes.Count > 0)
             {
-                // Pick random quote
-                if (loadingContent.quotes != null && loadingContent.quotes.Count > 0)
+                var quote = loadingContent.quotes[Random.Range(0, loadingContent.quotes.Count)];
+                if (quoteText != null)
                 {
-                    var quote = loadingContent.quotes[Random.Range(0, loadingContent.quotes.Count)];
-                    if (quoteText != null)
-                    {
-                        quoteText.text = quote.quoteText;
-                    }
-                    if (authorText != null)
-                    {
-                        string authorDisplay = quote.authorName;
-                        if (!string.IsNullOrEmpty(quote.authorTitle))
-                        {
-                            authorDisplay += $" - {quote.authorTitle}";
-                        }
-                        authorText.text = authorDisplay;
-                    }
+                    quoteText.text = quote.quoteText;
                 }
+                if (authorText != null)
+                {
+                    string authorDisplay = quote.authorName;
+                    if (!string.IsNullOrEmpty(quote.authorTitle))
+                    {
+                        authorDisplay += $" - {quote.authorTitle}";
+                    }
+                    authorText.text = authorDisplay;
+                }
+            }
 
-                // Pick random banner image
-                if (loadingContent.bannerImages != null && loadingContent.bannerImages.Count > 0)
+            // Pick one random banner image and display it for the entire loading duration
+            if (loadingContent.bannerImages != null && loadingContent.bannerImages.Count > 0)
+            {
+                if (bannerImage != null)
                 {
-                    if (bannerImage != null)
-                    {
-                        bannerImage.sprite = loadingContent.bannerImages[Random.Range(0, loadingContent.bannerImages.Count)];
-                        bannerImage.enabled = true;
-                    }
+                    bannerImage.sprite = loadingContent.bannerImages[Random.Range(0, loadingContent.bannerImages.Count)];
+                    bannerImage.enabled = true;
                 }
-                else if (bannerImage != null)
-                {
-                    bannerImage.enabled = false;
-                }
-
-                // Wait for display duration before showing next random content
-                yield return new WaitForSeconds(loadingContent.displayDuration);
+            }
+            else if (bannerImage != null)
+            {
+                bannerImage.enabled = false;
             }
         }
     }
