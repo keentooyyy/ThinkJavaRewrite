@@ -13,16 +13,24 @@ MonoBehaviour:
   m_Name: LoadingScreenContent
   m_EditorClassIdentifier: 
   quotes:
-  - quoteText: Ignorance is bliss.
-    authorName: Kentoy
+  - quoteText: Talk is cheap, show me the code
+    authorName: Linus Torvalds
     authorTitle: 
-  - quoteText: Hatdog Hatdog Hatdog Hatdog
-    authorName: AHHHHHHHHHHHHHHH
+  - quoteText: Good code is its own best documentation.
+    authorName: Steve McConnell
+    authorTitle: 
+  - quoteText: If you can't make it good, at least make it look good.
+    authorName: Bill Gates
+    authorTitle: 
+  - quoteText: Computers are good at following instructions, but not at reading your
+      mind.
+    authorName: Donald Knuth
+    authorTitle: 
+  - quoteText: The biggest risk is not taking any risk.
+    authorName: Mark Zuckerberg
     authorTitle: 
   bannerImages:
   - {fileID: 21300000, guid: d9da6d241de46394d91b85206f1d0b5b, type: 3}
   - {fileID: 21300000, guid: 9b81357d05f05b34aa5722e4eccf4fc8, type: 3}
   - {fileID: 21300000, guid: a930d8526db096d4ca64fcb1d962d167, type: 3}
   - {fileID: 21300000, guid: ee47001eea3f5724d93b84afc1381630, type: 3}
-  displayDuration: 10
-  loopContent: 0

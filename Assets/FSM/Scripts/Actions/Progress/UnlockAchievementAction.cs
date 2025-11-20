@@ -7,18 +7,13 @@ using UnityEngine;
 namespace NodeCanvas.Tasks.Actions
 {
     [Category("■ Custom/Progress/Achievements")]
-    [Description("Unlock an achievement. Optionally set title and description if creating new achievement.")]
+    [Description("Unlock an achievement. Title and description come from login JSON save data.")]
     public class UnlockAchievementAction : ActionTask
     {
         [RequiredField]
-        [Tooltip("Achievement ID (e.g., 'ach_001')")]
+        [AchievementId]
+        [Tooltip("Achievement ID - select from dropdown (populated from login JSON)")]
         public BBParameter<string> achievementId;
-
-        [Tooltip("Optional: Title for the achievement (only used if achievement doesn't exist)")]
-        public BBParameter<string> title;
-
-        [Tooltip("Optional: Achievement description (only used if achievement doesn't exist)")]
-        public BBParameter<string> achievementDescription;
 
         [Tooltip("Optional: Event to trigger after unlocking")]
         public BBParameter<string> onUnlockedEventName;
@@ -34,10 +29,7 @@ namespace NodeCanvas.Tasks.Actions
                 return;
             }
 
-            string titleVal = title != null && !string.IsNullOrEmpty(title.value) ? title.value : null;
-            string descVal = achievementDescription != null && !string.IsNullOrEmpty(achievementDescription.value) ? achievementDescription.value : null;
-
-            AchievementManager.UnlockAchievement(achievementId.value, titleVal, descVal);
+            AchievementManager.UnlockAchievement(achievementId.value);
 
             if (onUnlockedEventName != null && !string.IsNullOrEmpty(onUnlockedEventName.value))
             {

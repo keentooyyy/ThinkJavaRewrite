@@ -89,8 +89,11 @@ namespace GameProgress
                 var level = saveData.levels[levelId];
                 level.currentTime = completionTime;
 
-                // Update best time if this is better (lower time is better, or if no best time exists)
-                if (level.bestTime <= 0f || completionTime < level.bestTime)
+                // Update best time if this is better
+                // For remaining time: higher is better (more time left = faster completion)
+                // For elapsed time: lower is better (less time used = faster completion)
+                // We're using remaining time, so higher is better
+                if (level.bestTime <= 0f || completionTime > level.bestTime)
                 {
                     level.bestTime = completionTime;
                     OnBestTimeUpdated?.Invoke(levelId, completionTime);

@@ -6867,7 +6867,8 @@ MonoBehaviour:
     mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"},"studentId":{"_name":"studentId","_id":"88595c89-271f-4fb6-ba18-717a6447112c","$type":"NodeCanvas.Framework.Variable`1[[System.String,
     mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"},"statusText":{"_value":1,"_name":"statusText","_id":"bdc78253-e282-4fa7-8c70-8411b819d375","$type":"NodeCanvas.Framework.Variable`1[[TMPro.TMP_Text,
     Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]"},"slideContainer":{"_value":2,"_name":"slideContainer","_id":"02f10410-d161-413e-821c-1dcf5119a1ee","$type":"NodeCanvas.Framework.Variable`1[[UnityEngine.Transform,
-    UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]"}}}'
+    UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]"},"apiURL":{"_value":"https://thinkjava.eightbit.online/api/","_name":"apiURL","_id":"ccd37e98-2d1d-49ee-8e35-20c861ad54ad","$type":"NodeCanvas.Framework.Variable`1[[System.String,
+    mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"}}}'
   _objectReferences:
   - {fileID: 0}
   - {fileID: 919706606}
@@ -6889,6 +6890,9 @@ MonoBehaviour:
     _references:
     - {fileID: 0}
     - {fileID: 1484012872}
+  - _json: '{"_value":"https://thinkjava.eightbit.online/api/","_name":"apiURL","_id":"ccd37e98-2d1d-49ee-8e35-20c861ad54ad","$type":"NodeCanvas.Framework.Variable`1[[System.String,
+      mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"}'
+    _references: []
 --- !u!114 &1290406753
 MonoBehaviour:
   m_ObjectHideFlags: 0

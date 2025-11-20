@@ -3,6 +3,8 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
 using ParadoxNotion.Serialization;
+using NodeCanvas.StateMachines;
+using NodeCanvas.Framework;
 
 namespace GameProgress
 {
@@ -116,6 +118,31 @@ namespace GameProgress
         }
 
         /// <summary>
+        /// Get API base URL, reading from LoginFSM blackboard if not set
+        /// </summary>
+        private static string GetAPIBaseUrl()
+        {
+            // If still using default placeholder, try to read from LoginFSM blackboard
+            if (apiBaseUrl == "https://your-api-domain.com/api")
+            {
+                GameObject loginFSMGO = GameObject.Find("LoginFSM");
+                if (loginFSMGO != null)
+                {
+                    var loginFSM = loginFSMGO.GetComponent<FSMOwner>();
+                    if (loginFSM != null && loginFSM.blackboard != null)
+                    {
+                        var apiUrlVar = loginFSM.blackboard.GetVariable<string>("apiURL");
+                        if (apiUrlVar != null && !string.IsNullOrEmpty(apiUrlVar.value))
+                        {
+                            apiBaseUrl = apiUrlVar.value.TrimEnd('/');
+                        }
+                    }
+                }
+            }
+            return apiBaseUrl;
+        }
+
+        /// <summary>
         /// Set request timeout in seconds
         /// </summary>
         public static void SetTimeout(int seconds)
@@ -129,7 +156,7 @@ namespace GameProgress
         /// </summary>
         public static IEnumerator LoginCoroutine(string studentId, string password, Action<bool, string, int, StudentData, LoginResponse, long> onComplete = null)
         {
-            string url = $"{apiBaseUrl}/student_login/";
+            string url = $"{GetAPIBaseUrl()}/student_login/";
             
             WWWForm form = new WWWForm();
             form.AddField("student_id", studentId);
@@ -193,7 +220,7 @@ namespace GameProgress
                 yield break;
             }
             
-            string url = $"{apiBaseUrl}/progress/{primaryId}/";
+            string url = $"{GetAPIBaseUrl()}/progress/{primaryId}/";
             
             // Try POST first (as per API docs with form data)
             WWWForm form = new WWWForm();
@@ -309,8 +336,7 @@ namespace GameProgress
                 yield break;
             }
 
-            string url = $"{apiBaseUrl}/progress/update/{primaryId}/";
-            Debug.Log($"Uploading save data to: {url} (Primary ID: {primaryId})");
+            string url = $"{GetAPIBaseUrl()}/progress/update/{primaryId}/";
             
             WWWForm form = new WWWForm();
             form.AddField("student_id", studentId);
@@ -324,7 +350,6 @@ namespace GameProgress
 
             if (request.result == UnityWebRequest.Result.Success)
             {
-                Debug.Log($"Save data uploaded successfully. Response: {request.downloadHandler.text}");
                 OnUploadSuccess?.Invoke(request.downloadHandler.text);
                 onComplete?.Invoke(true, request.downloadHandler.text);
             }

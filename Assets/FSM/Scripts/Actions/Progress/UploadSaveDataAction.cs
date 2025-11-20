@@ -7,12 +7,12 @@ using UnityEngine;
 
 namespace NodeCanvas.Tasks.Actions
 {
-    [Category("■ Custom/Progress/Login")]
-    [Description("Sync on login: Push local to cloud, upload to API, download from API, pull cloud to local. Only works if logged in.")]
-    public class SyncOnLoginAction : ActionTask
+    [Category("■ Custom/Progress/Save")]
+    [Description("Upload save data to cloud API. Simple upload without sync logic. Only works if logged in.")]
+    public class UploadSaveDataAction : ActionTask
     {
-        [Tooltip("Optional: Event to trigger on sync complete")]
-        public BBParameter<string> onSyncCompleteEventName;
+        [Tooltip("Optional: Event to trigger on upload complete")]
+        public BBParameter<string> onUploadCompleteEventName;
 
         [Tooltip("Output: Success status")]
         public BBParameter<bool> outSuccess;
@@ -20,26 +20,26 @@ namespace NodeCanvas.Tasks.Actions
         [Tooltip("Output: Error message if failed")]
         public BBParameter<string> outError;
 
-        private Coroutine syncCoroutine;
+        private Coroutine uploadCoroutine;
 
-        protected override string info => "Sync On Login";
+        protected override string info => "Upload Save Data";
 
         protected override void OnExecute()
         {
             // Check if logged in
             if (!LoginManager.IsLoggedIn())
             {
-                Debug.LogWarning("Cannot sync: User is not logged in");
+                Debug.LogWarning("Cannot upload: User is not logged in");
                 if (outSuccess != null) outSuccess.value = false;
                 if (outError != null) outError.value = "Not logged in";
                 EndAction(false);
                 return;
             }
 
-            syncCoroutine = CoroutineHelper.StartStaticCoroutine(SyncCoroutine());
+            uploadCoroutine = CoroutineHelper.StartStaticCoroutine(UploadCoroutine());
         }
 
-        private IEnumerator SyncCoroutine()
+        private IEnumerator UploadCoroutine()
         {
             int primaryId = LoginManager.GetStudentPrimaryID();
             string studentId = LoginManager.GetStudentID();
@@ -47,7 +47,7 @@ namespace NodeCanvas.Tasks.Actions
 
             if (primaryId <= 0)
             {
-                Debug.LogError("No primary ID found for sync. User may need to login again.");
+                Debug.LogError("No primary ID found for upload. User may need to login again.");
                 if (outSuccess != null) outSuccess.value = false;
                 if (outError != null) outError.value = "No primary ID - please login again";
                 EndAction(false);
@@ -56,17 +56,14 @@ namespace NodeCanvas.Tasks.Actions
 
             if (string.IsNullOrEmpty(studentId) || string.IsNullOrEmpty(password))
             {
-                Debug.LogError("No credentials found for sync");
+                Debug.LogError("No credentials found for upload");
                 if (outSuccess != null) outSuccess.value = false;
                 if (outError != null) outError.value = "No credentials";
                 EndAction(false);
                 yield break;
             }
 
-            // Step 1: Get cloud_save.json for upload
-            Debug.Log("Step 1: Preparing cloud save for upload");
-
-            // Step 2: Upload cloud to API (using primary ID)
+            // Upload to API using existing coroutine
             bool uploadSuccess = false;
             string uploadMessage = "";
             yield return GameSaveAPIManager.UploadSaveDataCoroutine(primaryId, studentId, password, (s, m) =>
@@ -84,37 +81,13 @@ namespace NodeCanvas.Tasks.Actions
                 yield break;
             }
 
-            Debug.Log("Step 2: Uploaded to API");
-
-            // Step 3: Download from API (gets latest from server, using primary ID)
-            bool downloadSuccess = false;
-            string downloadMessage = "";
-            yield return GameSaveAPIManager.DownloadSaveDataCoroutine(primaryId, studentId, password, (s, data, m) =>
-            {
-                downloadSuccess = s;
-                downloadMessage = m;
-            });
-
-            if (!downloadSuccess)
-            {
-                Debug.LogError($"Download failed: {downloadMessage}");
-                if (outSuccess != null) outSuccess.value = false;
-                if (outError != null) outError.value = $"Download failed: {downloadMessage}";
-                EndAction(false);
-                yield break;
-            }
-
-            Debug.Log("Step 3: Downloaded from API");
-
-            // Step 4: Cloud save is already updated by DownloadSaveDataCoroutine
-            Debug.Log("Step 4: Cloud save is up to date");
 
             if (outSuccess != null) outSuccess.value = true;
             if (outError != null) outError.value = "";
 
-            if (onSyncCompleteEventName != null && !string.IsNullOrEmpty(onSyncCompleteEventName.value))
+            if (onUploadCompleteEventName != null && !string.IsNullOrEmpty(onUploadCompleteEventName.value))
             {
-                UIEventManager.Trigger(onSyncCompleteEventName.value);
+                UIEventManager.Trigger(onUploadCompleteEventName.value);
             }
 
             EndAction(true);
@@ -122,9 +95,9 @@ namespace NodeCanvas.Tasks.Actions
 
         protected override void OnStop()
         {
-            if (syncCoroutine != null)
+            if (uploadCoroutine != null)
             {
-                CoroutineHelper.StopStaticCoroutine(syncCoroutine);
+                CoroutineHelper.StopStaticCoroutine(uploadCoroutine);
             }
         }
     }
