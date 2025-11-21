@@ -1407,6 +1407,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 9d806f1125e885d43b044d4e37f0a03c, type: 2}
     - target: {fileID: 1593113965035012344, guid: e9b706360fef7c446b75978f413e5afb, type: 3}
+      propertyPath: slotPairs.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1593113965035012344, guid: e9b706360fef7c446b75978f413e5afb, type: 3}
       propertyPath: slotPairs.Array.data[0].dataTypeSlot
       value: 
       objectReference: {fileID: 308682786}
@@ -1414,6 +1418,18 @@ PrefabInstance:
       propertyPath: slotPairs.Array.data[0].variableSlot
       value: 
       objectReference: {fileID: 1653233677}
+    - target: {fileID: 1593113965035012344, guid: e9b706360fef7c446b75978f413e5afb, type: 3}
+      propertyPath: slotPairs.Array.data[1].dataTypeSlot
+      value: 
+      objectReference: {fileID: 308682786}
+    - target: {fileID: 1593113965035012344, guid: e9b706360fef7c446b75978f413e5afb, type: 3}
+      propertyPath: slotPairs.Array.data[1].variableSlot
+      value: 
+      objectReference: {fileID: 1653233677}
+    - target: {fileID: 1593113965035012344, guid: e9b706360fef7c446b75978f413e5afb, type: 3}
+      propertyPath: slotPairs.Array.data[1].successEventName
+      value: ShowSuccessUI
+      objectReference: {fileID: 0}
     - target: {fileID: 7137070906457107139, guid: e9b706360fef7c446b75978f413e5afb, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

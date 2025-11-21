@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fa468e0b4b9ecb498c2d0924ae0f258, type: 3}
+  m_Name: Level2PuzzleConfig
+  m_EditorClassIdentifier: 
+  requiredPairs:
+  - dataSlot: {fileID: 11400000, guid: 7d92e16c5fbb3b34cb13d5d930fa70d0, type: 2}
+    variableSlot: {fileID: 11400000, guid: b2a396b1970c75b4087201016b91abdf, type: 2}
+    requiredType: 4
+    requiredVariableName: open
+    successEventName: 
+  - dataSlot: {fileID: 11400000, guid: 958614867e800024ca933ef009f0bebe, type: 2}
+    variableSlot: {fileID: 11400000, guid: 31ca518cc55d62a4883c961b40c31dcd, type: 2}
+    requiredType: 3
+    requiredVariableName: 04.0
+    successEventName: 
