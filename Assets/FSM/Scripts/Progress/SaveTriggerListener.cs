@@ -49,7 +49,6 @@ namespace GameProgress
         {
             if (!string.IsNullOrEmpty(triggerEventName))
             {
-                Debug.Log($"SaveTriggerListener: Event fired, triggering {triggerEventName}");
                 UIEventManager.Trigger(triggerEventName);
             }
         }

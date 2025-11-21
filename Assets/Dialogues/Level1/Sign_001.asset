@@ -9,7 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 877a40eee73efe74581b368ea8228d57, type: 3}
-  m_Name: a_Variable_001
+  m_Script: {fileID: 11500000, guid: 08b17f322d0e1cf4fad18cdbbba8915e, type: 3}
+  m_Name: Sign_001
   m_EditorClassIdentifier: 
-  slotId: a_002
+  lines:
+  - text: Specify your age as "myAge" use an "int".
+    lettersPerSecond: 0
