@@ -14,8 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   entries:
   - entryId: Hint_001
+    summary: Try to read signs and hints always its just hidden throughout the level.
+    icon: {fileID: 0}
+    unlockDialogue: {fileID: 11400000, guid: 36f97e3a6eca94446a689eea2dab4c27, type: 2}
+    unlockOnDialogueComplete: 1
+    unlockedByDefault: 0
+  - entryId: Hint_002
     summary: '"int" and "myAge" is really an important factor.'
     icon: {fileID: 0}
     unlockDialogue: {fileID: 11400000, guid: 94821aaaa37ff88488c6fc44cb143557, type: 2}
+    unlockOnDialogueComplete: 1
+    unlockedByDefault: 0
+  - entryId: Hint_003
+    summary: Always keep moving forward.
+    icon: {fileID: 0}
+    unlockDialogue: {fileID: 11400000, guid: 9e7d2a1cca0013e4ca54b282586ea5be, type: 2}
     unlockOnDialogueComplete: 1
     unlockedByDefault: 0
