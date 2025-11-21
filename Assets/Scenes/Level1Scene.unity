@@ -10460,6 +10460,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1469181460962448235, guid: 5bc3e1326e33d084e80f0e7bd622f7f3, type: 3}
+      propertyPath: m_SortingOrder
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4973176429245378598, guid: 5bc3e1326e33d084e80f0e7bd622f7f3, type: 3}
       propertyPath: m_Name
       value: Moving Platform Path Vertical

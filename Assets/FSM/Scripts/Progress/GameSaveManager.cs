@@ -219,16 +219,6 @@ namespace GameProgress
                         data.achievements = new Dictionary<string, AchievementSaveData>();
                     }
                     
-                    // Load timestamp - try ES3File first, then manual extraction
-                    if (es3File.KeyExists("lastModifiedTimestamp"))
-                    {
-                        data.lastModifiedTimestamp = es3File.Load<long>("lastModifiedTimestamp", 0);
-                    }
-                    else
-                    {
-                        Debug.LogWarning("[LoadCloud] 'lastModifiedTimestamp' key not found in ES3File, using default 0");
-                        data.lastModifiedTimestamp = 0;
-                    }
                 }
                 finally
                 {
@@ -365,14 +355,11 @@ namespace GameProgress
 
             try
             {
-                data.UpdateTimestamp();
-                
                 // Use ES3 to serialize
                 const string TEMP_FILE = "temp_cloud.json";
                 var es3File = new ES3File(TEMP_FILE, false);
                 es3File.Save("levels", data.levels);
                 es3File.Save("achievements", data.achievements);
-                es3File.Save("lastModifiedTimestamp", data.lastModifiedTimestamp);
                 es3File.Sync();
                 
                 // Get the JSON string

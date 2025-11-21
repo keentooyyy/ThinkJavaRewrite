@@ -168,11 +168,6 @@ namespace NodeCanvas.Tasks.Actions
             var toRemove = new List<Enemy>();
             int activeCount = 0;
 
-            if (enemyStates.Count == 0)
-            {
-                Debug.LogWarning("[MOVE_ENEMIES] OnUpdate() - enemyStates is EMPTY! No enemies to move!");
-            }
-
             foreach (var kvp in enemyStates)
             {
                 var enemy = kvp.Key;
